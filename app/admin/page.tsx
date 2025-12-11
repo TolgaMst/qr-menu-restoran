@@ -244,10 +244,17 @@ export default function AdminPage() {
   };
 
   const getCurrentUrl = () => {
+    // Her zaman production URL'sini kullan (mezecim.net)
+    // Eğer localhost'ta çalışıyorsa, production URL'sini döndür
     if (typeof window !== "undefined") {
-      return window.location.origin;
+      const origin = window.location.origin;
+      // Localhost veya development ortamında ise production URL'sini kullan
+      if (origin.includes("localhost") || origin.includes("127.0.0.1") || origin.includes("pages.dev")) {
+        return "https://mezecim.net";
+      }
+      return origin;
     }
-    return "";
+    return "https://mezecim.net";
   };
 
   const handleFirstTimeSetup = () => {
