@@ -77,6 +77,10 @@ export const translations = {
     restoreSuccess: "Geri yükleme başarılı!",
     restoreError: "Yedekleme dosyası geçersiz!",
     selectBackupFile: "Yedekleme dosyası seçin",
+    welcome: "Hoş Geldiniz",
+    viewMenu: "Menüyü Gör",
+    restaurantInfo: "Restoran Bilgileri",
+    information: "Bilgi",
   },
   en: {
     menu: "Menu",
@@ -154,6 +158,10 @@ export const translations = {
     restoreSuccess: "Restore successful!",
     restoreError: "Invalid backup file!",
     selectBackupFile: "Select backup file",
+    welcome: "Welcome",
+    viewMenu: "View Menu",
+    restaurantInfo: "Restaurant Information",
+    information: "Information",
   },
 };
 

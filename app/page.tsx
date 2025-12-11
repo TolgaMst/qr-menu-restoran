@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, Phone, MapPin, Clock } from "lucide-react";
+import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info } from "lucide-react";
 import MenuDisplay from "@/components/MenuDisplay";
 import LanguageSelector from "@/components/LanguageSelector";
 import CurrencySelector from "@/components/CurrencySelector";
@@ -25,6 +25,8 @@ interface Category {
 }
 
 export default function Home() {
+  const [showMenu, setShowMenu] = useState(false);
+  const [showRestaurantInfo, setShowRestaurantInfo] = useState(false);
   const [menuData, setMenuData] = useState<Category[]>([]);
   const [restaurantInfo, setRestaurantInfo] = useState({
     name: "Restoranım",
@@ -116,64 +118,189 @@ export default function Home() {
     saveCurrency(curr);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="bg-primary-600 p-1.5 sm:p-2 rounded-lg">
-                <Menu className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+  // Menü gösterilmişse normal görünüm
+  if (showMenu) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+        {/* Header */}
+        <header className="bg-white shadow-sm sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="bg-primary-600 p-1.5 sm:p-2 rounded-lg">
+                  <Menu className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+                </div>
+                <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
+                  {restaurantInfo.name}
+                </h1>
               </div>
-              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
-                {restaurantInfo.name}
-              </h1>
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <CurrencySelector
+                  currentCurrency={currency}
+                  onCurrencyChange={handleCurrencyChange}
+                />
+                <LanguageSelector
+                  currentLanguage={language}
+                  onLanguageChange={handleLanguageChange}
+                />
+              </div>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <CurrencySelector
-                currentCurrency={currency}
-                onCurrencyChange={handleCurrencyChange}
-              />
-              <LanguageSelector
-                currentLanguage={language}
-                onLanguageChange={handleLanguageChange}
-              />
+          </div>
+        </header>
+
+        {/* Restaurant Info */}
+        <div className="bg-white border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+              <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
+                <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+                <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.phone}</span>
+              </div>
+              <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
+                <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+                <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.address}</span>
+              </div>
+              <div className="flex items-start sm:items-center space-x-2 sm:space-x-3 sm:col-span-2 md:col-span-1">
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+                <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.hours}</span>
+              </div>
             </div>
+          </div>
+        </div>
+
+        {/* Menu Display */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          <MenuDisplay categories={menuData} language={language} currency={currency} />
+        </main>
+
+        {/* Footer */}
+        <footer className="bg-gray-900 text-white mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center">
+              <p className="text-gray-400">
+                © 2025 {restaurantInfo.name}. {getTranslation(language, "allRightsReserved")}
+              </p>
+            </div>
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // Hoş geldiniz sayfası
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Header - Sadece dil seçici */}
+      <header className="bg-primary-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex items-center justify-end">
+            <LanguageSelector
+              currentLanguage={language}
+              onLanguageChange={handleLanguageChange}
+            />
           </div>
         </div>
       </header>
 
-      {/* Restaurant Info */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
-              <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
-              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.phone}</span>
-            </div>
-            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
-              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
-              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.address}</span>
-            </div>
-            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3 sm:col-span-2 md:col-span-1">
-              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
-              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.hours}</span>
+      {/* Welcome Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="text-center space-y-6 sm:space-y-8">
+          {/* Logo Placeholder */}
+          <div className="flex justify-center">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-primary-100 rounded-full flex items-center justify-center border-4 border-primary-200">
+              <Menu className="w-16 h-16 sm:w-20 sm:h-20 text-primary-600" />
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Menu Display */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <MenuDisplay categories={menuData} language={language} currency={currency} />
+          {/* Restaurant Name */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
+            {restaurantInfo.name}
+          </h1>
+
+          {/* Welcome Message */}
+          <p className="text-xl sm:text-2xl text-gray-700">
+            {getTranslation(language, "welcome")}
+          </p>
+
+          {/* Language Selection */}
+          <div className="flex items-center justify-center space-x-4">
+            <button
+              onClick={() => handleLanguageChange("tr")}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
+                language === "tr"
+                  ? "text-primary-600 font-semibold underline"
+                  : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              <Globe className="w-4 h-4" />
+              <span>Türkçe</span>
+            </button>
+            <span className="text-gray-300">|</span>
+            <button
+              onClick={() => handleLanguageChange("en")}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition ${
+                language === "en"
+                  ? "text-primary-600 font-semibold underline"
+                  : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              <Globe className="w-4 h-4" />
+              <span>English</span>
+            </button>
+          </div>
+
+          {/* View Menu Button */}
+          <div className="pt-4">
+            <button
+              onClick={() => setShowMenu(true)}
+              className="px-8 py-4 bg-primary-600 text-white text-lg sm:text-xl font-bold rounded-xl hover:bg-primary-700 transition shadow-lg hover:shadow-xl"
+            >
+              {getTranslation(language, "viewMenu")}
+            </button>
+          </div>
+
+          {/* Restaurant Info Accordion */}
+          <div className="pt-8 border-t border-gray-200">
+            <button
+              onClick={() => setShowRestaurantInfo(!showRestaurantInfo)}
+              className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition"
+            >
+              <div className="flex items-center space-x-2">
+                <Info className="w-5 h-5 text-primary-600" />
+                <span className="font-medium">{getTranslation(language, "information")}</span>
+              </div>
+              {showRestaurantInfo ? (
+                <ChevronUp className="w-5 h-5 text-gray-500" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-500" />
+              )}
+            </button>
+
+            {showRestaurantInfo && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-3 text-left">
+                <div className="flex items-start space-x-3">
+                  <Phone className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{restaurantInfo.phone}</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{restaurantInfo.address}</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <Clock className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{restaurantInfo.hours}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <footer className="bg-gray-900 text-white mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="text-center">
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm">
               © 2025 {restaurantInfo.name}. {getTranslation(language, "allRightsReserved")}
             </p>
           </div>
