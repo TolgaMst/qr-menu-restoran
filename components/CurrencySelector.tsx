@@ -47,10 +47,10 @@ export default function CurrencySelector({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+        className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
       >
-        <DollarSign className="w-4 h-4" />
-        <span className="text-sm font-medium">
+        <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
+        <span className="text-xs sm:text-sm font-medium">
           {currencies[displayCurrency].symbol} {displayCurrency}
         </span>
       </button>

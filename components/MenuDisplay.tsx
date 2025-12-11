@@ -97,19 +97,19 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
         >
           <button
             onClick={() => toggleCategory(category.id)}
-            className="w-full px-6 py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white flex items-center justify-between hover:from-primary-700 hover:to-primary-800 transition-all"
+            className="w-full px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white flex items-center justify-between hover:from-primary-700 hover:to-primary-800 transition-all"
           >
-            <h2 className="text-xl font-bold">{category.name}</h2>
+            <h2 className="text-base sm:text-xl font-bold">{category.name}</h2>
             {expandedCategories.has(category.id) ? (
-              <ChevronUp className="w-5 h-5" />
+              <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             ) : (
-              <ChevronDown className="w-5 h-5" />
+              <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             )}
           </button>
 
           {expandedCategories.has(category.id) && (
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="p-4 sm:p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {category.items.map((item) => (
                   <div
                     key={item.id}
@@ -128,12 +128,12 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                         <span className="text-primary-600 text-4xl">🍽️</span>
                       </div>
                     )}
-                    <div className="p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <h3 className="font-bold text-lg text-gray-900 flex-1">
+                    <div className="p-3 sm:p-4">
+                      <div className="flex items-start justify-between mb-2 gap-2">
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900 flex-1">
                           {item.name}
                         </h3>
-                        <div className="flex items-center space-x-2 ml-2">
+                        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
                           <button
                             onClick={() => handleFavoriteToggle(item.id)}
                             className={`p-1.5 rounded-full transition ${
@@ -174,12 +174,12 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                         </div>
                       </div>
                       {item.description && (
-                        <p className="text-gray-600 text-sm mb-3">
+                        <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3">
                           {item.description}
                         </p>
                       )}
                       <div className="flex items-center justify-between">
-                        <span className="text-primary-600 font-bold text-lg">
+                        <span className="text-primary-600 font-bold text-base sm:text-lg">
                           {formatPrice(item.price, currency)}
                         </span>
                       </div>

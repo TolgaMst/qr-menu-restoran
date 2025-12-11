@@ -19,6 +19,12 @@ import ThemeSelector from "@/components/ThemeSelector";
 import { Language, getTranslation, translations } from "@/lib/translations";
 import { ThemeColors, loadTheme, saveTheme } from "@/lib/theme";
 import { Currency, currencies, loadCurrency, saveCurrency } from "@/lib/currency";
+import { 
+  hasAdminPassword, 
+  checkAdminPassword, 
+  setAdminPassword 
+} from "@/lib/auth";
+import { Lock, LogOut } from "lucide-react";
 
 interface MenuItem {
   id: string;
@@ -36,6 +42,12 @@ interface Category {
 }
 
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isFirstTime, setIsFirstTime] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const [restaurantInfo, setRestaurantInfo] = useState({
     name: "Restoranım",
@@ -51,6 +63,21 @@ export default function AdminPage() {
   const [language, setLanguage] = useState<Language>("tr");
   const [theme, setTheme] = useState<ThemeColors>(loadTheme());
   const [defaultCurrency, setDefaultCurrency] = useState<Currency>(loadCurrency());
+
+  useEffect(() => {
+    // İlk yüklemede şifre kontrolü yap
+    if (typeof window !== "undefined") {
+      if (!hasAdminPassword()) {
+        setIsFirstTime(true);
+      } else {
+        // Şifre varsa, session'dan kontrol et
+        const sessionAuth = sessionStorage.getItem("adminAuthenticated");
+        if (sessionAuth === "true") {
+          setIsAuthenticated(true);
+        }
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const savedMenu = localStorage.getItem("menuData");
@@ -223,34 +250,181 @@ export default function AdminPage() {
     return "";
   };
 
+  const handleFirstTimeSetup = () => {
+    if (!password.trim()) {
+      setPasswordError(getTranslation(language, "passwordRequired"));
+      return;
+    }
+    if (password !== confirmPassword) {
+      setPasswordError(getTranslation(language, "passwordMismatch"));
+      return;
+    }
+    setAdminPassword(password);
+    setIsFirstTime(false);
+    setIsAuthenticated(true);
+    sessionStorage.setItem("adminAuthenticated", "true");
+    setPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
+  };
+
+  const handleLogin = () => {
+    if (!loginPassword.trim()) {
+      setPasswordError(getTranslation(language, "passwordRequired"));
+      return;
+    }
+    if (checkAdminPassword(loginPassword)) {
+      setIsAuthenticated(true);
+      sessionStorage.setItem("adminAuthenticated", "true");
+      setLoginPassword("");
+      setPasswordError("");
+    } else {
+      setPasswordError(getTranslation(language, "wrongPassword"));
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem("adminAuthenticated");
+    setLoginPassword("");
+  };
+
+  // Şifre ekranı
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+          <div className="text-center mb-6">
+            <div className="bg-primary-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              {isFirstTime
+                ? getTranslation(language, "firstTimeSetup")
+                : getTranslation(language, "adminPanel")}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              {isFirstTime
+                ? getTranslation(language, "firstTimeSetupDescription")
+                : getTranslation(language, "enterPassword")}
+            </p>
+          </div>
+
+          {isFirstTime ? (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getTranslation(language, "setPassword")}
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setPasswordError("");
+                  }}
+                  onKeyPress={(e) => e.key === "Enter" && handleFirstTimeSetup()}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder={getTranslation(language, "password")}
+                  autoFocus
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getTranslation(language, "confirmPassword")}
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setPasswordError("");
+                  }}
+                  onKeyPress={(e) => e.key === "Enter" && handleFirstTimeSetup()}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder={getTranslation(language, "confirmPassword")}
+                />
+              </div>
+              {passwordError && (
+                <p className="text-red-600 text-sm">{passwordError}</p>
+              )}
+              <button
+                onClick={handleFirstTimeSetup}
+                className="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium"
+              >
+                {getTranslation(language, "setPassword")}
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {getTranslation(language, "password")}
+                </label>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => {
+                    setLoginPassword(e.target.value);
+                    setPasswordError("");
+                  }}
+                  onKeyPress={(e) => e.key === "Enter" && handleLogin()}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  placeholder={getTranslation(language, "enterPassword")}
+                  autoFocus
+                />
+              </div>
+              {passwordError && (
+                <p className="text-red-600 text-sm">{passwordError}</p>
+              )}
+              <button
+                onClick={handleLogin}
+                className="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium"
+              >
+                {getTranslation(language, "login")}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               {getTranslation(language, "adminPanel")}
             </h1>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
               <LanguageSelector
                 currentLanguage={language}
                 onLanguageChange={handleLanguageChange}
               />
               <button
                 onClick={() => setShowQRCode(!showQRCode)}
-                className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm sm:text-base"
               >
-                <QrCode className="w-5 h-5" />
-                <span>{getTranslation(language, "showQRCode")}</span>
+                <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">{getTranslation(language, "showQRCode")}</span>
               </button>
               <a
                 href="/"
-                className="flex items-center space-x-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm sm:text-base"
               >
-                <Home className="w-5 h-5" />
-                <span>{getTranslation(language, "viewMenu")}</span>
+                <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">{getTranslation(language, "viewMenu")}</span>
               </a>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm sm:text-base"
+              >
+                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="hidden sm:inline">{getTranslation(language, "logout")}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -291,13 +465,13 @@ export default function AdminPage() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <div className="flex border-b">
+        <div className="bg-white rounded-lg shadow-sm mb-4 sm:mb-6 overflow-x-auto">
+          <div className="flex border-b min-w-max sm:min-w-0">
             <button
               onClick={() => setActiveTab("menu")}
-              className={`px-6 py-3 font-medium ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
                 activeTab === "menu"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -307,7 +481,7 @@ export default function AdminPage() {
             </button>
             <button
               onClick={() => setActiveTab("info")}
-              className={`px-6 py-3 font-medium ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
                 activeTab === "info"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -317,7 +491,7 @@ export default function AdminPage() {
             </button>
             <button
               onClick={() => setActiveTab("theme")}
-              className={`px-6 py-3 font-medium ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
                 activeTab === "theme"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-gray-500 hover:text-gray-700"
@@ -327,7 +501,7 @@ export default function AdminPage() {
             </button>
             <button
               onClick={() => setActiveTab("currency")}
-              className={`px-6 py-3 font-medium ${
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
                 activeTab === "currency"
                   ? "text-primary-600 border-b-2 border-primary-600"
                   : "text-gray-500 hover:text-gray-700"

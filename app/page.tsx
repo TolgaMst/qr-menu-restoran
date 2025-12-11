@@ -120,17 +120,17 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-primary-600 p-2 rounded-lg">
-                <Menu className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="bg-primary-600 p-1.5 sm:p-2 rounded-lg">
+                <Menu className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">
                 {restaurantInfo.name}
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <CurrencySelector
                 currentCurrency={currency}
                 onCurrencyChange={handleCurrencyChange}
@@ -139,12 +139,6 @@ export default function Home() {
                 currentLanguage={language}
                 onLanguageChange={handleLanguageChange}
               />
-              <a
-                href="/admin"
-                className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-              >
-                {getTranslation(language, "management")}
-              </a>
             </div>
           </div>
         </div>
@@ -152,26 +146,26 @@ export default function Home() {
 
       {/* Restaurant Info */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center space-x-3">
-              <Phone className="w-5 h-5 text-primary-600" />
-              <span className="text-gray-700">{restaurantInfo.phone}</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
+              <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.phone}</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <MapPin className="w-5 h-5 text-primary-600" />
-              <span className="text-gray-700">{restaurantInfo.address}</span>
+            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
+              <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.address}</span>
             </div>
-            <div className="flex items-center space-x-3">
-              <Clock className="w-5 h-5 text-primary-600" />
-              <span className="text-gray-700">{restaurantInfo.hours}</span>
+            <div className="flex items-start sm:items-center space-x-2 sm:space-x-3 sm:col-span-2 md:col-span-1">
+              <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
+              <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.hours}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Menu Display */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <MenuDisplay categories={menuData} language={language} currency={currency} />
       </main>
 
