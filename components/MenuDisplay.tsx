@@ -135,35 +135,36 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
       {/* Seçili Kategorinin İçeriği */}
       {selectedCategoryData && (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          {/* Kategori Görseli (İlk ürünün görseli) */}
+          {selectedCategoryData.items.length > 0 && selectedCategoryData.items[0]?.image && (
+            <div className="w-full h-48 sm:h-64 bg-gray-200 overflow-hidden">
+              <img
+                src={selectedCategoryData.items[0].image}
+                alt={selectedCategoryData.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
           <div className="p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">
               {selectedCategoryData.name}
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            
+            {/* Ürünler Listesi - Alt Alta */}
+            <div className="space-y-3 sm:space-y-4">
               {selectedCategoryData.items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                  >
-                    {item.image ? (
-                      <div className="aspect-video bg-gray-200 overflow-hidden">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-gradient-to-br from-primary-100 to-primary-200 flex items-center justify-center">
-                        <span className="text-primary-600 text-4xl">🍽️</span>
-                      </div>
-                    )}
-                    <div className="p-3 sm:p-4">
-                      <div className="flex items-start justify-between mb-2 gap-2">
+                <div
+                  key={item.id}
+                  className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow bg-white"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between mb-2">
                         <h3 className="font-bold text-base sm:text-lg text-gray-900 flex-1">
                           {item.name}
                         </h3>
-                        <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+                        <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
                           <button
                             onClick={() => handleFavoriteToggle(item.id)}
                             className={`p-1.5 rounded-full transition ${
@@ -178,7 +179,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                             }
                           >
                             <Heart
-                              className={`w-5 h-5 ${
+                              className={`w-4 h-4 sm:w-5 sm:h-5 ${
                                 favorites.includes(item.id) ? "fill-current" : ""
                               }`}
                             />
@@ -193,7 +194,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                             title={getTranslation(language, "like")}
                           >
                             <ThumbsUp
-                              className={`w-4 h-4 ${
+                              className={`w-3 h-3 sm:w-4 sm:h-4 ${
                                 userLiked.has(item.id) ? "fill-current" : ""
                               }`}
                             />
@@ -204,7 +205,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                         </div>
                       </div>
                       {item.description && (
-                        <p className="text-gray-600 text-xs sm:text-sm mb-2 sm:mb-3">
+                        <p className="text-gray-600 text-xs sm:text-sm mb-2">
                           {item.description}
                         </p>
                       )}
@@ -215,10 +216,12 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
+
             {selectedCategoryData.items.length === 0 && (
-              <p className="text-gray-500 text-center py-8 col-span-full">
+              <p className="text-gray-500 text-center py-8">
                 {getTranslation(language, "noProductsInCategory")}
               </p>
             )}
