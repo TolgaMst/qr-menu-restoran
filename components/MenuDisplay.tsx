@@ -90,8 +90,8 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
   return (
     <div className="space-y-4">
       {/* Yatay Kaydırılabilir Kategori Seçici */}
-      <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
-        <div className="flex space-x-3 sm:space-x-4 min-w-max">
+      <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+        <div className="flex space-x-2 sm:space-x-3 min-w-max">
           {categories.map((category) => {
             const firstItem = category.items[0];
             const isSelected = selectedCategory === category.id;
@@ -100,14 +100,16 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
               <button
                 key={category.id}
                 onClick={() => setSelectedCategory(category.id)}
-                className={`flex flex-col items-center space-y-2 p-3 rounded-xl transition-all min-w-[100px] sm:min-w-[120px] ${
+                className={`flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg transition-all min-w-[90px] sm:min-w-[110px] ${
                   isSelected
-                    ? "bg-primary-600 text-white shadow-lg scale-105"
-                    : "bg-white text-gray-700 border-2 border-gray-200 hover:border-primary-300"
+                    ? "bg-primary-600 text-white shadow-md"
+                    : "bg-white text-gray-700 border-2 border-primary-200 hover:border-primary-400"
                 }`}
               >
                 {firstItem?.image ? (
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white shadow-md">
+                  <div className={`w-14 h-14 sm:w-18 sm:h-18 rounded-lg overflow-hidden ${
+                    isSelected ? "ring-2 ring-white" : ""
+                  }`}>
                     <img
                       src={firstItem.image}
                       alt={category.name}
@@ -115,13 +117,13 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                     />
                   </div>
                 ) : (
-                  <div className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-2xl sm:text-3xl border-2 ${
-                    isSelected ? "border-white" : "border-gray-200"
+                  <div className={`w-14 h-14 sm:w-18 sm:h-18 rounded-lg flex items-center justify-center text-2xl sm:text-3xl ${
+                    isSelected ? "bg-white/20" : "bg-gray-100"
                   }`}>
                     🍽️
                   </div>
                 )}
-                <span className={`text-xs sm:text-sm font-medium text-center ${
+                <span className={`text-xs sm:text-sm font-semibold text-center ${
                   isSelected ? "text-white" : "text-gray-700"
                 }`}>
                   {category.name}
@@ -137,7 +139,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Kategori Görseli (İlk ürünün görseli) */}
           {selectedCategoryData.items.length > 0 && selectedCategoryData.items[0]?.image && (
-            <div className="w-full h-48 sm:h-64 bg-gray-200 overflow-hidden">
+            <div className="w-full h-56 sm:h-72 bg-gray-200 overflow-hidden relative">
               <img
                 src={selectedCategoryData.items[0].image}
                 alt={selectedCategoryData.name}
@@ -147,7 +149,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
           )}
 
           <div className="p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">
               {selectedCategoryData.name}
             </h2>
             
@@ -156,15 +158,27 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
               {selectedCategoryData.items.map((item) => (
                 <div
                   key={item.id}
-                  className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow bg-white"
+                  className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow bg-white"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row">
+                    {/* Ürün Görseli */}
+                    {item.image && (
+                      <div className="w-full sm:w-32 sm:h-32 flex-shrink-0 bg-gray-200 overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="w-full h-48 sm:h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    
+                    {/* Ürün Bilgileri */}
+                    <div className="flex-1 p-3 sm:p-4">
+                      <div className="flex items-start justify-between mb-2 gap-2">
                         <h3 className="font-bold text-base sm:text-lg text-gray-900 flex-1">
                           {item.name}
                         </h3>
-                        <div className="flex items-center space-x-2 flex-shrink-0 ml-2">
+                        <div className="flex items-center space-x-2 flex-shrink-0">
                           <button
                             onClick={() => handleFavoriteToggle(item.id)}
                             className={`p-1.5 rounded-full transition ${
