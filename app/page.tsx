@@ -255,7 +255,7 @@ export default function Home() {
               onClick={() => setShowMenu(true)}
               className="px-8 py-4 bg-primary-600 text-white text-lg sm:text-xl font-bold rounded-xl hover:bg-primary-700 transition shadow-lg hover:shadow-xl"
             >
-              {getTranslation(language, "viewMenu")}
+              {language === "tr" ? "Menüyü Gör" : "View Menu"}
             </button>
           </div>
 
