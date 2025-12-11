@@ -12,6 +12,8 @@ import {
   Clock,
   QrCode,
   Home,
+  Download,
+  Upload,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -149,6 +151,76 @@ export default function AdminPage() {
 
   const saveInfoToLocalStorage = (info: typeof restaurantInfo) => {
     localStorage.setItem("restaurantInfo", JSON.stringify(info));
+  };
+
+  const handleBackup = () => {
+    const backupData = {
+      menuData: categories,
+      restaurantInfo: restaurantInfo,
+      theme: theme,
+      currency: defaultCurrency,
+      language: language,
+      timestamp: new Date().toISOString(),
+    };
+
+    const dataStr = JSON.stringify(backupData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `qr-menu-backup-${new Date().toISOString().split("T")[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    alert(getTranslation(language, "backupSuccess"));
+  };
+
+  const handleRestore = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const backupData = JSON.parse(event.target?.result as string);
+
+          // Verileri geri yükle
+          if (backupData.menuData) {
+            setCategories(backupData.menuData);
+            saveToLocalStorage(backupData.menuData);
+          }
+          if (backupData.restaurantInfo) {
+            setRestaurantInfo(backupData.restaurantInfo);
+            saveInfoToLocalStorage(backupData.restaurantInfo);
+          }
+          if (backupData.theme) {
+            setTheme(backupData.theme);
+            saveTheme(backupData.theme);
+          }
+          if (backupData.currency) {
+            setDefaultCurrency(backupData.currency);
+            saveCurrency(backupData.currency);
+          }
+          if (backupData.language) {
+            setLanguage(backupData.language);
+            localStorage.setItem("language", backupData.language);
+          }
+
+          alert(getTranslation(language, "restoreSuccess"));
+          window.location.reload(); // Sayfayı yenile
+        } catch (error) {
+          alert(getTranslation(language, "restoreError"));
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
   };
 
   const addCategory = () => {
@@ -750,6 +822,32 @@ export default function AdminPage() {
         {/* Restaurant Info */}
         {activeTab === "info" && (
           <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* Yedekleme ve Geri Yükleme */}
+            <div className="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {getTranslation(language, "backup")} / {getTranslation(language, "restore")}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                {getTranslation(language, "backupDescription")}
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleBackup}
+                  className="flex items-center space-x-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>{getTranslation(language, "backup")}</span>
+                </button>
+                <button
+                  onClick={handleRestore}
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+                >
+                  <Upload className="w-4 h-4" />
+                  <span>{getTranslation(language, "restore")}</span>
+                </button>
+              </div>
+            </div>
+
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
