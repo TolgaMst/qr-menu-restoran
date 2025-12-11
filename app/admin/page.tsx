@@ -244,16 +244,7 @@ export default function AdminPage() {
   };
 
   const getCurrentUrl = () => {
-    // Her zaman production URL'sini kullan (mezecim.net)
-    // Eğer localhost'ta çalışıyorsa, production URL'sini döndür
-    if (typeof window !== "undefined") {
-      const origin = window.location.origin;
-      // Localhost veya development ortamında ise production URL'sini kullan
-      if (origin.includes("localhost") || origin.includes("127.0.0.1") || origin.includes("pages.dev")) {
-        return "https://mezecim.net";
-      }
-      return origin;
-    }
+    // QR kod her zaman production URL'sine işaret etmeli
     return "https://mezecim.net";
   };
 
