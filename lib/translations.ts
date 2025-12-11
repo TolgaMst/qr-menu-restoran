@@ -79,6 +79,11 @@ export const translations = {
     selectBackupFile: "Yedekleme dosyası seçin",
     welcome: "Hoş Geldiniz",
     information: "Bilgi",
+    welcomePage: "Hoş Geldiniz Sayfası",
+    logo: "Logo",
+    welcomeMessage: "Hoş Geldiniz Mesajı",
+    uploadLogo: "Logo Yükle",
+    logoPlaceholder: "Logo URL'si veya yükleyin",
   },
   en: {
     menu: "Menu",
@@ -158,6 +163,11 @@ export const translations = {
     selectBackupFile: "Select backup file",
     welcome: "Welcome",
     information: "Information",
+    welcomePage: "Welcome Page",
+    logo: "Logo",
+    welcomeMessage: "Welcome Message",
+    uploadLogo: "Upload Logo",
+    logoPlaceholder: "Logo URL or upload",
   },
 };
 

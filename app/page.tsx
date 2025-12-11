@@ -33,6 +33,8 @@ export default function Home() {
     phone: "+90 (555) 123 45 67",
     address: "Örnek Mahalle, Örnek Sokak No:1",
     hours: "Pazartesi - Pazar: 09:00 - 23:00",
+    logo: "",
+    welcomeMessage: "",
   });
   const [language, setLanguage] = useState<Language>("tr");
   const [currency, setCurrency] = useState<Currency>("TRY");
@@ -205,11 +207,21 @@ export default function Home() {
       {/* Welcome Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         <div className="text-center space-y-6 sm:space-y-8">
-          {/* Logo Placeholder */}
+          {/* Logo */}
           <div className="flex justify-center">
-            <div className="w-32 h-32 sm:w-40 sm:h-40 bg-primary-100 rounded-full flex items-center justify-center border-4 border-primary-200">
-              <Menu className="w-16 h-16 sm:w-20 sm:h-20 text-primary-600" />
-            </div>
+            {restaurantInfo.logo ? (
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-primary-200 shadow-lg">
+                <img
+                  src={restaurantInfo.logo}
+                  alt={restaurantInfo.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-32 h-32 sm:w-40 sm:h-40 bg-primary-100 rounded-full flex items-center justify-center border-4 border-primary-200">
+                <Menu className="w-16 h-16 sm:w-20 sm:h-20 text-primary-600" />
+              </div>
+            )}
           </div>
 
           {/* Restaurant Name */}
@@ -219,7 +231,7 @@ export default function Home() {
 
           {/* Welcome Message */}
           <p className="text-xl sm:text-2xl text-gray-700">
-            {getTranslation(language, "welcome")}
+            {restaurantInfo.welcomeMessage || getTranslation(language, "welcome")}
           </p>
 
           {/* Language Selection */}
@@ -253,46 +265,40 @@ export default function Home() {
           <div className="pt-4">
             <button
               onClick={() => setShowMenu(true)}
-              className="px-8 py-4 bg-primary-600 text-white text-lg sm:text-xl font-bold rounded-xl hover:bg-primary-700 transition shadow-lg hover:shadow-xl"
+              className="w-full sm:w-auto px-8 py-4 bg-primary-600 text-white text-lg sm:text-xl font-bold rounded-xl hover:bg-primary-700 transition shadow-lg hover:shadow-xl"
             >
               {language === "tr" ? "Menüyü Gör" : "View Menu"}
             </button>
           </div>
 
-          {/* Restaurant Info Accordion */}
-          <div className="pt-8 border-t border-gray-200">
+          {/* Restaurant Info Button */}
+          <div className="pt-4">
             <button
               onClick={() => setShowRestaurantInfo(!showRestaurantInfo)}
-              className="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition"
+              className="w-full sm:w-auto px-8 py-4 bg-gray-600 text-white text-lg sm:text-xl font-bold rounded-xl hover:bg-gray-700 transition shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
             >
-              <div className="flex items-center space-x-2">
-                <Info className="w-5 h-5 text-primary-600" />
-                <span className="font-medium">{getTranslation(language, "information")}</span>
-              </div>
-              {showRestaurantInfo ? (
-                <ChevronUp className="w-5 h-5 text-gray-500" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-500" />
-              )}
+              <Info className="w-5 h-5" />
+              <span>{getTranslation(language, "information")}</span>
             </button>
-
-            {showRestaurantInfo && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-3 text-left">
-                <div className="flex items-start space-x-3">
-                  <Phone className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">{restaurantInfo.phone}</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">{restaurantInfo.address}</span>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <Clock className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700">{restaurantInfo.hours}</span>
-                </div>
-              </div>
-            )}
           </div>
+
+          {/* Restaurant Info Content */}
+          {showRestaurantInfo && (
+            <div className="pt-6 space-y-3 text-left max-w-md mx-auto">
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Phone className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{restaurantInfo.phone}</span>
+              </div>
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <MapPin className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{restaurantInfo.address}</span>
+              </div>
+              <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                <Clock className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                <span className="text-gray-700">{restaurantInfo.hours}</span>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
