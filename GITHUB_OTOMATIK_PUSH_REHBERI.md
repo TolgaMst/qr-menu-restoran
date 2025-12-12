@@ -7,12 +7,26 @@ Admin panelinde yaptığınız her değişiklikte, `public/data.json` dosyası o
 
 ### ADIM 1: GitHub Personal Access Token Oluşturun
 
+#### Settings Bulma (Eğer bulamıyorsanız):
+
+**Yöntem 1: Profil Menüsünden**
 1. **GitHub'a gidin:** https://github.com
-2. **Sağ üst köşede profil resminize tıklayın**
-3. **"Settings"** seçeneğine tıklayın
-4. **Sol menüden "Developer settings"** seçeneğine tıklayın
-5. **"Personal access tokens"** → **"Tokens (classic)"** seçeneğine tıklayın
-6. **"Generate new token"** → **"Generate new token (classic)"** tıklayın
+2. **Sağ üst köşede profil resminize (avatar) tıklayın**
+3. Açılan menüden **"Settings"** seçeneğine tıklayın
+
+**Yöntem 2: Direkt URL**
+- Tarayıcıya şunu yazın: `https://github.com/settings/profile`
+- Enter'a basın
+
+#### Token Oluşturma:
+
+1. **Settings sayfasında:** Sol menüden en alta kaydırın
+2. **"Developer settings"** yazısına tıklayın
+   - VEYA direkt: `https://github.com/settings/developers`
+3. **"Personal access tokens"** → **"Tokens (classic)"** seçeneğine tıklayın
+   - VEYA direkt: `https://github.com/settings/tokens`
+4. **"Generate new token"** → **"Generate new token (classic)"** tıklayın
+   - VEYA direkt: `https://github.com/settings/tokens/new`
 
 ### ADIM 2: Token Ayarları
 
