@@ -151,12 +151,58 @@ export default function AdminPage() {
     }
   }, []);
 
+  // Otomatik data.json export için debounce (useRef kullanarak)
+  const exportTimeoutRef = { current: null as NodeJS.Timeout | null };
+  
+  const exportDataJson = () => {
+    // Debounce: 2 saniye bekleyip son değişiklikten sonra export et
+    if (exportTimeoutRef.current) {
+      clearTimeout(exportTimeoutRef.current);
+    }
+    
+    exportTimeoutRef.current = setTimeout(() => {
+      const publicData = {
+        menuData: categories,
+        restaurantInfo: restaurantInfo,
+        theme: theme,
+        currency: defaultCurrency,
+        language: language,
+        timestamp: new Date().toISOString(),
+      };
+
+      const dataStr = JSON.stringify(publicData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "data.json";
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      // Kullanıcıya bildirim göster (sadece bir kez)
+      const hasShownNotification = sessionStorage.getItem("dataJsonAutoExportShown");
+      if (!hasShownNotification) {
+        alert(
+          language === "tr"
+            ? "✅ Otomatik Export: data.json dosyası indirildi! Bu dosyayı 'public' klasörüne koyup GitHub'a push edin. (Bu bildirim sadece bir kez gösterilecek)"
+            : "✅ Auto Export: data.json file downloaded! Place this file in the 'public' folder and push to GitHub. (This notification will only show once)"
+        );
+        sessionStorage.setItem("dataJsonAutoExportShown", "true");
+      }
+    }, 2000); // 2 saniye debounce
+  };
+
   const saveToLocalStorage = (data: Category[]) => {
     localStorage.setItem("menuData", JSON.stringify(data));
+    exportDataJson(); // Otomatik export
   };
 
   const saveInfoToLocalStorage = (info: typeof restaurantInfo) => {
     localStorage.setItem("restaurantInfo", JSON.stringify(info));
+    exportDataJson(); // Otomatik export
   };
 
   const handleBackup = () => {
@@ -319,6 +365,7 @@ export default function AdminPage() {
   const handleThemeChange = (newTheme: ThemeColors) => {
     setTheme(newTheme);
     saveTheme(newTheme);
+    exportDataJson(); // Otomatik export
   };
 
   const getCurrentUrl = () => {
@@ -1115,6 +1162,7 @@ export default function AdminPage() {
                       onClick={() => {
                         setDefaultCurrency(curr.code);
                         saveCurrency(curr.code);
+                        exportDataJson(); // Otomatik export
                       }}
                       className={`p-4 rounded-lg border-2 transition-all text-left ${
                         defaultCurrency === curr.code
