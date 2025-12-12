@@ -35,6 +35,7 @@ export default function Home() {
     hours: "Pazartesi - Pazar: 09:00 - 23:00",
     logo: "",
     welcomeMessage: "",
+    location: "",
   });
   const [language, setLanguage] = useState<Language>("tr");
   const [currency, setCurrency] = useState<Currency>("TRY");
@@ -293,6 +294,19 @@ export default function Home() {
                 <MapPin className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">{restaurantInfo.address}</span>
               </div>
+              {restaurantInfo.location && (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <a
+                    href={restaurantInfo.location}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center space-x-3 text-primary-600 hover:text-primary-700 transition font-semibold"
+                  >
+                    <MapPin className="w-5 h-5 flex-shrink-0" />
+                    <span>{getTranslation(language, "viewOnMap")}</span>
+                  </a>
+                </div>
+              )}
               <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
                 <Clock className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">{restaurantInfo.hours}</span>

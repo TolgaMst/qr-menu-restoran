@@ -58,6 +58,7 @@ export default function AdminPage() {
     hours: "Pazartesi - Pazar: 09:00 - 23:00",
     logo: "",
     welcomeMessage: "",
+    location: "",
   });
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<string | null>(null);
@@ -933,6 +934,29 @@ export default function AdminPage() {
                   }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <MapPin className="w-4 h-4 inline mr-2" />
+                  {getTranslation(language, "location")}
+                </label>
+                <input
+                  type="text"
+                  value={restaurantInfo.location || ""}
+                  onChange={(e) => {
+                    const updated = {
+                      ...restaurantInfo,
+                      location: e.target.value,
+                    };
+                    setRestaurantInfo(updated);
+                    saveInfoToLocalStorage(updated);
+                  }}
+                  placeholder={getTranslation(language, "locationPlaceholder")}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {getTranslation(language, "optional")} - Google Maps linki ekleyin
+                </p>
               </div>
             </div>
           </div>

@@ -84,6 +84,9 @@ export const translations = {
     welcomeMessage: "Hoş Geldiniz Mesajı",
     uploadLogo: "Logo Yükle",
     logoPlaceholder: "Logo URL'si veya yükleyin",
+    location: "Konum (Google Maps Linki)",
+    locationPlaceholder: "https://maps.google.com/... veya boş bırakın",
+    viewOnMap: "Haritada Gör",
   },
   en: {
     menu: "Menu",
@@ -168,6 +171,9 @@ export const translations = {
     welcomeMessage: "Welcome Message",
     uploadLogo: "Upload Logo",
     logoPlaceholder: "Logo URL or upload",
+    location: "Location (Google Maps Link)",
+    locationPlaceholder: "https://maps.google.com/... or leave empty",
+    viewOnMap: "View on Map",
   },
 };
 
