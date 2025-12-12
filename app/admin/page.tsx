@@ -59,6 +59,9 @@ export default function AdminPage() {
     logo: "",
     welcomeMessage: "",
     location: "",
+    email: "",
+    instagram: "",
+    facebook: "",
   });
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<string | null>(null);
@@ -957,6 +960,80 @@ export default function AdminPage() {
                 <p className="text-xs text-gray-500 mt-1">
                   {getTranslation(language, "optional")} - Google Maps linki ekleyin
                 </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone className="w-4 h-4 inline mr-2" />
+                  {getTranslation(language, "email")}
+                </label>
+                <input
+                  type="email"
+                  value={restaurantInfo.email || ""}
+                  onChange={(e) => {
+                    const updated = {
+                      ...restaurantInfo,
+                      email: e.target.value,
+                    };
+                    setRestaurantInfo(updated);
+                    saveInfoToLocalStorage(updated);
+                  }}
+                  placeholder="info@restoran.com"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  {getTranslation(language, "optional")}
+                </p>
+              </div>
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  {getTranslation(language, "socialMedia")}
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Instagram
+                    </label>
+                    <input
+                      type="text"
+                      value={restaurantInfo.instagram || ""}
+                      onChange={(e) => {
+                        const updated = {
+                          ...restaurantInfo,
+                          instagram: e.target.value,
+                        };
+                        setRestaurantInfo(updated);
+                        saveInfoToLocalStorage(updated);
+                      }}
+                      placeholder="https://instagram.com/restoran"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {getTranslation(language, "optional")}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Facebook
+                    </label>
+                    <input
+                      type="text"
+                      value={restaurantInfo.facebook || ""}
+                      onChange={(e) => {
+                        const updated = {
+                          ...restaurantInfo,
+                          facebook: e.target.value,
+                        };
+                        setRestaurantInfo(updated);
+                        saveInfoToLocalStorage(updated);
+                      }}
+                      placeholder="https://facebook.com/restoran"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {getTranslation(language, "optional")}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

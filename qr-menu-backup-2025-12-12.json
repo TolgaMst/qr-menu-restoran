@@ -1,0 +1,57 @@
+{
+  "menuData": [
+    {
+      "id": "1",
+      "name": "Ana Yemekler",
+      "items": [
+        {
+          "id": "1",
+          "name": "Izgara Tavuk",
+          "description": "Taze sebzelerle servis edilen ızgara tavuk",
+          "price": 85,
+          "category": "1"
+        },
+        {
+          "id": "2",
+          "name": "Köfte",
+          "description": "Ev yapımı köfte, pilav ve salata ile",
+          "price": 95,
+          "category": "1"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "İçecekler",
+      "items": [
+        {
+          "id": "3",
+          "name": "Türk Kahvesi",
+          "description": "Geleneksel Türk kahvesi",
+          "price": 25,
+          "category": "2"
+        },
+        {
+          "id": "4",
+          "name": "Ayran",
+          "price": 15,
+          "category": "2"
+        }
+      ]
+    }
+  ],
+  "restaurantInfo": {
+    "name": "Mezecim Restoran",
+    "phone": "+90 (552) 590 16 01",
+    "address": "Dumlupınar Mahallesi Adnan Menderes Bulvarı 98/A",
+    "hours": "Pazartesi - Pazar: 12:00 - 01:00",
+    "location": "https://maps.app.goo.gl/iRwDn9eiRd6s4oQq5"
+  },
+  "theme": {
+    "primary": "#8b5cf6",
+    "secondary": "#7c3aed"
+  },
+  "currency": "TRY",
+  "language": "tr",
+  "timestamp": "2025-12-12T17:15:04.856Z"
+}

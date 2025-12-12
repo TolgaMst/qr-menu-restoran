@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info, Mail, Instagram, Facebook } from "lucide-react";
 import MenuDisplay from "@/components/MenuDisplay";
 import LanguageSelector from "@/components/LanguageSelector";
 import CurrencySelector from "@/components/CurrencySelector";
@@ -36,6 +36,9 @@ export default function Home() {
     logo: "",
     welcomeMessage: "",
     location: "",
+    email: "",
+    instagram: "",
+    facebook: "",
   });
   const [language, setLanguage] = useState<Language>("tr");
   const [currency, setCurrency] = useState<Currency>("TRY");
@@ -157,7 +160,12 @@ export default function Home() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
               <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
                 <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
-                <span className="text-sm sm:text-base text-gray-700 break-words">{restaurantInfo.phone}</span>
+                <a
+                  href={`tel:${restaurantInfo.phone.replace(/\s/g, "")}`}
+                  className="text-sm sm:text-base text-gray-700 break-words hover:text-primary-600 transition"
+                >
+                  {restaurantInfo.phone}
+                </a>
               </div>
               <div className="flex items-start sm:items-center space-x-2 sm:space-x-3">
                 <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 sm:mt-0 flex-shrink-0" />
@@ -288,8 +296,24 @@ export default function Home() {
             <div className="pt-6 space-y-3 text-left max-w-md mx-auto">
               <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
                 <Phone className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
-                <span className="text-gray-700">{restaurantInfo.phone}</span>
+                <a
+                  href={`tel:${restaurantInfo.phone.replace(/\s/g, "")}`}
+                  className="text-gray-700 hover:text-primary-600 transition"
+                >
+                  {restaurantInfo.phone}
+                </a>
               </div>
+              {restaurantInfo.email && (
+                <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                  <Mail className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <a
+                    href={`mailto:${restaurantInfo.email}`}
+                    className="text-gray-700 hover:text-primary-600 transition"
+                  >
+                    {restaurantInfo.email}
+                  </a>
+                </div>
+              )}
               <div className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
                 <MapPin className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">{restaurantInfo.address}</span>
@@ -311,6 +335,35 @@ export default function Home() {
                 <Clock className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                 <span className="text-gray-700">{restaurantInfo.hours}</span>
               </div>
+              {/* Sosyal Medya */}
+              {(restaurantInfo.instagram || restaurantInfo.facebook) && (
+                <div className="p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center space-x-4 justify-center">
+                    {restaurantInfo.instagram && (
+                      <a
+                        href={restaurantInfo.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 text-pink-600 hover:text-pink-700 transition"
+                      >
+                        <Instagram className="w-5 h-5" />
+                        <span className="text-sm font-medium">Instagram</span>
+                      </a>
+                    )}
+                    {restaurantInfo.facebook && (
+                      <a
+                        href={restaurantInfo.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 transition"
+                      >
+                        <Facebook className="w-5 h-5" />
+                        <span className="text-sm font-medium">Facebook</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

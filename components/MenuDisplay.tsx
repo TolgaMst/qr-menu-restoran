@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Heart, ThumbsUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart, ThumbsUp, Search } from "lucide-react";
 import { Language, getTranslation } from "@/lib/translations";
 import { Currency, formatPrice, loadCurrency } from "@/lib/currency";
 import { isFavorite, toggleFavorite, getFavorites } from "@/lib/favorites";
@@ -35,6 +35,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
   const [favorites, setFavorites] = useState<string[]>([]);
   const [likes, setLikes] = useState<Record<string, number>>({});
   const [userLiked, setUserLiked] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     // Favorileri yükle
@@ -85,14 +86,56 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
     );
   }
 
-  const selectedCategoryData = categories.find((cat) => cat.id === selectedCategory);
+  // Arama fonksiyonu
+  const filterItems = (items: MenuItem[], query: string) => {
+    if (!query.trim()) return items;
+    const lowerQuery = query.toLowerCase();
+    return items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(lowerQuery) ||
+        item.description?.toLowerCase().includes(lowerQuery)
+    );
+  };
+
+  // Kategorileri arama sorgusuna göre filtrele
+  const filteredCategories = searchQuery.trim()
+    ? categories.map((cat) => ({
+        ...cat,
+        items: filterItems(cat.items, searchQuery),
+      })).filter((cat) => cat.items.length > 0)
+    : categories;
+
+  const selectedCategoryData = filteredCategories.find((cat) => cat.id === selectedCategory);
+
+  // Arama yapıldığında ilk kategoriyi seç
+  useEffect(() => {
+    if (searchQuery.trim() && filteredCategories.length > 0) {
+      setSelectedCategory(filteredCategories[0].id);
+    } else if (!searchQuery.trim() && categories.length > 0) {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [searchQuery, filteredCategories.length]);
 
   return (
     <div className="space-y-4">
+      {/* Arama Kutusu */}
+      <div className="bg-white rounded-lg shadow-sm p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={getTranslation(language, "searchPlaceholder")}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+      </div>
+
       {/* Yatay Kaydırılabilir Kategori Seçici */}
       <div className="overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
         <div className="flex space-x-2 sm:space-x-3 min-w-max">
-          {categories.map((category) => {
+          {filteredCategories.map((category) => {
             const firstItem = category.items[0];
             const isSelected = selectedCategory === category.id;
             
@@ -236,7 +279,9 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
 
             {selectedCategoryData.items.length === 0 && (
               <p className="text-gray-500 text-center py-8">
-                {getTranslation(language, "noProductsInCategory")}
+                {searchQuery.trim()
+                  ? getTranslation(language, "noResults")
+                  : getTranslation(language, "noProductsInCategory")}
               </p>
             )}
           </div>
