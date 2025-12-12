@@ -24,6 +24,13 @@
           "description": "",
           "price": 500,
           "category": "1"
+        },
+        {
+          "id": "1765575558256",
+          "name": "Yeni Ürün",
+          "description": "",
+          "price": 0,
+          "category": "1"
         }
       ]
     },
@@ -70,5 +77,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2025-12-12T21:39:20.259Z"
+  "timestamp": "2025-12-12T21:39:31.075Z"
 }
