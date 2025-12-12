@@ -241,33 +241,12 @@ export default function AdminPage() {
         if (pushed) {
           // Başarılı - sadece console'da göster
           console.log("✅ GitHub'a otomatik push başarılı!");
-          return; // GitHub'a push edildiyse indirme yapma
+          return; // GitHub'a push edildiyse başka bir şey yapma
         } else {
-          console.log("⚠️ GitHub'a push başarısız, dosya indiriliyor...");
+          console.error("⚠️ GitHub'a push başarısız. Lütfen GitHub ayarlarını kontrol edin.");
         }
-      }
-      
-      // GitHub'a push edilemediyse veya otomatik push kapalıysa dosyayı indir
-      const dataBlob = new Blob([dataStr], { type: "application/json" });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "data.json";
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
-      // Kullanıcıya bildirim göster (sadece bir kez)
-      const hasShownNotification = sessionStorage.getItem("dataJsonAutoExportShown");
-      if (!hasShownNotification) {
-        alert(
-          language === "tr"
-            ? "✅ Otomatik Export: data.json dosyası indirildi! Bu dosyayı 'public' klasörüne koyup GitHub'a push edin. (Bu bildirim sadece bir kez gösterilecek)"
-            : "✅ Auto Export: data.json file downloaded! Place this file in the 'public' folder and push to GitHub. (This notification will only show once)"
-        );
-        sessionStorage.setItem("dataJsonAutoExportShown", "true");
+      } else {
+        console.log("ℹ️ Otomatik push kapalı. GitHub ayarlarını etkinleştirin.");
       }
     }, 2000); // 2 saniye debounce
   };
@@ -987,100 +966,6 @@ export default function AdminPage() {
                 </button>
               </div>
             </div>
-            {/* Public Export - Tüm Cihazlar İçin */}
-            <div className="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300">
-              <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                {language === "tr" ? "Tüm Cihazlar İçin Export" : "Export for All Devices"}
-              </h3>
-              <p className="text-sm text-blue-700 mb-4">
-                {language === "tr"
-                  ? "Verileri 'data.json' dosyası olarak indirin veya kopyalayın. 'public' klasörüne koyun ve GitHub'a push edin. Böylece tüm cihazlarda (telefon, tablet, bilgisayar) aynı veriler görünecek."
-                  : "Download or copy data as 'data.json' file. Place it in the 'public' folder and push to GitHub. This will make the same data visible on all devices (phone, tablet, computer)."}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <button
-                  onClick={() => {
-                    const publicData = {
-                      menuData: categories,
-                      restaurantInfo: restaurantInfo,
-                      theme: theme,
-                      currency: defaultCurrency,
-                      language: language,
-                      timestamp: new Date().toISOString(),
-                    };
-
-                    const dataStr = JSON.stringify(publicData, null, 2);
-                    const dataBlob = new Blob([dataStr], { type: "application/json" });
-                    const url = URL.createObjectURL(dataBlob);
-                    const link = document.createElement("a");
-                    link.href = url;
-                    link.download = "data.json";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(url);
-
-                    alert(
-                      language === "tr"
-                        ? "✅ data.json dosyası indirildi! Bu dosyayı 'public' klasörüne koyun ve GitHub'a push edin."
-                        : "✅ data.json file downloaded! Place this file in the 'public' folder and push to GitHub."
-                    );
-                  }}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>{language === "tr" ? "İndir" : "Download"}</span>
-                </button>
-                <button
-                  onClick={async () => {
-                    const publicData = {
-                      menuData: categories,
-                      restaurantInfo: restaurantInfo,
-                      theme: theme,
-                      currency: defaultCurrency,
-                      language: language,
-                      timestamp: new Date().toISOString(),
-                    };
-
-                    const dataStr = JSON.stringify(publicData, null, 2);
-                    
-                    try {
-                      await navigator.clipboard.writeText(dataStr);
-                      alert(
-                        language === "tr"
-                          ? "✅ İçerik panoya kopyalandı! Şimdi 'public/data.json' dosyasını açıp içeriği yapıştırın (Ctrl+V)."
-                          : "✅ Content copied to clipboard! Now open 'public/data.json' file and paste the content (Ctrl+V)."
-                      );
-                    } catch (err) {
-                      // Fallback: textarea kullan
-                      const textarea = document.createElement("textarea");
-                      textarea.value = dataStr;
-                      textarea.style.position = "fixed";
-                      textarea.style.opacity = "0";
-                      document.body.appendChild(textarea);
-                      textarea.select();
-                      document.execCommand("copy");
-                      document.body.removeChild(textarea);
-                      alert(
-                        language === "tr"
-                          ? "✅ İçerik panoya kopyalandı! Şimdi 'public/data.json' dosyasını açıp içeriği yapıştırın (Ctrl+V)."
-                          : "✅ Content copied to clipboard! Now open 'public/data.json' file and paste the content (Ctrl+V)."
-                      );
-                    }
-                  }}
-                  className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                >
-                  <span>📋</span>
-                  <span>{language === "tr" ? "Panoya Kopyala" : "Copy to Clipboard"}</span>
-                </button>
-              </div>
-              <p className="text-xs text-blue-600 mt-3">
-                {language === "tr"
-                  ? "💡 İpucu: 'Panoya Kopyala' butonuna tıklayın, sonra 'public/data.json' dosyasını açıp içeriği yapıştırın (Ctrl+V). Daha hızlı!"
-                  : "💡 Tip: Click 'Copy to Clipboard' button, then open 'public/data.json' file and paste the content (Ctrl+V). Faster!"}
-              </p>
-            </div>
-            
             {/* GitHub Otomatik Push Ayarları */}
             <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-dashed border-green-300">
               <h3 className="text-lg font-semibold text-green-900 mb-2">
