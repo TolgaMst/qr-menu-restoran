@@ -71,6 +71,10 @@ export default function AdminPage() {
   const [language, setLanguage] = useState<Language>("tr");
   const [theme, setTheme] = useState<ThemeColors>(loadTheme());
   const [defaultCurrency, setDefaultCurrency] = useState<Currency>(loadCurrency());
+  const [githubToken, setGithubToken] = useState("");
+  const [githubUsername, setGithubUsername] = useState("");
+  const [githubRepo, setGithubRepo] = useState("");
+  const [autoPushEnabled, setAutoPushEnabled] = useState(false);
 
   useEffect(() => {
     // İlk yüklemede şifre kontrolü yap
@@ -154,13 +158,72 @@ export default function AdminPage() {
   // Otomatik data.json export için debounce (useRef kullanarak)
   const exportTimeoutRef = { current: null as NodeJS.Timeout | null };
   
+  // GitHub'a otomatik push fonksiyonu
+  const pushToGitHub = async (dataStr: string) => {
+    if (!autoPushEnabled || !githubToken || !githubUsername || !githubRepo) {
+      return false;
+    }
+
+    try {
+      // Önce mevcut dosyayı oku (SHA için)
+      const getFileResponse = await fetch(
+        `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+        {
+          headers: {
+            Authorization: `token ${githubToken}`,
+            Accept: "application/vnd.github.v3+json",
+          },
+        }
+      );
+
+      let sha = "";
+      if (getFileResponse.ok) {
+        const fileData = await getFileResponse.json();
+        sha = fileData.sha;
+      }
+
+      // Dosyayı base64 encode et
+      const base64Content = btoa(unescape(encodeURIComponent(dataStr)));
+
+      // Dosyayı güncelle
+      const updateResponse = await fetch(
+        `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${githubToken}`,
+            Accept: "application/vnd.github.v3+json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: `Auto-update: data.json - ${new Date().toISOString()}`,
+            content: base64Content,
+            sha: sha || undefined,
+            branch: "main",
+          }),
+        }
+      );
+
+      if (updateResponse.ok) {
+        return true;
+      } else {
+        const error = await updateResponse.json();
+        console.error("GitHub push error:", error);
+        return false;
+      }
+    } catch (error) {
+      console.error("GitHub push error:", error);
+      return false;
+    }
+  };
+  
   const exportDataJson = () => {
     // Debounce: 2 saniye bekleyip son değişiklikten sonra export et
     if (exportTimeoutRef.current) {
       clearTimeout(exportTimeoutRef.current);
     }
     
-    exportTimeoutRef.current = setTimeout(() => {
+    exportTimeoutRef.current = setTimeout(async () => {
       const publicData = {
         menuData: categories,
         restaurantInfo: restaurantInfo,
@@ -171,6 +234,20 @@ export default function AdminPage() {
       };
 
       const dataStr = JSON.stringify(publicData, null, 2);
+      
+      // GitHub'a otomatik push dene
+      if (autoPushEnabled) {
+        const pushed = await pushToGitHub(dataStr);
+        if (pushed) {
+          // Başarılı - sadece console'da göster
+          console.log("✅ GitHub'a otomatik push başarılı!");
+          return; // GitHub'a push edildiyse indirme yapma
+        } else {
+          console.log("⚠️ GitHub'a push başarısız, dosya indiriliyor...");
+        }
+      }
+      
+      // GitHub'a push edilemediyse veya otomatik push kapalıysa dosyayı indir
       const dataBlob = new Blob([dataStr], { type: "application/json" });
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement("a");
@@ -1002,6 +1079,101 @@ export default function AdminPage() {
                   ? "💡 İpucu: 'Panoya Kopyala' butonuna tıklayın, sonra 'public/data.json' dosyasını açıp içeriği yapıştırın (Ctrl+V). Daha hızlı!"
                   : "💡 Tip: Click 'Copy to Clipboard' button, then open 'public/data.json' file and paste the content (Ctrl+V). Faster!"}
               </p>
+            </div>
+            
+            {/* GitHub Otomatik Push Ayarları */}
+            <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-dashed border-green-300">
+              <h3 className="text-lg font-semibold text-green-900 mb-2">
+                {language === "tr" ? "🚀 GitHub Otomatik Push" : "🚀 GitHub Auto Push"}
+              </h3>
+              <p className="text-sm text-green-700 mb-4">
+                {language === "tr"
+                  ? "GitHub Personal Access Token ekleyerek, her değişiklikte otomatik olarak GitHub'a push edebilirsiniz. Manuel push yapmanıza gerek kalmaz!"
+                  : "Add GitHub Personal Access Token to automatically push to GitHub on every change. No need for manual push!"}
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === "tr" ? "GitHub Kullanıcı Adı" : "GitHub Username"}
+                  </label>
+                  <input
+                    type="text"
+                    value={githubUsername}
+                    onChange={(e) => {
+                      setGithubUsername(e.target.value);
+                      localStorage.setItem("githubUsername", e.target.value);
+                    }}
+                    placeholder="TolgaMst"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === "tr" ? "Repository Adı" : "Repository Name"}
+                  </label>
+                  <input
+                    type="text"
+                    value={githubRepo}
+                    onChange={(e) => {
+                      setGithubRepo(e.target.value);
+                      localStorage.setItem("githubRepo", e.target.value);
+                    }}
+                    placeholder="qr-menu-restoran"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === "tr" ? "Personal Access Token" : "Personal Access Token"}
+                  </label>
+                  <input
+                    type="password"
+                    value={githubToken}
+                    onChange={(e) => {
+                      setGithubToken(e.target.value);
+                      localStorage.setItem("githubToken", e.target.value);
+                    }}
+                    placeholder="ghp_xxxxxxxxxxxx"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {language === "tr"
+                      ? "Token oluşturmak için: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → 'repo' izni verin"
+                      : "To create token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → Give 'repo' permission"}
+                  </p>
+                </div>
+                
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="autoPush"
+                    checked={autoPushEnabled}
+                    onChange={(e) => {
+                      setAutoPushEnabled(e.target.checked);
+                      localStorage.setItem("githubAutoPush", e.target.checked ? "true" : "false");
+                    }}
+                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label htmlFor="autoPush" className="text-sm font-medium text-gray-700">
+                    {language === "tr"
+                      ? "Otomatik Push'u Etkinleştir (Her değişiklikte GitHub'a push et)"
+                      : "Enable Auto Push (Push to GitHub on every change)"}
+                  </label>
+                </div>
+                
+                {autoPushEnabled && githubToken && githubUsername && githubRepo && (
+                  <div className="p-3 bg-green-100 rounded-lg">
+                    <p className="text-sm text-green-800">
+                      ✅ {language === "tr"
+                        ? "Otomatik push aktif! Her değişiklikte GitHub'a otomatik push edilecek."
+                        : "Auto push active! Will automatically push to GitHub on every change."}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="space-y-6">
