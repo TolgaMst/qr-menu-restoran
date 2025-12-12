@@ -160,17 +160,25 @@ export default function AdminPage() {
   
   // GitHub'a otomatik push fonksiyonu
   const pushToGitHub = async (dataStr: string) => {
-    if (!autoPushEnabled || !githubToken || !githubUsername || !githubRepo) {
+    if (!autoPushEnabled) {
+      console.log("ℹ️ Otomatik push kapalı.");
+      return false;
+    }
+    
+    if (!githubToken || !githubUsername || !githubRepo) {
+      console.error("❌ GitHub ayarları eksik! Lütfen GitHub ayarlarını doldurun.");
       return false;
     }
 
     try {
+      console.log("🔄 GitHub'a push ediliyor...");
+      
       // Önce mevcut dosyayı oku (SHA için)
       const getFileResponse = await fetch(
         `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
         {
           headers: {
-            Authorization: `token ${githubToken}`,
+            Authorization: `Bearer ${githubToken}`,
             Accept: "application/vnd.github.v3+json",
           },
         }
@@ -180,73 +188,101 @@ export default function AdminPage() {
       if (getFileResponse.ok) {
         const fileData = await getFileResponse.json();
         sha = fileData.sha;
+      } else if (getFileResponse.status === 404) {
+        // Dosya yoksa, yeni dosya oluştur
+        console.log("📄 Dosya bulunamadı, yeni dosya oluşturuluyor...");
+      } else {
+        const error = await getFileResponse.json();
+        console.error("❌ Dosya okuma hatası:", error);
+        return false;
       }
 
       // Dosyayı base64 encode et
       const base64Content = btoa(unescape(encodeURIComponent(dataStr)));
 
-      // Dosyayı güncelle
+      // Dosyayı güncelle veya oluştur
       const updateResponse = await fetch(
         `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
         {
           method: "PUT",
           headers: {
-            Authorization: `token ${githubToken}`,
+            Authorization: `Bearer ${githubToken}`,
             Accept: "application/vnd.github.v3+json",
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             message: `Auto-update: data.json - ${new Date().toISOString()}`,
             content: base64Content,
-            sha: sha || undefined,
+            ...(sha ? { sha } : {}),
             branch: "main",
           }),
         }
       );
 
       if (updateResponse.ok) {
+        const result = await updateResponse.json();
+        console.log("✅ GitHub'a otomatik push başarılı!", result.commit.html_url);
         return true;
       } else {
         const error = await updateResponse.json();
-        console.error("GitHub push error:", error);
+        console.error("❌ GitHub push hatası:", error);
+        console.error("Hata detayları:", {
+          status: updateResponse.status,
+          statusText: updateResponse.statusText,
+          error: error.message || error,
+        });
         return false;
       }
-    } catch (error) {
-      console.error("GitHub push error:", error);
+    } catch (error: any) {
+      console.error("❌ GitHub push exception:", error);
+      console.error("Hata mesajı:", error.message || error);
       return false;
     }
   };
   
+  // Export işlemi için lock mekanizması (çoklu çağrıları engellemek için)
+  let isExporting = false;
+  
   const exportDataJson = () => {
+    // Eğer zaten export işlemi devam ediyorsa, yeni bir tane başlatma
+    if (isExporting) {
+      console.log("⏳ Export işlemi zaten devam ediyor, bekleniyor...");
+      return;
+    }
+    
     // Debounce: 2 saniye bekleyip son değişiklikten sonra export et
     if (exportTimeoutRef.current) {
       clearTimeout(exportTimeoutRef.current);
     }
     
     exportTimeoutRef.current = setTimeout(async () => {
-      const publicData = {
-        menuData: categories,
-        restaurantInfo: restaurantInfo,
-        theme: theme,
-        currency: defaultCurrency,
-        language: language,
-        timestamp: new Date().toISOString(),
-      };
-
-      const dataStr = JSON.stringify(publicData, null, 2);
+      // Lock'u aktif et
+      isExporting = true;
       
-      // GitHub'a otomatik push dene
-      if (autoPushEnabled) {
-        const pushed = await pushToGitHub(dataStr);
-        if (pushed) {
-          // Başarılı - sadece console'da göster
-          console.log("✅ GitHub'a otomatik push başarılı!");
-          return; // GitHub'a push edildiyse başka bir şey yapma
+      try {
+        const publicData = {
+          menuData: categories,
+          restaurantInfo: restaurantInfo,
+          theme: theme,
+          currency: defaultCurrency,
+          language: language,
+          timestamp: new Date().toISOString(),
+        };
+
+        const dataStr = JSON.stringify(publicData, null, 2);
+        
+        // GitHub'a otomatik push dene
+        if (autoPushEnabled) {
+          const pushed = await pushToGitHub(dataStr);
+          if (!pushed) {
+            console.warn("⚠️ GitHub'a push başarısız. Lütfen GitHub ayarlarını kontrol edin.");
+          }
         } else {
-          console.error("⚠️ GitHub'a push başarısız. Lütfen GitHub ayarlarını kontrol edin.");
+          console.log("ℹ️ Otomatik push kapalı. GitHub ayarlarını etkinleştirin.");
         }
-      } else {
-        console.log("ℹ️ Otomatik push kapalı. GitHub ayarlarını etkinleştirin.");
+      } finally {
+        // Lock'u kaldır
+        isExporting = false;
       }
     }, 2000); // 2 saniye debounce
   };
