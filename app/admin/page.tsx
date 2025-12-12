@@ -194,21 +194,42 @@ export default function AdminPage() {
         }
       );
 
-      let sha = "";
+      let sha: string | null = null;
       if (getFileResponse.ok) {
         const fileData = await getFileResponse.json();
         sha = fileData.sha;
+        console.log("📄 Mevcut dosya bulundu, güncelleniyor...");
       } else if (getFileResponse.status === 404) {
-        // Dosya yoksa, yeni dosya oluştur
+        // Dosya yoksa, yeni dosya oluştur (SHA gönderme)
         console.log("📄 Dosya bulunamadı, yeni dosya oluşturuluyor...");
+        sha = null;
       } else {
-        const error = await getFileResponse.json();
+        // Diğer hatalar
+        const error = await getFileResponse.json().catch(() => ({ message: "Unknown error" }));
         console.error("❌ Dosya okuma hatası:", error);
+        const errorMessage = error.message || JSON.stringify(error);
+        alert(
+          language === "tr"
+            ? `❌ GitHub dosya okuma hatası!\n\nHata: ${errorMessage}\n\nLütfen repository'nin mevcut olduğundan ve token'ın doğru olduğundan emin olun.`
+            : `❌ GitHub file read error!\n\nError: ${errorMessage}\n\nPlease make sure the repository exists and the token is correct.`
+        );
         return false;
       }
 
       // Dosyayı base64 encode et
       const base64Content = btoa(unescape(encodeURIComponent(dataStr)));
+
+      // Request body'yi hazırla
+      const requestBody: any = {
+        message: `Auto-update: data.json - ${new Date().toISOString()}`,
+        content: base64Content,
+        branch: "main",
+      };
+      
+      // Sadece dosya varsa (sha varsa) SHA'yı ekle
+      if (sha) {
+        requestBody.sha = sha;
+      }
 
       // Dosyayı güncelle veya oluştur
       const updateResponse = await fetch(
@@ -220,12 +241,7 @@ export default function AdminPage() {
             Accept: "application/vnd.github.v3+json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            message: `Auto-update: data.json - ${new Date().toISOString()}`,
-            content: base64Content,
-            ...(sha ? { sha } : {}),
-            branch: "main",
-          }),
+          body: JSON.stringify(requestBody),
         }
       );
 
