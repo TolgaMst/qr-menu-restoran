@@ -166,7 +166,17 @@ export default function AdminPage() {
     }
     
     if (!githubToken || !githubUsername || !githubRepo) {
-      console.error("❌ GitHub ayarları eksik! Lütfen GitHub ayarlarını doldurun.");
+      const missingFields = [];
+      if (!githubToken) missingFields.push(language === "tr" ? "Token" : "Token");
+      if (!githubUsername) missingFields.push(language === "tr" ? "Kullanıcı Adı" : "Username");
+      if (!githubRepo) missingFields.push(language === "tr" ? "Repository Adı" : "Repository Name");
+      
+      console.error("❌ GitHub ayarları eksik!", { missingFields });
+      alert(
+        language === "tr"
+          ? `❌ GitHub ayarları eksik!\n\nEksik alanlar: ${missingFields.join(", ")}\n\nLütfen admin panelinde GitHub ayarlarını doldurun.`
+          : `❌ GitHub settings missing!\n\nMissing fields: ${missingFields.join(", ")}\n\nPlease fill GitHub settings in admin panel.`
+      );
       return false;
     }
 
@@ -222,20 +232,40 @@ export default function AdminPage() {
       if (updateResponse.ok) {
         const result = await updateResponse.json();
         console.log("✅ GitHub'a otomatik push başarılı!", result.commit.html_url);
+        alert(language === "tr" 
+          ? "✅ GitHub'a başarıyla push edildi! 2-3 dakika içinde tüm cihazlarda görünecek."
+          : "✅ Successfully pushed to GitHub! Will be visible on all devices in 2-3 minutes.");
         return true;
       } else {
-        const error = await updateResponse.json();
+        const error = await updateResponse.json().catch(() => ({ message: "Unknown error" }));
+        const errorMessage = error.message || error.error || JSON.stringify(error);
         console.error("❌ GitHub push hatası:", error);
         console.error("Hata detayları:", {
           status: updateResponse.status,
           statusText: updateResponse.statusText,
-          error: error.message || error,
+          error: errorMessage,
+          url: `https://github.com/${githubUsername}/${githubRepo}`,
         });
+        
+        // Kullanıcıya detaylı hata mesajı göster
+        alert(
+          language === "tr"
+            ? `❌ GitHub push hatası!\n\nHata: ${errorMessage}\n\nLütfen şunları kontrol edin:\n1. Token geçerli mi?\n2. Repository adı doğru mu?\n3. Token'ın "repo" izni var mı?\n\nConsole'da daha fazla detay görebilirsiniz (F12).`
+            : `❌ GitHub push error!\n\nError: ${errorMessage}\n\nPlease check:\n1. Is token valid?\n2. Is repository name correct?\n3. Does token have "repo" permission?\n\nSee console (F12) for more details.`
+        );
         return false;
       }
     } catch (error: any) {
+      const errorMessage = error.message || error.toString() || "Unknown error";
       console.error("❌ GitHub push exception:", error);
-      console.error("Hata mesajı:", error.message || error);
+      console.error("Hata mesajı:", errorMessage);
+      
+      // Kullanıcıya hata mesajı göster
+      alert(
+        language === "tr"
+          ? `❌ GitHub push hatası!\n\nHata: ${errorMessage}\n\nLütfen şunları kontrol edin:\n1. İnternet bağlantınız var mı?\n2. GitHub ayarları doğru mu?\n3. Console'da daha fazla detay var (F12).`
+          : `❌ GitHub push error!\n\nError: ${errorMessage}\n\nPlease check:\n1. Do you have internet connection?\n2. Are GitHub settings correct?\n3. See console (F12) for more details.`
+      );
       return false;
     }
   };
