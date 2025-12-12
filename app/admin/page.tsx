@@ -88,6 +88,17 @@ export default function AdminPage() {
           setIsAuthenticated(true);
         }
       }
+      
+      // GitHub ayarlarını yükle
+      const savedToken = localStorage.getItem("githubToken");
+      const savedUsername = localStorage.getItem("githubUsername");
+      const savedRepo = localStorage.getItem("githubRepo");
+      const savedAutoPush = localStorage.getItem("githubAutoPush");
+      
+      if (savedToken) setGithubToken(savedToken);
+      if (savedUsername) setGithubUsername(savedUsername);
+      if (savedRepo) setGithubRepo(savedRepo);
+      if (savedAutoPush === "true") setAutoPushEnabled(true);
     }
   }, []);
 
