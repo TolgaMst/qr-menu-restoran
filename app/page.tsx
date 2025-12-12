@@ -44,74 +44,118 @@ export default function Home() {
   const [currency, setCurrency] = useState<Currency>("TRY");
 
   useEffect(() => {
-    // LocalStorage'dan menü verilerini yükle
-    const savedMenu = localStorage.getItem("menuData");
-    const savedInfo = localStorage.getItem("restaurantInfo");
-    const savedLanguage = localStorage.getItem("language") as Language;
+    // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için)
+    const loadData = async () => {
+      try {
+        const response = await fetch("/data.json");
+        if (response.ok) {
+          const data = await response.json();
+          
+          // Public JSON'dan verileri yükle
+          if (data.menuData) {
+            setMenuData(data.menuData);
+            // LocalStorage'a da kaydet (fallback için)
+            localStorage.setItem("menuData", JSON.stringify(data.menuData));
+          }
+          
+          if (data.restaurantInfo) {
+            setRestaurantInfo(data.restaurantInfo);
+            // LocalStorage'a da kaydet (fallback için)
+            localStorage.setItem("restaurantInfo", JSON.stringify(data.restaurantInfo));
+          }
+          
+          if (data.language && (data.language === "tr" || data.language === "en")) {
+            setLanguage(data.language);
+            localStorage.setItem("language", data.language);
+          }
+          
+          if (data.currency) {
+            setCurrency(data.currency);
+            saveCurrency(data.currency);
+          }
+          
+          if (data.theme) {
+            loadTheme();
+          }
+          
+          return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
+        }
+      } catch (error) {
+        // Public JSON dosyası yoksa LocalStorage'dan yükle
+        console.log("Public data.json not found, loading from LocalStorage");
+      }
+      
+      // LocalStorage'dan menü verilerini yükle (fallback)
+      const savedMenu = localStorage.getItem("menuData");
+      const savedInfo = localStorage.getItem("restaurantInfo");
+      const savedLanguage = localStorage.getItem("language") as Language;
 
-    if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
-      setLanguage(savedLanguage);
-    }
+      if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
+        setLanguage(savedLanguage);
+      }
 
-    // Para birimini yükle (sadece client-side)
-    if (typeof window !== "undefined") {
-      const savedCurrency = loadCurrency();
-      setCurrency(savedCurrency);
-    }
+      // Para birimini yükle (sadece client-side)
+      if (typeof window !== "undefined") {
+        const savedCurrency = loadCurrency();
+        setCurrency(savedCurrency);
+      }
 
-    // Tema yükle
-    loadTheme();
+      // Tema yükle
+      loadTheme();
 
-    if (savedMenu) {
-      setMenuData(JSON.parse(savedMenu));
-    } else {
-      // Varsayılan örnek menü
-      setMenuData([
-        {
-          id: "1",
-          name: "Ana Yemekler",
-          items: [
-            {
-              id: "1",
-              name: "Izgara Tavuk",
-              description: "Taze sebzelerle servis edilen ızgara tavuk",
-              price: 85,
-              category: "1",
-            },
-            {
-              id: "2",
-              name: "Köfte",
-              description: "Ev yapımı köfte, pilav ve salata ile",
-              price: 95,
-              category: "1",
-            },
-          ],
-        },
-        {
-          id: "2",
-          name: "İçecekler",
-          items: [
-            {
-              id: "3",
-              name: "Türk Kahvesi",
-              description: "Geleneksel Türk kahvesi",
-              price: 25,
-              category: "2",
-            },
-            {
-              id: "4",
-              name: "Ayran",
-              price: 15,
-              category: "2",
-            },
-          ],
-        },
-      ]);
-    }
+      if (savedMenu) {
+        setMenuData(JSON.parse(savedMenu));
+      } else {
+        // Varsayılan örnek menü
+        setMenuData([
+          {
+            id: "1",
+            name: "Ana Yemekler",
+            items: [
+              {
+                id: "1",
+                name: "Izgara Tavuk",
+                description: "Taze sebzelerle servis edilen ızgara tavuk",
+                price: 85,
+                category: "1",
+              },
+              {
+                id: "2",
+                name: "Köfte",
+                description: "Ev yapımı köfte, pilav ve salata ile",
+                price: 95,
+                category: "1",
+              },
+            ],
+          },
+          {
+            id: "2",
+            name: "İçecekler",
+            items: [
+              {
+                id: "3",
+                name: "Türk Kahvesi",
+                description: "Geleneksel Türk kahvesi",
+                price: 25,
+                category: "2",
+              },
+              {
+                id: "4",
+                name: "Ayran",
+                price: 15,
+                category: "2",
+              },
+            ],
+          },
+        ]);
+      }
 
-    if (savedInfo) {
-      setRestaurantInfo(JSON.parse(savedInfo));
-    }
+      if (savedInfo) {
+        setRestaurantInfo(JSON.parse(savedInfo));
+      }
+    };
+    
+    loadData();
   }, []);
 
   const handleLanguageChange = (lang: Language) => {

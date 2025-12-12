@@ -863,6 +863,50 @@ export default function AdminPage() {
                 </button>
               </div>
             </div>
+            {/* Public Export - Tüm Cihazlar İçin */}
+            <div className="mb-6 p-4 bg-blue-50 rounded-lg border-2 border-dashed border-blue-300">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                {language === "tr" ? "Tüm Cihazlar İçin Export" : "Export for All Devices"}
+              </h3>
+              <p className="text-sm text-blue-700 mb-4">
+                {language === "tr"
+                  ? "Verileri 'data.json' dosyası olarak indirin ve 'public' klasörüne koyun. GitHub'a push edin. Böylece tüm cihazlarda (telefon, tablet, bilgisayar) aynı veriler görünecek."
+                  : "Download data as 'data.json' file and place it in the 'public' folder. Push to GitHub. This will make the same data visible on all devices (phone, tablet, computer)."}
+              </p>
+              <button
+                onClick={() => {
+                  const publicData = {
+                    menuData: categories,
+                    restaurantInfo: restaurantInfo,
+                    theme: theme,
+                    currency: defaultCurrency,
+                    language: language,
+                    timestamp: new Date().toISOString(),
+                  };
+
+                  const dataStr = JSON.stringify(publicData, null, 2);
+                  const dataBlob = new Blob([dataStr], { type: "application/json" });
+                  const url = URL.createObjectURL(dataBlob);
+                  const link = document.createElement("a");
+                  link.href = url;
+                  link.download = "data.json";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+
+                  alert(
+                    language === "tr"
+                      ? "data.json dosyası indirildi! Bu dosyayı 'public' klasörüne koyun ve GitHub'a push edin. Böylece tüm cihazlarda görünecek."
+                      : "data.json file downloaded! Place this file in the 'public' folder and push to GitHub. This will make it visible on all devices."
+                  );
+                }}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              >
+                <Download className="w-4 h-4" />
+                <span>{language === "tr" ? "data.json İndir" : "Download data.json"}</span>
+              </button>
+            </div>
 
             <div className="space-y-6">
               <div>
