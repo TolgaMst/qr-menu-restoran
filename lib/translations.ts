@@ -197,3 +197,5 @@ export const getTranslation = (lang: Language, key: keyof typeof translations.tr
   return translations[lang][key] || key;
 };
 
+// Build trigger - yeni deployment için
+
