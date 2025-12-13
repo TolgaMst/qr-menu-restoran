@@ -59,10 +59,10 @@
           "category": "2"
         },
         {
-          "id": "1765626497261",
+          "id": "1765627370433",
           "name": "adaçayı",
           "description": "",
-          "price": 0,
+          "price": 500,
           "category": "2"
         }
       ]
@@ -84,5 +84,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2025-12-13T12:01:33.897Z"
+  "timestamp": "2025-12-13T12:04:01.127Z"
 }
