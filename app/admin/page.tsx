@@ -263,6 +263,62 @@ export default function AdminPage() {
           ? "✅ GitHub'a başarıyla push edildi! 2-3 dakika içinde tüm cihazlarda görünecek."
           : "✅ Successfully pushed to GitHub! Will be visible on all devices in 2-3 minutes.");
         return true;
+      } else if (updateResponse.status === 409) {
+        // 409 Conflict: SHA eşleşmiyor, dosya başka biri tarafından değiştirilmiş
+        // Dosyayı tekrar okuyup güncel SHA ile tekrar dene
+        console.log("⚠️ 409 Conflict - Dosya güncellenmiş, güncel SHA ile tekrar deneniyor...");
+        
+        try {
+          const retryGetResponse = await fetch(
+            `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+            {
+              headers: {
+                Authorization: `Bearer ${githubToken}`,
+                Accept: "application/vnd.github.v3+json",
+              },
+            }
+          );
+          
+          if (retryGetResponse.ok) {
+            const retryFileData = await retryGetResponse.json();
+            const retrySha = retryFileData.sha;
+            
+            // Güncel SHA ile tekrar dene
+            const retryUpdateResponse = await fetch(
+              `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+              {
+                method: "PUT",
+                headers: {
+                  Authorization: `Bearer ${githubToken}`,
+                  Accept: "application/vnd.github.v3+json",
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  message: `Auto-update: data.json - ${new Date().toISOString()}`,
+                  content: base64Content,
+                  sha: retrySha,
+                  branch: "main",
+                }),
+              }
+            );
+            
+            if (retryUpdateResponse.ok) {
+              const result = await retryUpdateResponse.json();
+              console.log("✅ GitHub'a otomatik push başarılı! (Retry)", result.commit.html_url);
+              return true;
+            } else {
+              const retryError = await retryUpdateResponse.json().catch(() => ({ message: "Unknown error" }));
+              console.error("❌ Retry push hatası:", retryError);
+              return false;
+            }
+          } else {
+            console.error("❌ Retry dosya okuma hatası");
+            return false;
+          }
+        } catch (retryError) {
+          console.error("❌ Retry exception:", retryError);
+          return false;
+        }
       } else {
         const error = await updateResponse.json().catch(() => ({ message: "Unknown error" }));
         const errorMessage = error.message || error.error || JSON.stringify(error);
@@ -274,12 +330,14 @@ export default function AdminPage() {
           url: `https://github.com/${githubUsername}/${githubRepo}`,
         });
         
-        // Kullanıcıya detaylı hata mesajı göster
-        alert(
-          language === "tr"
-            ? `❌ GitHub push hatası!\n\nHata: ${errorMessage}\n\nLütfen şunları kontrol edin:\n1. Token geçerli mi?\n2. Repository adı doğru mu?\n3. Token'ın "repo" izni var mı?\n\nConsole'da daha fazla detay görebilirsiniz (F12).`
-            : `❌ GitHub push error!\n\nError: ${errorMessage}\n\nPlease check:\n1. Is token valid?\n2. Is repository name correct?\n3. Does token have "repo" permission?\n\nSee console (F12) for more details.`
-        );
+        // Kullanıcıya detaylı hata mesajı göster (409 hariç - o zaten retry edildi)
+        if (updateResponse.status !== 409) {
+          alert(
+            language === "tr"
+              ? `❌ GitHub push hatası!\n\nHata: ${errorMessage}\n\nLütfen şunları kontrol edin:\n1. Token geçerli mi?\n2. Repository adı doğru mu?\n3. Token'ın "repo" izni var mı?\n\nConsole'da daha fazla detay görebilirsiniz (F12).`
+              : `❌ GitHub push error!\n\nError: ${errorMessage}\n\nPlease check:\n1. Is token valid?\n2. Is repository name correct?\n3. Does token have "repo" permission?\n\nSee console (F12) for more details.`
+          );
+        }
         return false;
       }
     } catch (error: any) {
