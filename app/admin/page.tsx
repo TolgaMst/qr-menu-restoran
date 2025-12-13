@@ -305,18 +305,36 @@ export default function AdminPage() {
             if (retryUpdateResponse.ok) {
               const result = await retryUpdateResponse.json();
               console.log("✅ GitHub'a otomatik push başarılı! (Retry)", result.commit.html_url);
+              alert(language === "tr" 
+                ? "✅ GitHub'a başarıyla push edildi! (Retry ile) 2-3 dakika içinde tüm cihazlarda görünecek."
+                : "✅ Successfully pushed to GitHub! (Retry) Will be visible on all devices in 2-3 minutes.");
               return true;
             } else {
               const retryError = await retryUpdateResponse.json().catch(() => ({ message: "Unknown error" }));
+              const retryErrorMessage = retryError.message || retryError.error || JSON.stringify(retryError);
               console.error("❌ Retry push hatası:", retryError);
+              console.error("Retry hata detayları:", {
+                status: retryUpdateResponse.status,
+                error: retryErrorMessage,
+              });
+              
+              // Retry de başarısız olursa kullanıcıya bildir
+              alert(
+                language === "tr"
+                  ? `❌ GitHub push hatası (Retry başarısız)!\n\nHata: ${retryErrorMessage}\n\nLütfen birkaç saniye bekleyip tekrar deneyin.`
+                  : `❌ GitHub push error (Retry failed)!\n\nError: ${retryErrorMessage}\n\nPlease wait a few seconds and try again.`
+              );
               return false;
             }
           } else {
-            console.error("❌ Retry dosya okuma hatası");
+            const retryReadError = await retryGetResponse.json().catch(() => ({ message: "Unknown error" }));
+            console.error("❌ Retry dosya okuma hatası:", retryReadError);
             return false;
           }
-        } catch (retryError) {
+        } catch (retryError: any) {
+          const retryErrorMessage = retryError.message || retryError.toString() || "Unknown error";
           console.error("❌ Retry exception:", retryError);
+          console.error("Retry exception mesajı:", retryErrorMessage);
           return false;
         }
       } else {
