@@ -166,8 +166,7 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Otomatik data.json export için debounce (useRef kullanarak)
-  const exportTimeoutRef = { current: null as NodeJS.Timeout | null };
+  // exportTimeoutRef kaldırıldı - artık manuel push kullanılıyor
   
   // GitHub'a otomatik push fonksiyonu
   const pushToGitHub = async (dataStr: string) => {
@@ -373,61 +372,49 @@ export default function AdminPage() {
     }
   };
   
-  // Export işlemi için lock mekanizması (çoklu çağrıları engellemek için)
-  let isExporting = false;
-  
-  const exportDataJson = () => {
-    // Eğer zaten export işlemi devam ediyorsa, yeni bir tane başlatma
-    if (isExporting) {
-      console.log("⏳ Export işlemi zaten devam ediyor, bekleniyor...");
-      return;
-    }
-    
-    // Debounce: 2 saniye bekleyip son değişiklikten sonra export et
-    if (exportTimeoutRef.current) {
-      clearTimeout(exportTimeoutRef.current);
-    }
-    
-    exportTimeoutRef.current = setTimeout(async () => {
-      // Lock'u aktif et
-      isExporting = true;
-      
-      try {
-        const publicData = {
-          menuData: categories,
-          restaurantInfo: restaurantInfo,
-          theme: theme,
-          currency: defaultCurrency,
-          language: language,
-          timestamp: new Date().toISOString(),
-        };
-
-        const dataStr = JSON.stringify(publicData, null, 2);
-        
-        // GitHub'a otomatik push dene
-        if (autoPushEnabled) {
-          const pushed = await pushToGitHub(dataStr);
-          if (!pushed) {
-            console.warn("⚠️ GitHub'a push başarısız. Lütfen GitHub ayarlarını kontrol edin.");
-          }
-        } else {
-          console.log("ℹ️ Otomatik push kapalı. GitHub ayarlarını etkinleştirin.");
-        }
-      } finally {
-        // Lock'u kaldır
-        isExporting = false;
-      }
-    }, 2000); // 2 saniye debounce
-  };
+  // exportDataJson fonksiyonu kaldırıldı - artık sadece "Kaydet ve GitHub'a Push Et" butonu kullanılıyor
 
   const saveToLocalStorage = (data: Category[]) => {
     localStorage.setItem("menuData", JSON.stringify(data));
-    exportDataJson(); // Otomatik export
+    // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
   };
 
   const saveInfoToLocalStorage = (info: typeof restaurantInfo) => {
     localStorage.setItem("restaurantInfo", JSON.stringify(info));
-    exportDataJson(); // Otomatik export
+    // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
+  };
+  
+  // Manuel push fonksiyonu - "Kaydet" butonuna basıldığında çağrılacak
+  const handleSaveAndPush = async () => {
+    if (!autoPushEnabled) {
+      alert(
+        language === "tr"
+          ? "❌ Otomatik push kapalı! Lütfen GitHub ayarlarında 'Otomatik Push'u Etkinleştir' kutusunu işaretleyin."
+          : "❌ Auto push is disabled! Please check 'Enable Auto Push' in GitHub settings."
+      );
+      return;
+    }
+    
+    const publicData = {
+      menuData: categories,
+      restaurantInfo: restaurantInfo,
+      theme: theme,
+      currency: defaultCurrency,
+      language: language,
+      timestamp: new Date().toISOString(),
+    };
+
+    const dataStr = JSON.stringify(publicData, null, 2);
+    
+    console.log("💾 Kaydediliyor ve GitHub'a push ediliyor...");
+    const pushed = await pushToGitHub(dataStr);
+    
+    if (pushed) {
+      // Başarılı - alert zaten pushToGitHub içinde gösteriliyor
+      console.log("✅ Tüm değişiklikler kaydedildi ve GitHub'a push edildi!");
+    } else {
+      console.error("❌ Push başarısız!");
+    }
   };
 
   const handleBackup = () => {
@@ -590,7 +577,7 @@ export default function AdminPage() {
   const handleThemeChange = (newTheme: ThemeColors) => {
     setTheme(newTheme);
     saveTheme(newTheme);
-    exportDataJson(); // Otomatik export
+    // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
   };
 
   const getCurrentUrl = () => {
@@ -1138,13 +1125,36 @@ export default function AdminPage() {
             {/* GitHub Otomatik Push Ayarları */}
             <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-dashed border-green-300">
               <h3 className="text-lg font-semibold text-green-900 mb-2">
-                {language === "tr" ? "🚀 GitHub Otomatik Push" : "🚀 GitHub Auto Push"}
+                {language === "tr" ? "🚀 GitHub Push Ayarları" : "🚀 GitHub Push Settings"}
               </h3>
               <p className="text-sm text-green-700 mb-4">
                 {language === "tr"
-                  ? "GitHub Personal Access Token ekleyerek, her değişiklikte otomatik olarak GitHub'a push edebilirsiniz. Manuel push yapmanıza gerek kalmaz!"
-                  : "Add GitHub Personal Access Token to automatically push to GitHub on every change. No need for manual push!"}
+                  ? "GitHub Personal Access Token ekleyerek, 'Kaydet ve GitHub'a Push Et' butonuna bastığınızda GitHub'a push edebilirsiniz."
+                  : "Add GitHub Personal Access Token to push to GitHub when you click 'Save and Push to GitHub' button."}
               </p>
+              
+              {/* Kaydet ve Push Butonu */}
+              <div className="mb-4">
+                <button
+                  onClick={handleSaveAndPush}
+                  disabled={!autoPushEnabled || !githubToken || !githubUsername || !githubRepo}
+                  className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
+                    autoPushEnabled && githubToken && githubUsername && githubRepo
+                      ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                >
+                  <Save className="w-5 h-5" />
+                  <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
+                </button>
+                {(!autoPushEnabled || !githubToken || !githubUsername || !githubRepo) && (
+                  <p className="text-xs text-gray-600 mt-2 text-center">
+                    {language === "tr"
+                      ? "⚠️ Butonu kullanmak için GitHub ayarlarını doldurun ve 'Otomatik Push'u Etkinleştir' kutusunu işaretleyin."
+                      : "⚠️ Fill GitHub settings and check 'Enable Auto Push' to use this button."}
+                  </p>
+                )}
+              </div>
               
               <div className="space-y-4">
                 <div>
@@ -1437,7 +1447,7 @@ export default function AdminPage() {
                       onClick={() => {
                         setDefaultCurrency(curr.code);
                         saveCurrency(curr.code);
-                        exportDataJson(); // Otomatik export
+                        // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
                       }}
                       className={`p-4 rounded-lg border-2 transition-all text-left ${
                         defaultCurrency === curr.code
