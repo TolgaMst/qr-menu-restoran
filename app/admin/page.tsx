@@ -19,7 +19,7 @@ import { QRCodeSVG } from "qrcode.react";
 import LanguageSelector from "@/components/LanguageSelector";
 import ThemeSelector from "@/components/ThemeSelector";
 import { Language, getTranslation, translations } from "@/lib/translations";
-import { ThemeColors, loadTheme, saveTheme } from "@/lib/theme";
+import { ThemeColors, loadTheme, saveTheme, applyTheme } from "@/lib/theme";
 import { Currency, currencies, loadCurrency, saveCurrency } from "@/lib/currency";
 import { 
   hasAdminPassword, 
@@ -103,67 +103,122 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    const savedMenu = localStorage.getItem("menuData");
-    const savedInfo = localStorage.getItem("restaurantInfo");
-    const savedLanguage = localStorage.getItem("language") as Language;
+    // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için)
+    const loadData = async () => {
+      try {
+        const response = await fetch("/data.json");
+        if (response.ok) {
+          const data = await response.json();
+          
+          console.log("📥 Admin paneli: public/data.json'dan veriler yükleniyor...");
+          
+          // Public JSON'dan verileri yükle
+          if (data.menuData && Array.isArray(data.menuData) && data.menuData.length > 0) {
+            setCategories(data.menuData);
+            // LocalStorage'a da kaydet (fallback için)
+            localStorage.setItem("menuData", JSON.stringify(data.menuData));
+            console.log("✅ Menü verileri yüklendi:", data.menuData.length, "kategori");
+          }
+          
+          if (data.restaurantInfo) {
+            setRestaurantInfo(data.restaurantInfo);
+            // LocalStorage'a da kaydet (fallback için)
+            localStorage.setItem("restaurantInfo", JSON.stringify(data.restaurantInfo));
+            console.log("✅ Restoran bilgileri yüklendi");
+          }
+          
+          if (data.language && (data.language === "tr" || data.language === "en")) {
+            setLanguage(data.language);
+            localStorage.setItem("language", data.language);
+            console.log("✅ Dil yüklendi:", data.language);
+          }
+          
+          if (data.currency) {
+            setDefaultCurrency(data.currency);
+            saveCurrency(data.currency);
+            console.log("✅ Para birimi yüklendi:", data.currency);
+          }
+          
+          if (data.theme) {
+            setTheme(data.theme);
+            saveTheme(data.theme);
+            applyTheme(data.theme); // Tema hemen uygulanmalı
+            console.log("✅ Tema yüklendi");
+          }
+          
+          return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
+        }
+      } catch (error) {
+        // Public JSON dosyası yoksa LocalStorage'dan yükle
+        console.log("⚠️ Admin paneli: public/data.json bulunamadı, LocalStorage'dan yükleniyor...");
+      }
+      
+      // LocalStorage'dan verileri yükle (fallback)
+      const savedMenu = localStorage.getItem("menuData");
+      const savedInfo = localStorage.getItem("restaurantInfo");
+      const savedLanguage = localStorage.getItem("language") as Language;
 
-    if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
-      setLanguage(savedLanguage);
-    }
+      if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
+        setLanguage(savedLanguage);
+      }
 
-    // Tema yükle
-    const loadedTheme = loadTheme();
-    setTheme(loadedTheme);
+      // Tema yükle
+      const loadedTheme = loadTheme();
+      setTheme(loadedTheme);
 
-    if (savedMenu) {
-      setCategories(JSON.parse(savedMenu));
-    } else {
-      setCategories([
-        {
-          id: "1",
-          name: "Ana Yemekler",
-          items: [
-            {
-              id: "1",
-              name: "Izgara Tavuk",
-              description: "Taze sebzelerle servis edilen ızgara tavuk",
-              price: 85,
-              category: "1",
-            },
-            {
-              id: "2",
-              name: "Köfte",
-              description: "Ev yapımı köfte, pilav ve salata ile",
-              price: 95,
-              category: "1",
-            },
-          ],
-        },
-        {
-          id: "2",
-          name: "İçecekler",
-          items: [
-            {
-              id: "3",
-              name: "Türk Kahvesi",
-              description: "Geleneksel Türk kahvesi",
-              price: 25,
-              category: "2",
-            },
-            {
-              id: "4",
-              name: "Ayran",
-              price: 15,
-              category: "2",
-            },
-          ],
-        },
-      ]);
-    }
+      if (savedMenu) {
+        setCategories(JSON.parse(savedMenu));
+      } else {
+        // Varsayılan örnek menü
+        setCategories([
+          {
+            id: "1",
+            name: "Ana Yemekler",
+            items: [
+              {
+                id: "1",
+                name: "Izgara Tavuk",
+                description: "Taze sebzelerle servis edilen ızgara tavuk",
+                price: 85,
+                category: "1",
+              },
+              {
+                id: "2",
+                name: "Köfte",
+                description: "Ev yapımı köfte, pilav ve salata ile",
+                price: 95,
+                category: "1",
+              },
+            ],
+          },
+          {
+            id: "2",
+            name: "İçecekler",
+            items: [
+              {
+                id: "3",
+                name: "Türk Kahvesi",
+                description: "Geleneksel Türk kahvesi",
+                price: 25,
+                category: "2",
+              },
+              {
+                id: "4",
+                name: "Ayran",
+                price: 15,
+                category: "2",
+              },
+            ],
+          },
+        ]);
+      }
 
-    if (savedInfo) {
-      setRestaurantInfo(JSON.parse(savedInfo));
-    }
+      if (savedInfo) {
+        setRestaurantInfo(JSON.parse(savedInfo));
+      }
+    };
+    
+    loadData();
   }, []);
 
   // exportTimeoutRef kaldırıldı - artık manuel push kullanılıyor
