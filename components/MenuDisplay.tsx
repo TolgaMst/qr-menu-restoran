@@ -19,6 +19,7 @@ interface MenuItem {
 interface Category {
   id: string;
   name: string;
+  image?: string;
   items: MenuItem[];
 }
 
@@ -149,12 +150,12 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                     : "bg-white text-gray-700 border-2 border-primary-200 hover:border-primary-400"
                 }`}
               >
-                {firstItem?.image ? (
+                {category.image ? (
                   <div className={`w-14 h-14 sm:w-18 sm:h-18 rounded-lg overflow-hidden ${
                     isSelected ? "ring-2 ring-white" : ""
                   }`}>
                     <img
-                      src={firstItem.image}
+                      src={category.image}
                       alt={category.name}
                       className="w-full h-full object-cover"
                     />
@@ -180,11 +181,11 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
       {/* Seçili Kategorinin İçeriği */}
       {selectedCategoryData && (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          {/* Kategori Görseli (İlk ürünün görseli) */}
-          {selectedCategoryData.items.length > 0 && selectedCategoryData.items[0]?.image && (
+          {/* Kategori Görseli */}
+          {selectedCategoryData.image && (
             <div className="w-full h-56 sm:h-72 bg-gray-200 overflow-hidden relative">
               <img
-                src={selectedCategoryData.items[0].image}
+                src={selectedCategoryData.image}
                 alt={selectedCategoryData.name}
                 className="w-full h-full object-cover"
               />

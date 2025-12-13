@@ -33,13 +33,13 @@ interface MenuItem {
   name: string;
   description?: string;
   price: number;
-  image?: string;
   category: string;
 }
 
 interface Category {
   id: string;
   name: string;
+  image?: string;
   items: MenuItem[];
 }
 
@@ -542,12 +542,15 @@ export default function AdminPage() {
     input.click();
   };
 
+  const [newCategoryImage, setNewCategoryImage] = useState("");
+  
   const addCategory = () => {
     if (!newCategoryName.trim()) return;
 
     const newCategory: Category = {
       id: Date.now().toString(),
       name: newCategoryName,
+      image: newCategoryImage || undefined,
       items: [],
     };
 
@@ -555,6 +558,7 @@ export default function AdminPage() {
     setCategories(updated);
     saveToLocalStorage(updated);
     setNewCategoryName("");
+    setNewCategoryImage("");
   };
 
   const updateCategory = (id: string, name: string) => {
@@ -564,6 +568,14 @@ export default function AdminPage() {
     setCategories(updated);
     saveToLocalStorage(updated);
     setEditingCategory(null);
+  };
+  
+  const updateCategoryImage = (id: string, image: string) => {
+    const updated = categories.map((cat) =>
+      cat.id === id ? { ...cat, image: image || undefined } : cat
+    );
+    setCategories(updated);
+    saveToLocalStorage(updated);
   };
 
   const deleteCategory = (id: string) => {
@@ -917,22 +929,67 @@ export default function AdminPage() {
           <div className="space-y-6">
             {/* Add Category */}
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <div className="flex space-x-4">
-                <input
-                  type="text"
-                  value={newCategoryName}
-                  onChange={(e) => setNewCategoryName(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && addCategory()}
-                  placeholder={getTranslation(language, "newCategoryPlaceholder")}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <button
-                  onClick={addCategory}
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition flex items-center space-x-2"
-                >
-                  <Plus className="w-5 h-5" />
-                  <span>{getTranslation(language, "addCategory")}</span>
-                </button>
+              <div className="space-y-4">
+                <div className="flex space-x-4">
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && addCategory()}
+                    placeholder={getTranslation(language, "newCategoryPlaceholder")}
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                  <button
+                    onClick={addCategory}
+                    className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition flex items-center space-x-2"
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span>{getTranslation(language, "addCategory")}</span>
+                  </button>
+                </div>
+                {/* Kategori Resmi */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {getTranslation(language, "imageUrl")} {getTranslation(language, "optional")}
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const base64String = reader.result as string;
+                            setNewCategoryImage(base64String);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                    />
+                    <p className="text-xs text-gray-500">
+                      {getTranslation(language, "orUseUrl")}
+                    </p>
+                    <input
+                      type="url"
+                      value={newCategoryImage?.startsWith("data:") ? "" : (newCategoryImage || "")}
+                      onChange={(e) => setNewCategoryImage(e.target.value)}
+                      placeholder={getTranslation(language, "imageUrlPlaceholder")}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    {newCategoryImage && (
+                      <div className="mt-2">
+                        <img
+                          src={newCategoryImage}
+                          alt="Preview"
+                          className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -940,54 +997,99 @@ export default function AdminPage() {
             {categories.map((category) => (
               <div key={category.id} className="bg-white rounded-lg shadow-sm">
                 <div className="p-6 border-b">
-                  <div className="flex items-center justify-between">
-                    {editingCategory === category.id ? (
-                      <input
-                        type="text"
-                        defaultValue={category.name}
-                        onBlur={(e) =>
-                          updateCategory(category.id, e.target.value)
-                        }
-                        onKeyPress={(e) => {
-                          if (e.key === "Enter") {
-                            updateCategory(
-                              category.id,
-                              (e.target as HTMLInputElement).value
-                            );
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      {editingCategory === category.id ? (
+                        <input
+                          type="text"
+                          defaultValue={category.name}
+                          onBlur={(e) =>
+                            updateCategory(category.id, e.target.value)
                           }
-                        }}
-                        autoFocus
-                        className="text-xl font-bold px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                    ) : (
-                      <h2 className="text-xl font-bold text-gray-900">
-                        {category.name}
-                      </h2>
-                    )}
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() =>
-                          setEditingCategory(
-                            editingCategory === category.id ? null : category.id
-                          )
-                        }
-                        className="p-2 text-gray-600 hover:text-primary-600 transition"
-                      >
-                        <Edit className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => deleteCategory(category.id)}
-                        className="p-2 text-gray-600 hover:text-red-600 transition"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => addItem(category.id)}
-                        className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition flex items-center space-x-2"
-                      >
-                        <Plus className="w-4 h-4" />
-                        <span>{getTranslation(language, "addProduct")}</span>
-                      </button>
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                              updateCategory(
+                                category.id,
+                                (e.target as HTMLInputElement).value
+                              );
+                            }
+                          }}
+                          autoFocus
+                          className="text-xl font-bold px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                      ) : (
+                        <h2 className="text-xl font-bold text-gray-900">
+                          {category.name}
+                        </h2>
+                      )}
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() =>
+                            setEditingCategory(
+                              editingCategory === category.id ? null : category.id
+                            )
+                          }
+                          className="p-2 text-gray-600 hover:text-primary-600 transition"
+                        >
+                          <Edit className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => deleteCategory(category.id)}
+                          className="p-2 text-gray-600 hover:text-red-600 transition"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => addItem(category.id)}
+                          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition flex items-center space-x-2"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>{getTranslation(language, "addProduct")}</span>
+                        </button>
+                      </div>
+                    </div>
+                    {/* Kategori Resmi */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {getTranslation(language, "imageUrl")} {getTranslation(language, "optional")}
+                      </label>
+                      <div className="space-y-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                const base64String = reader.result as string;
+                                updateCategoryImage(category.id, base64String);
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                        />
+                        <p className="text-xs text-gray-500">
+                          {getTranslation(language, "orUseUrl")}
+                        </p>
+                        <input
+                          type="url"
+                          defaultValue={category.image?.startsWith("data:") ? "" : (category.image || "")}
+                          onChange={(e) => updateCategoryImage(category.id, e.target.value)}
+                          placeholder={getTranslation(language, "imageUrlPlaceholder")}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        />
+                        {category.image && (
+                          <div className="mt-2">
+                            <img
+                              src={category.image}
+                              alt="Preview"
+                              className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1047,54 +1149,7 @@ export default function AdminPage() {
                                 step="0.01"
                               />
                             </div>
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-1">
-                                {getTranslation(language, "imageUrl")} {getTranslation(language, "optional")}
-                              </label>
-                              <div className="space-y-2">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (file) {
-                                      const reader = new FileReader();
-                                      reader.onloadend = () => {
-                                        const base64String = reader.result as string;
-                                        updateItem(category.id, item.id, {
-                                          image: base64String,
-                                        });
-                                      };
-                                      reader.readAsDataURL(file);
-                                    }
-                                  }}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                                />
-                                <p className="text-xs text-gray-500">
-                                  {getTranslation(language, "orUseUrl")}
-                                </p>
-                                <input
-                                  type="url"
-                                  defaultValue={item.image?.startsWith("data:") ? "" : (item.image || "")}
-                                  onChange={(e) =>
-                                    updateItem(category.id, item.id, {
-                                      image: e.target.value,
-                                    })
-                                  }
-                                  placeholder={getTranslation(language, "imageUrlPlaceholder")}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                />
-                                {item.image && (
-                                  <div className="mt-2">
-                                    <img
-                                      src={item.image}
-                                      alt="Preview"
-                                      className="w-32 h-32 object-cover rounded-lg border border-gray-200"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
+                            {/* Ürün resimleri kaldırıldı - sadece kategorilere resim eklenebilir */}
                             <div className="flex justify-end space-x-2">
                               <button
                                 onClick={() => setEditingItem(null)}
