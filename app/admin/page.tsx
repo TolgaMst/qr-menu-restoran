@@ -118,6 +118,10 @@ export default function AdminPage() {
             // LocalStorage'a da kaydet (fallback için)
             localStorage.setItem("menuData", JSON.stringify(data.menuData));
             console.log("✅ Menü verileri yüklendi:", data.menuData.length, "kategori");
+            return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
+          } else {
+            // Public JSON'da menü verisi yoksa veya boşsa, varsayılan menüyü yükle
+            console.log("⚠️ public/data.json'da menü verisi yok veya boş, varsayılan menü yükleniyor...");
           }
           
           if (data.restaurantInfo) {
@@ -146,7 +150,13 @@ export default function AdminPage() {
             console.log("✅ Tema yüklendi");
           }
           
-          return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
+          // Menü verisi yoksa varsayılan menüyü yükle (aşağıdaki kod bloğunda devam edecek)
+          if (!data.menuData || !Array.isArray(data.menuData) || data.menuData.length === 0) {
+            console.log("⚠️ public/data.json'da menü verisi yok, varsayılan menü yüklenecek...");
+            // Aşağıdaki varsayılan menü koduna devam et
+          } else {
+            return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
+          }
         }
       } catch (error) {
         // Public JSON dosyası yoksa LocalStorage'dan yükle
@@ -1081,6 +1091,37 @@ export default function AdminPage() {
         {/* Menu Management */}
         {activeTab === "menu" && (
           <div className="space-y-6">
+            {/* Varsayılan Menüyü Yükle Butonu */}
+            <div className="bg-blue-50 rounded-lg shadow-sm p-4 border-2 border-blue-200">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-900 mb-1">
+                    {language === "tr" ? "📋 Varsayılan Menüyü Yükle" : "📋 Load Default Menu"}
+                  </h3>
+                  <p className="text-sm text-blue-700">
+                    {language === "tr" 
+                      ? "PDF'den eklenen tüm ürünleri (9 kategori, 150+ ürün) yüklemek için bu butona basın."
+                      : "Click this button to load all products from PDF (9 categories, 150+ products)."}
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (confirm(language === "tr" 
+                      ? "Varsayılan menüyü yüklemek istediğinize emin misiniz? Mevcut menü verileri silinecek!"
+                      : "Are you sure you want to load the default menu? Current menu data will be deleted!")) {
+                      // LocalStorage'ı temizle
+                      localStorage.removeItem("menuData");
+                      // Sayfayı yenile
+                      window.location.reload();
+                    }
+                  }}
+                  className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg"
+                >
+                  {language === "tr" ? "🔄 Varsayılan Menüyü Yükle" : "🔄 Load Default Menu"}
+                </button>
+              </div>
+            </div>
+            
             {/* Add Category */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="space-y-4">
