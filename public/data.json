@@ -801,16 +801,16 @@
     }
   ],
   "restaurantInfo": {
-    "name": "Restoranım",
-    "phone": "+90 (555) 123 45 67",
-    "address": "Örnek Mahalle, Örnek Sokak No:1",
-    "hours": "Pazartesi - Pazar: 09:00 - 23:00",
+    "name": "Mezecim Restoran",
+    "phone": "+90 (552) 5901601",
+    "address": "Dumlupınar mahallesi Adnan menderes bulvarı 98/A",
+    "hours": "Pazartesi - Pazar: 12:00 - 01:00",
     "logo": "",
     "welcomeMessage": "",
-    "location": "",
-    "email": "",
-    "instagram": "",
-    "facebook": ""
+    "location": "https://maps.app.goo.gl/d139qqW1CaraJU3k9",
+    "email": "tlgmst@gmail.com",
+    "instagram": "https://www.instagram.com/mezecimmersin/",
+    "facebook": "https://www.facebook.com/profile.php?id=61568607734908&locale=tr_TR"
   },
   "theme": {
     "primary": "#8b5cf6",
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2025-12-15T12:54:21.604Z"
+  "timestamp": "2025-12-15T13:09:29.829Z"
 }
