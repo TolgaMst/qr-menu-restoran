@@ -1630,6 +1630,87 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
+              
+              {/* Logo ve Hoş Geldiniz Mesajı */}
+              <div className="border-t pt-6 mt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  {language === "tr" ? "Logo ve Hoş Geldiniz Mesajı" : "Logo and Welcome Message"}
+                </h3>
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {getTranslation(language, "logo")}
+                    </label>
+                    <div className="space-y-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              const base64String = reader.result as string;
+                              const updated = { ...restaurantInfo, logo: base64String };
+                              setRestaurantInfo(updated);
+                              saveInfoToLocalStorage(updated);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                      />
+                      <p className="text-xs text-gray-500">
+                        {getTranslation(language, "orUseUrl")}
+                      </p>
+                      <input
+                        type="url"
+                        value={restaurantInfo.logo?.startsWith("data:") ? "" : (restaurantInfo.logo || "")}
+                        onChange={(e) => {
+                          const updated = { ...restaurantInfo, logo: e.target.value };
+                          setRestaurantInfo(updated);
+                          saveInfoToLocalStorage(updated);
+                        }}
+                        placeholder={getTranslation(language, "logoPlaceholder")}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      />
+                      {restaurantInfo.logo && (
+                        <div className="mt-4">
+                          <p className="text-sm font-medium text-gray-700 mb-2">Logo Önizleme:</p>
+                          <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-200 shadow-lg">
+                            <img
+                              src={restaurantInfo.logo}
+                              alt="Logo"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {getTranslation(language, "welcomeMessage")}
+                    </label>
+                    <input
+                      type="text"
+                      value={restaurantInfo.welcomeMessage || ""}
+                      onChange={(e) => {
+                        const updated = { ...restaurantInfo, welcomeMessage: e.target.value };
+                        setRestaurantInfo(updated);
+                        saveInfoToLocalStorage(updated);
+                      }}
+                      placeholder={getTranslation(language, "welcome")}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {language === "tr" 
+                        ? "Boş bırakırsanız varsayılan 'Hoş Geldiniz' mesajı gösterilir."
+                        : "Leave empty to show default 'Welcome' message."}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -1694,87 +1775,6 @@ export default function AdminPage() {
                     ? "Kurları güncellemek için lib/currency.ts dosyasındaki rate değerlerini düzenleyin."
                     : "To update exchange rates, edit the rate values in lib/currency.ts file."}
                 </p>
-              </div>
-            </div>
-            
-            {/* Logo ve Hoş Geldiniz Mesajı */}
-            <div className="border-t pt-6 mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {language === "tr" ? "Logo ve Hoş Geldiniz Mesajı" : "Logo and Welcome Message"}
-              </h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {getTranslation(language, "logo")}
-                  </label>
-                  <div className="space-y-2">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            const base64String = reader.result as string;
-                            const updated = { ...restaurantInfo, logo: base64String };
-                            setRestaurantInfo(updated);
-                            saveInfoToLocalStorage(updated);
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                    />
-                    <p className="text-xs text-gray-500">
-                      {getTranslation(language, "orUseUrl")}
-                    </p>
-                    <input
-                      type="url"
-                      value={restaurantInfo.logo?.startsWith("data:") ? "" : (restaurantInfo.logo || "")}
-                      onChange={(e) => {
-                        const updated = { ...restaurantInfo, logo: e.target.value };
-                        setRestaurantInfo(updated);
-                        saveInfoToLocalStorage(updated);
-                      }}
-                      placeholder={getTranslation(language, "logoPlaceholder")}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                    />
-                    {restaurantInfo.logo && (
-                      <div className="mt-4">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Logo Önizleme:</p>
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-200 shadow-lg">
-                          <img
-                            src={restaurantInfo.logo}
-                            alt="Logo"
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {getTranslation(language, "welcomeMessage")}
-                  </label>
-                  <input
-                    type="text"
-                    value={restaurantInfo.welcomeMessage || ""}
-                    onChange={(e) => {
-                      const updated = { ...restaurantInfo, welcomeMessage: e.target.value };
-                      setRestaurantInfo(updated);
-                      saveInfoToLocalStorage(updated);
-                    }}
-                    placeholder={getTranslation(language, "welcome")}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {language === "tr" 
-                      ? "Boş bırakırsanız varsayılan 'Hoş Geldiniz' mesajı gösterilir."
-                      : "Leave empty to show default 'Welcome' message."}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
