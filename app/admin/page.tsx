@@ -71,9 +71,22 @@ export default function AdminPage() {
   const [language, setLanguage] = useState<Language>("tr");
   const [theme, setTheme] = useState<ThemeColors>(loadTheme());
   const [defaultCurrency, setDefaultCurrency] = useState<Currency>(loadCurrency());
-  const [githubToken, setGithubToken] = useState("");
-  const [githubUsername, setGithubUsername] = useState("");
-  const [githubRepo, setGithubRepo] = useState("");
+  // GitHub ayarları - kod içine entegre edildi
+  const GITHUB_USERNAME = "TolgaMst";
+  const GITHUB_REPO = "qr-menu-restoran";
+  // Token environment variable'dan veya LocalStorage'dan alınır
+  const getGithubToken = () => {
+    if (typeof window !== "undefined") {
+      // Önce environment variable'dan kontrol et (build time)
+      const envToken = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      if (envToken) return envToken;
+      
+      // Yoksa LocalStorage'dan al (fallback)
+      const savedToken = localStorage.getItem("githubToken");
+      if (savedToken) return savedToken;
+    }
+    return "";
+  };
 
   useEffect(() => {
     // İlk yüklemede şifre kontrolü yap
@@ -87,15 +100,6 @@ export default function AdminPage() {
           setIsAuthenticated(true);
         }
       }
-      
-      // GitHub ayarlarını yükle
-      const savedToken = localStorage.getItem("githubToken");
-      const savedUsername = localStorage.getItem("githubUsername");
-      const savedRepo = localStorage.getItem("githubRepo");
-      
-      if (savedToken) setGithubToken(savedToken);
-      if (savedUsername) setGithubUsername(savedUsername);
-      if (savedRepo) setGithubRepo(savedRepo);
     }
   }, []);
 
@@ -386,17 +390,14 @@ export default function AdminPage() {
   
   // GitHub'a push fonksiyonu
   const pushToGitHub = async (dataStr: string) => {
-    if (!githubToken || !githubUsername || !githubRepo) {
-      const missingFields = [];
-      if (!githubToken) missingFields.push(language === "tr" ? "Token" : "Token");
-      if (!githubUsername) missingFields.push(language === "tr" ? "Kullanıcı Adı" : "Username");
-      if (!githubRepo) missingFields.push(language === "tr" ? "Repository Adı" : "Repository Name");
-      
-      console.error("❌ GitHub ayarları eksik!", { missingFields });
+    const githubToken = getGithubToken();
+    
+    if (!githubToken) {
+      console.error("❌ GitHub token eksik!");
       alert(
         language === "tr"
-          ? `❌ GitHub ayarları eksik!\n\nEksik alanlar: ${missingFields.join(", ")}\n\nLütfen admin panelinde GitHub ayarlarını doldurun.`
-          : `❌ GitHub settings missing!\n\nMissing fields: ${missingFields.join(", ")}\n\nPlease fill GitHub settings in admin panel.`
+          ? "❌ GitHub token eksik! Lütfen environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin veya LocalStorage'a 'githubToken' olarak kaydedin."
+          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable or save it to LocalStorage as 'githubToken'."
       );
       return false;
     }
@@ -406,7 +407,7 @@ export default function AdminPage() {
       
       // Önce mevcut dosyayı oku (SHA için)
       const getFileResponse = await fetch(
-        `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+        `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
         {
           headers: {
             Authorization: `Bearer ${githubToken}`,
@@ -454,7 +455,7 @@ export default function AdminPage() {
 
       // Dosyayı güncelle veya oluştur
       const updateResponse = await fetch(
-        `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+        `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
         {
           method: "PUT",
           headers: {
@@ -480,7 +481,7 @@ export default function AdminPage() {
         
         try {
           const retryGetResponse = await fetch(
-            `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+            `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
             {
               headers: {
                 Authorization: `Bearer ${githubToken}`,
@@ -495,7 +496,7 @@ export default function AdminPage() {
             
             // Güncel SHA ile tekrar dene
             const retryUpdateResponse = await fetch(
-              `https://api.github.com/repos/${githubUsername}/${githubRepo}/contents/public/data.json`,
+              `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
               {
                 method: "PUT",
                 headers: {
@@ -555,7 +556,7 @@ export default function AdminPage() {
           status: updateResponse.status,
           statusText: updateResponse.statusText,
           error: errorMessage,
-          url: `https://github.com/${githubUsername}/${githubRepo}`,
+          url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}`,
         });
         
         // Kullanıcıya detaylı hata mesajı göster (409 hariç - o zaten retry edildi)
@@ -597,40 +598,13 @@ export default function AdminPage() {
   
   // Manuel push fonksiyonu - "Kaydet" butonuna basıldığında çağrılacak
   const handleSaveAndPush = async () => {
-    if (!githubToken || !githubUsername || !githubRepo) {
-      // İlk kullanımda GitHub ayarlarını al
-      const username = prompt(
-        language === "tr"
-          ? "GitHub Kullanıcı Adınızı girin:"
-          : "Enter your GitHub Username:"
-      );
-      if (!username) return;
-      
-      const repo = prompt(
-        language === "tr"
-          ? "Repository adını girin (örn: qr-menu-restoran):"
-          : "Enter repository name (e.g: qr-menu-restoran):"
-      );
-      if (!repo) return;
-      
-      const token = prompt(
-        language === "tr"
-          ? "GitHub Personal Access Token'ınızı girin:\n\nToken oluşturmak için: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → 'repo' izni verin"
-          : "Enter your GitHub Personal Access Token:\n\nTo create token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → Give 'repo' permission"
-      );
-      if (!token) return;
-      
-      setGithubUsername(username);
-      setGithubRepo(repo);
-      setGithubToken(token);
-      localStorage.setItem("githubUsername", username);
-      localStorage.setItem("githubRepo", repo);
-      localStorage.setItem("githubToken", token);
-      
+    const githubToken = getGithubToken();
+    
+    if (!githubToken) {
       alert(
         language === "tr"
-          ? "✅ GitHub ayarları kaydedildi! Şimdi tekrar 'Kaydet' butonuna basın."
-          : "✅ GitHub settings saved! Now click 'Save' button again."
+          ? "❌ GitHub token eksik! Lütfen environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin veya LocalStorage'a 'githubToken' olarak kaydedin."
+          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable or save it to LocalStorage as 'githubToken'."
       );
       return;
     }
@@ -1624,23 +1598,11 @@ export default function AdminPage() {
             <div className="mt-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
               <button
                 onClick={handleSaveAndPush}
-                disabled={!githubToken || !githubUsername || !githubRepo}
-                className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
-                  githubToken && githubUsername && githubRepo
-                    ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                className="w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
               >
                 <Save className="w-5 h-5" />
                 <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
               </button>
-              {(!githubToken || !githubUsername || !githubRepo) && (
-                <p className="text-xs text-gray-600 mt-2 text-center">
-                  {language === "tr"
-                    ? "⚠️ GitHub ayarları eksik! İlk kullanımda GitHub ayarlarını yapmanız gerekiyor. (Ayarlar LocalStorage'da saklanır)"
-                    : "⚠️ GitHub settings missing! You need to set up GitHub settings on first use. (Settings are stored in LocalStorage)"}
-                </p>
-              )}
             </div>
           </div>
         )}
@@ -1652,23 +1614,11 @@ export default function AdminPage() {
             <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
               <button
                 onClick={handleSaveAndPush}
-                disabled={!githubToken || !githubUsername || !githubRepo}
-                className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
-                  githubToken && githubUsername && githubRepo
-                    ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
+                className="w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
               >
                 <Save className="w-5 h-5" />
                 <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
               </button>
-              {(!githubToken || !githubUsername || !githubRepo) && (
-                <p className="text-xs text-gray-600 mt-2 text-center">
-                  {language === "tr"
-                    ? "⚠️ GitHub ayarları eksik! İlk kullanımda GitHub ayarlarını yapmanız gerekiyor. (Ayarlar LocalStorage'da saklanır)"
-                    : "⚠️ GitHub settings missing! You need to set up GitHub settings on first use. (Settings are stored in LocalStorage)"}
-                </p>
-              )}
             </div>
             
             {/* Yedekleme ve Geri Yükleme */}
