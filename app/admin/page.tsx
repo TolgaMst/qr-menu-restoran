@@ -67,7 +67,7 @@ export default function AdminPage() {
   const [editingItem, setEditingItem] = useState<string | null>(null);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [showQRCode, setShowQRCode] = useState(false);
-  const [activeTab, setActiveTab] = useState<"menu" | "info" | "theme" | "currency" | "welcome">("menu");
+  const [activeTab, setActiveTab] = useState<"menu" | "info" | "theme" | "currency">("menu");
   const [language, setLanguage] = useState<Language>("tr");
   const [theme, setTheme] = useState<ThemeColors>(loadTheme());
   const [defaultCurrency, setDefaultCurrency] = useState<Currency>(loadCurrency());
@@ -104,6 +104,18 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
+    // Önce LocalStorage'dan verileri yükle (kullanıcı değişikliklerini korumak için)
+    const savedInfo = localStorage.getItem("restaurantInfo");
+    if (savedInfo) {
+      try {
+        const parsedInfo = JSON.parse(savedInfo);
+        setRestaurantInfo(parsedInfo);
+        console.log("✅ Restoran bilgileri LocalStorage'dan yüklendi");
+      } catch (e) {
+        console.error("❌ LocalStorage'dan restoran bilgileri parse edilemedi:", e);
+      }
+    }
+    
     // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için)
     const loadData = async () => {
       try {
@@ -125,11 +137,12 @@ export default function AdminPage() {
             console.log("⚠️ public/data.json'da menü verisi yok veya boş, varsayılan menü yükleniyor...");
           }
           
-          if (data.restaurantInfo) {
+          // Restoran bilgileri: Sadece LocalStorage'da yoksa data.json'dan yükle
+          if (data.restaurantInfo && !savedInfo) {
             setRestaurantInfo(data.restaurantInfo);
             // LocalStorage'a da kaydet (fallback için)
             localStorage.setItem("restaurantInfo", JSON.stringify(data.restaurantInfo));
-            console.log("✅ Restoran bilgileri yüklendi");
+            console.log("✅ Restoran bilgileri data.json'dan yüklendi");
           }
           
           if (data.language && (data.language === "tr" || data.language === "en")) {
@@ -166,7 +179,6 @@ export default function AdminPage() {
       
       // LocalStorage'dan verileri yükle (fallback)
       const savedMenu = localStorage.getItem("menuData");
-      const savedInfo = localStorage.getItem("restaurantInfo");
       const savedLanguage = localStorage.getItem("language") as Language;
 
       if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
@@ -177,209 +189,19 @@ export default function AdminPage() {
       const loadedTheme = loadTheme();
       setTheme(loadedTheme);
 
+      // Restoran bilgileri zaten yukarıda yüklendi, tekrar yüklemeye gerek yok
+
       if (savedMenu) {
         setCategories(JSON.parse(savedMenu));
       } else {
-        // PDF'den alınan gerçek menü
-        let itemIdCounter = 1;
-        const createItem = (name: string, price: number, categoryId: string, description?: string) => {
-          return {
-            id: (itemIdCounter++).toString(),
-            name,
-            price,
-            description,
-            category: categoryId,
-          };
-        };
-
-        setCategories([
-          {
-            id: "1",
-            name: "MEZELER",
-            items: [
-              createItem("Molehiya", 6200, "1"),
-              createItem("Fix Meze", 6650, "1", "Siz istediğiniz sürece ücretsiz yenileniyor :)"),
-              createItem("Ezine Peyniri", 6200, "1"),
-              createItem("Tulum Peyniri", 6200, "1"),
-              createItem("Süzme Yoğurt", 6150, "1"),
-              createItem("Haydari", 6165, "1"),
-              createItem("Atom", 6160, "1"),
-              createItem("Havuç Tarator", 6165, "1"),
-              createItem("Ispanak", 6150, "1"),
-              createItem("Şakşuka", 6175, "1"),
-              createItem("Babagannuş", 6175, "1"),
-              createItem("Humus", 6180, "1", "Zeytinyağlı"),
-              createItem("Humus", 6200, "1", "Tereyağlı"),
-              createItem("Humus", 6200, "1", "Kaşarlı"),
-              createItem("Humus", 6275, "1", "Pastırmalı"),
-              createItem("Rus Salatası", 6200, "1"),
-              createItem("Yeşil Zeytin", 6165, "1"),
-              createItem("Pancar", 6170, "1"),
-              createItem("Börülce", 6180, "1"),
-              createItem("Cacık", 6165, "1"),
-              createItem("Söğüş", 6150, "1"),
-              createItem("Mexico Fasulyesi", 6200, "1"),
-              createItem("Kaya Koruğu", 6185, "1"),
-              createItem("Barbunya Pilaki", 6200, "1"),
-              createItem("Brokoli", 6185, "1"),
-              createItem("Tahin Tarator", 6185, "1"),
-              createItem("Muhammara", 6225, "1"),
-              createItem("Çubuk Turşu", 6150, "1"),
-              createItem("Biber Yoğurtlama", 6180, "1"),
-              createItem("Dillere Destan", 6200, "1"),
-              createItem("Peynirli Kiraz Biber", 6185, "1"),
-              createItem("Yoğurtlu Patlıcan", 6180, "1"),
-            ],
-          },
-          {
-            id: "2",
-            name: "Çiğ Köfte",
-            items: [
-              createItem("Çiğ Köfte", 6200, "2"),
-              createItem("Peynir Tabağı", 6260, "2"),
-              createItem("Akdeniz", 6190, "2"),
-              createItem("Girit Ezmesi", 6225, "2"),
-              createItem("Cevizli Kuru Domates", 6225, "2"),
-            ],
-          },
-          {
-            id: "3",
-            name: "ARA SICAK",
-            items: [
-              createItem("Güveçte Yaprak Ciğer", 6300, "3"),
-              createItem("Ali Nazik", 6350, "3"),
-              createItem("Kiremitte Dana Dili", 6275, "3"),
-              createItem("Dana Dili Söğüş", 6275, "3"),
-              createItem("Kiremitte Kaşarlı Mantar", 6200, "3"),
-              createItem("Kızarmış Hellim Peyniri (Porsiyon)", 6260, "3"),
-              createItem("Köylü Cips", 6225, "3"),
-              createItem("Parmak Cips", 6160, "3"),
-              createItem("İçli Köfte", 6100, "3"),
-              createItem("Sigara Böreği (Porsiyon)", 6150, "3"),
-            ],
-          },
-          {
-            id: "4",
-            name: "SALATA",
-            items: [
-              createItem("Roka Salata", 6200, "4"),
-              createItem("Mevsim Salata", 6200, "4"),
-              createItem("Çoban Salata", 6200, "4"),
-              createItem("Zeytin Salata", 6225, "4"),
-              createItem("Kaşık Salata", 6200, "4"),
-              createItem("Gavurdağı Salata", 6250, "4"),
-              createItem("Sezar Salata", 6400, "4"),
-            ],
-          },
-          {
-            id: "5",
-            name: "ANA YEMEKLER",
-            items: [
-              createItem("Kebab", 6450, "5"),
-              createItem("Kuşbaşı", 6500, "5"),
-              createItem("Pirzola", 6650, "5"),
-              createItem("Köfte", 6450, "5"),
-              createItem("Tavuk Kanat", 6425, "5"),
-              createItem("Tavuk Şiş", 6400, "5"),
-              createItem("Tereyağlı Tavuk", 6450, "5"),
-              createItem("Tavuk Güveç", 6550, "5"),
-              createItem("Sac Kavurma", 6600, "5"),
-              createItem("Kara Kavurma", 6600, "5"),
-              createItem("Bonfile", 6700, "5"),
-              createItem("Bonfile Sarma", 6800, "5"),
-              createItem("Karışık Izgara (2 Kişilik)", 6750, "5"),
-              createItem("Enfes Lokum", 6750, "5"),
-              createItem("Kaşarlı Köfte", 6475, "5"),
-              createItem("Beyti Kebab", 6570, "5"),
-              createItem("Kazbaşı", 6575, "5"),
-              createItem("Antrikot", 6660, "5"),
-              createItem("Tornado", 6750, "5"),
-              createItem("Patlıcan Kebabı", 6500, "5"),
-              createItem("Hawai Steak", 6675, "5"),
-              createItem("Diana Steak", 6675, "5"),
-              createItem("Şeftali Kebabı", 6475, "5"),
-            ],
-          },
-          {
-            id: "6",
-            name: "DENIZDEN",
-            items: [
-              createItem("Karides Güveç", 6475, "6"),
-              createItem("Kalamar", 6475, "6"),
-              createItem("Izgara Levrek", 6600, "6"),
-              createItem("Izgara Çipura", 6600, "6"),
-              createItem("Sebzeli Norveç Somonu", 6500, "6"),
-            ],
-          },
-          {
-            id: "7",
-            name: "MEYVE",
-            items: [
-              createItem("Serpme Meyve", 6250, "7"),
-              createItem("Meyve Tabağı", 6150, "7"),
-              createItem("Meyve Atom", 6120, "7"),
-              createItem("Kıbrıs Tatlısı", 630, "7"),
-            ],
-          },
-          {
-            id: "8",
-            name: "ALKOLLÜ İÇECEKLER",
-            items: [
-              createItem("Yeni Rakı 35CL", 6625, "8"),
-              createItem("Yeni Rakı 50CL", 6860, "8"),
-              createItem("Yeni Rakı 70CL", 61095, "8"),
-              createItem("Yeni Rakı 100CL", 61425, "8"),
-              createItem("Yeni Rakı Yeni Seri 35CL", 6675, "8"),
-              createItem("Yeni Rakı Yeni Seri 50CL", 6950, "8"),
-              createItem("Yeni Rakı Yeni Seri 70CL", 61225, "8"),
-              createItem("Yeni Rakı Yeni Seri 100CL", 61600, "8"),
-              createItem("Efe Gold 35CL", 6795, "8"),
-              createItem("Efe Gold 50CL", 61095, "8"),
-              createItem("Efe Gold 70CL", 61225, "8"),
-              createItem("Efe Gold 100CL", 61725, "8"),
-              createItem("Tekirdağ Altınseri 20CL", 6600, "8"),
-              createItem("Tekirdağ Altınseri 35CL", 6795, "8"),
-              createItem("Tekirdağ Altınseri 50CL", 61095, "8"),
-              createItem("Tekirdağ Altınseri 70CL", 61375, "8"),
-              createItem("Tekirdağ Altınseri 100CL", 61725, "8"),
-              createItem("Beylerbeyi Göbek 35CL", 6945, "8"),
-              createItem("Beylerbeyi Göbek 50CL", 61310, "8"),
-              createItem("Beylerbeyi Göbek 70CL", 61695, "8"),
-              createItem("Beylerbeyi Göbek 100CL", 62175, "8"),
-              createItem("Tekirdağ Yaş Üzüm 35CL", 6665, "8"),
-              createItem("Tekirdağ Yaş Üzüm 50CL", 6935, "8"),
-              createItem("Tekirdağ Yaş Üzüm 70CL", 61175, "8"),
-              createItem("Tekirdağ Yaş Üzüm 100CL", 61565, "8"),
-              createItem("Efes Malt", 6250, "8"),
-              createItem("Efes Özel Seri", 6250, "8"),
-              createItem("Chivas 35CL", 61350, "8"),
-              createItem("Chivas 50CL", 61900, "8"),
-              createItem("Chivas 70CL", 62450, "8"),
-              createItem("Shivas 100CL", 63350, "8"),
-            ],
-          },
-          {
-            id: "9",
-            name: "SOĞUK İÇECEK",
-            items: [
-              createItem("Meşrubat", 690, "9"),
-              createItem("Coca Cola", 690, "9"),
-              createItem("Coca Cola Zero", 690, "9"),
-              createItem("Fanta", 690, "9"),
-              createItem("Ice Tea", 690, "9"),
-              createItem("Sprite", 690, "9"),
-              createItem("Şalgam (Küçük)", 675, "9"),
-              createItem("Şalgam (Büyük)", 6125, "9"),
-              createItem("Soda", 650, "9"),
-              createItem("Ayran", 650, "9"),
-              createItem("Su", 675, "9"),
-            ],
-          },
-        ]);
+        // Varsayılan menü yükleme kaldırıldı - artık "Varsayılan Menüyü Yükle" butonu var
+        console.log("ℹ️ Menü verisi yok, 'Varsayılan Menüyü Yükle' butonunu kullanabilirsiniz.");
       }
-
-      if (savedInfo) {
-        setRestaurantInfo(JSON.parse(savedInfo));
+      
+      // Restoran bilgileri: LocalStorage'da yoksa varsayılan değerleri kullan
+      if (!savedInfo) {
+        // Varsayılan değerler zaten useState'te tanımlı
+        console.log("ℹ️ Restoran bilgileri LocalStorage'da yok, varsayılan değerler kullanılıyor");
       }
     };
     
@@ -1275,16 +1097,6 @@ export default function AdminPage() {
             >
               {getTranslation(language, "currencySettings")}
             </button>
-            <button
-              onClick={() => setActiveTab("welcome")}
-              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
-                activeTab === "welcome"
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
-            >
-              {getTranslation(language, "welcomePage")}
-            </button>
           </div>
         </div>
 
@@ -1884,84 +1696,85 @@ export default function AdminPage() {
                 </p>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* Welcome Page Settings */}
-        {activeTab === "welcome" && (
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {getTranslation(language, "logo")}
-                </label>
-                <div className="space-y-2">
+            
+            {/* Logo ve Hoş Geldiniz Mesajı */}
+            <div className="border-t pt-6 mt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                {language === "tr" ? "Logo ve Hoş Geldiniz Mesajı" : "Logo and Welcome Message"}
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {getTranslation(language, "logo")}
+                  </label>
+                  <div className="space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            const base64String = reader.result as string;
+                            const updated = { ...restaurantInfo, logo: base64String };
+                            setRestaurantInfo(updated);
+                            saveInfoToLocalStorage(updated);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                    />
+                    <p className="text-xs text-gray-500">
+                      {getTranslation(language, "orUseUrl")}
+                    </p>
+                    <input
+                      type="url"
+                      value={restaurantInfo.logo?.startsWith("data:") ? "" : (restaurantInfo.logo || "")}
+                      onChange={(e) => {
+                        const updated = { ...restaurantInfo, logo: e.target.value };
+                        setRestaurantInfo(updated);
+                        saveInfoToLocalStorage(updated);
+                      }}
+                      placeholder={getTranslation(language, "logoPlaceholder")}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                    {restaurantInfo.logo && (
+                      <div className="mt-4">
+                        <p className="text-sm font-medium text-gray-700 mb-2">Logo Önizleme:</p>
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-200 shadow-lg">
+                          <img
+                            src={restaurantInfo.logo}
+                            alt="Logo"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {getTranslation(language, "welcomeMessage")}
+                  </label>
                   <input
-                    type="file"
-                    accept="image/*"
+                    type="text"
+                    value={restaurantInfo.welcomeMessage || ""}
                     onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          const base64String = reader.result as string;
-                          const updated = { ...restaurantInfo, logo: base64String };
-                          setRestaurantInfo(updated);
-                          saveInfoToLocalStorage(updated);
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
-                  />
-                  <p className="text-xs text-gray-500">
-                    {getTranslation(language, "orUseUrl")}
-                  </p>
-                  <input
-                    type="url"
-                    value={restaurantInfo.logo?.startsWith("data:") ? "" : (restaurantInfo.logo || "")}
-                    onChange={(e) => {
-                      const updated = { ...restaurantInfo, logo: e.target.value };
+                      const updated = { ...restaurantInfo, welcomeMessage: e.target.value };
                       setRestaurantInfo(updated);
                       saveInfoToLocalStorage(updated);
                     }}
-                    placeholder={getTranslation(language, "logoPlaceholder")}
+                    placeholder={getTranslation(language, "welcome")}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                   />
-                  {restaurantInfo.logo && (
-                    <div className="mt-4">
-                      <p className="text-sm font-medium text-gray-700 mb-2">Logo Önizleme:</p>
-                      <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary-200 shadow-lg">
-                        <img
-                          src={restaurantInfo.logo}
-                          alt="Logo"
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </div>
-                  )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    {language === "tr" 
+                      ? "Boş bırakırsanız varsayılan 'Hoş Geldiniz' mesajı gösterilir."
+                      : "Leave empty to show default 'Welcome' message."}
+                  </p>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {getTranslation(language, "welcomeMessage")}
-                </label>
-                <input
-                  type="text"
-                  value={restaurantInfo.welcomeMessage || ""}
-                  onChange={(e) => {
-                    const updated = { ...restaurantInfo, welcomeMessage: e.target.value };
-                    setRestaurantInfo(updated);
-                    saveInfoToLocalStorage(updated);
-                  }}
-                  placeholder={getTranslation(language, "welcome")}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  {language === "tr" 
-                    ? "Boş bırakırsanız varsayılan 'Hoş Geldiniz' mesajı gösterilir."
-                    : "Leave empty to show default 'Welcome' message."}
-                </p>
               </div>
             </div>
           </div>
