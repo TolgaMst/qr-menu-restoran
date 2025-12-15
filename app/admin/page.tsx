@@ -74,7 +74,6 @@ export default function AdminPage() {
   const [githubToken, setGithubToken] = useState("");
   const [githubUsername, setGithubUsername] = useState("");
   const [githubRepo, setGithubRepo] = useState("");
-  const [autoPushEnabled, setAutoPushEnabled] = useState(false);
 
   useEffect(() => {
     // İlk yüklemede şifre kontrolü yap
@@ -93,12 +92,10 @@ export default function AdminPage() {
       const savedToken = localStorage.getItem("githubToken");
       const savedUsername = localStorage.getItem("githubUsername");
       const savedRepo = localStorage.getItem("githubRepo");
-      const savedAutoPush = localStorage.getItem("githubAutoPush");
       
       if (savedToken) setGithubToken(savedToken);
       if (savedUsername) setGithubUsername(savedUsername);
       if (savedRepo) setGithubRepo(savedRepo);
-      if (savedAutoPush === "true") setAutoPushEnabled(true);
     }
   }, []);
 
@@ -387,13 +384,8 @@ export default function AdminPage() {
 
   // exportTimeoutRef kaldırıldı - artık manuel push kullanılıyor
   
-  // GitHub'a otomatik push fonksiyonu
+  // GitHub'a push fonksiyonu
   const pushToGitHub = async (dataStr: string) => {
-    if (!autoPushEnabled) {
-      console.log("ℹ️ Otomatik push kapalı.");
-      return false;
-    }
-    
     if (!githubToken || !githubUsername || !githubRepo) {
       const missingFields = [];
       if (!githubToken) missingFields.push(language === "tr" ? "Token" : "Token");
@@ -605,11 +597,40 @@ export default function AdminPage() {
   
   // Manuel push fonksiyonu - "Kaydet" butonuna basıldığında çağrılacak
   const handleSaveAndPush = async () => {
-    if (!autoPushEnabled) {
+    if (!githubToken || !githubUsername || !githubRepo) {
+      // İlk kullanımda GitHub ayarlarını al
+      const username = prompt(
+        language === "tr"
+          ? "GitHub Kullanıcı Adınızı girin:"
+          : "Enter your GitHub Username:"
+      );
+      if (!username) return;
+      
+      const repo = prompt(
+        language === "tr"
+          ? "Repository adını girin (örn: qr-menu-restoran):"
+          : "Enter repository name (e.g: qr-menu-restoran):"
+      );
+      if (!repo) return;
+      
+      const token = prompt(
+        language === "tr"
+          ? "GitHub Personal Access Token'ınızı girin:\n\nToken oluşturmak için: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → 'repo' izni verin"
+          : "Enter your GitHub Personal Access Token:\n\nTo create token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → Give 'repo' permission"
+      );
+      if (!token) return;
+      
+      setGithubUsername(username);
+      setGithubRepo(repo);
+      setGithubToken(token);
+      localStorage.setItem("githubUsername", username);
+      localStorage.setItem("githubRepo", repo);
+      localStorage.setItem("githubToken", token);
+      
       alert(
         language === "tr"
-          ? "❌ Otomatik push kapalı! Lütfen GitHub ayarlarında 'Otomatik Push'u Etkinleştir' kutusunu işaretleyin."
-          : "❌ Auto push is disabled! Please check 'Enable Auto Push' in GitHub settings."
+          ? "✅ GitHub ayarları kaydedildi! Şimdi tekrar 'Kaydet' butonuna basın."
+          : "✅ GitHub settings saved! Now click 'Save' button again."
       );
       return;
     }
@@ -1598,12 +1619,58 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
+            
+            {/* Kaydet Butonu */}
+            <div className="mt-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
+              <button
+                onClick={handleSaveAndPush}
+                disabled={!githubToken || !githubUsername || !githubRepo}
+                className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
+                  githubToken && githubUsername && githubRepo
+                    ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <Save className="w-5 h-5" />
+                <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
+              </button>
+              {(!githubToken || !githubUsername || !githubRepo) && (
+                <p className="text-xs text-gray-600 mt-2 text-center">
+                  {language === "tr"
+                    ? "⚠️ GitHub ayarları eksik! İlk kullanımda GitHub ayarlarını yapmanız gerekiyor. (Ayarlar LocalStorage'da saklanır)"
+                    : "⚠️ GitHub settings missing! You need to set up GitHub settings on first use. (Settings are stored in LocalStorage)"}
+                </p>
+              )}
+            </div>
           </div>
         )}
 
         {/* Restaurant Info */}
         {activeTab === "info" && (
           <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* Kaydet Butonu */}
+            <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
+              <button
+                onClick={handleSaveAndPush}
+                disabled={!githubToken || !githubUsername || !githubRepo}
+                className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
+                  githubToken && githubUsername && githubRepo
+                    ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                }`}
+              >
+                <Save className="w-5 h-5" />
+                <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
+              </button>
+              {(!githubToken || !githubUsername || !githubRepo) && (
+                <p className="text-xs text-gray-600 mt-2 text-center">
+                  {language === "tr"
+                    ? "⚠️ GitHub ayarları eksik! İlk kullanımda GitHub ayarlarını yapmanız gerekiyor. (Ayarlar LocalStorage'da saklanır)"
+                    : "⚠️ GitHub settings missing! You need to set up GitHub settings on first use. (Settings are stored in LocalStorage)"}
+                </p>
+              )}
+            </div>
+            
             {/* Yedekleme ve Geri Yükleme */}
             <div className="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1627,123 +1694,6 @@ export default function AdminPage() {
                   <Upload className="w-4 h-4" />
                   <span>{getTranslation(language, "restore")}</span>
                 </button>
-              </div>
-            </div>
-            {/* GitHub Otomatik Push Ayarları */}
-            <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-dashed border-green-300">
-              <h3 className="text-lg font-semibold text-green-900 mb-2">
-                {language === "tr" ? "🚀 GitHub Push Ayarları" : "🚀 GitHub Push Settings"}
-              </h3>
-              <p className="text-sm text-green-700 mb-4">
-                {language === "tr"
-                  ? "GitHub Personal Access Token ekleyerek, 'Kaydet ve GitHub'a Push Et' butonuna bastığınızda GitHub'a push edebilirsiniz."
-                  : "Add GitHub Personal Access Token to push to GitHub when you click 'Save and Push to GitHub' button."}
-              </p>
-              
-              {/* Kaydet ve Push Butonu */}
-              <div className="mb-4">
-                <button
-                  onClick={handleSaveAndPush}
-                  disabled={!autoPushEnabled || !githubToken || !githubUsername || !githubRepo}
-                  className={`w-full px-6 py-3 rounded-lg font-semibold transition flex items-center justify-center space-x-2 ${
-                    autoPushEnabled && githubToken && githubUsername && githubRepo
-                      ? "bg-green-600 text-white hover:bg-green-700 shadow-lg hover:shadow-xl"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  }`}
-                >
-                  <Save className="w-5 h-5" />
-                  <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
-                </button>
-                {(!autoPushEnabled || !githubToken || !githubUsername || !githubRepo) && (
-                  <p className="text-xs text-gray-600 mt-2 text-center">
-                    {language === "tr"
-                      ? "⚠️ Butonu kullanmak için GitHub ayarlarını doldurun ve 'Otomatik Push'u Etkinleştir' kutusunu işaretleyin."
-                      : "⚠️ Fill GitHub settings and check 'Enable Auto Push' to use this button."}
-                  </p>
-                )}
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {language === "tr" ? "GitHub Kullanıcı Adı" : "GitHub Username"}
-                  </label>
-                  <input
-                    type="text"
-                    value={githubUsername}
-                    onChange={(e) => {
-                      setGithubUsername(e.target.value);
-                      localStorage.setItem("githubUsername", e.target.value);
-                    }}
-                    placeholder="TolgaMst"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {language === "tr" ? "Repository Adı" : "Repository Name"}
-                  </label>
-                  <input
-                    type="text"
-                    value={githubRepo}
-                    onChange={(e) => {
-                      setGithubRepo(e.target.value);
-                      localStorage.setItem("githubRepo", e.target.value);
-                    }}
-                    placeholder="qr-menu-restoran"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {language === "tr" ? "Personal Access Token" : "Personal Access Token"}
-                  </label>
-                  <input
-                    type="password"
-                    value={githubToken}
-                    onChange={(e) => {
-                      setGithubToken(e.target.value);
-                      localStorage.setItem("githubToken", e.target.value);
-                    }}
-                    placeholder="ghp_xxxxxxxxxxxx"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    {language === "tr"
-                      ? "Token oluşturmak için: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → 'repo' izni verin"
-                      : "To create token: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (classic) → Give 'repo' permission"}
-                  </p>
-                </div>
-                
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="autoPush"
-                    checked={autoPushEnabled}
-                    onChange={(e) => {
-                      setAutoPushEnabled(e.target.checked);
-                      localStorage.setItem("githubAutoPush", e.target.checked ? "true" : "false");
-                    }}
-                    className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
-                  />
-                  <label htmlFor="autoPush" className="text-sm font-medium text-gray-700">
-                    {language === "tr"
-                      ? "Otomatik Push'u Etkinleştir (Her değişiklikte GitHub'a push et)"
-                      : "Enable Auto Push (Push to GitHub on every change)"}
-                  </label>
-                </div>
-                
-                {autoPushEnabled && githubToken && githubUsername && githubRepo && (
-                  <div className="p-3 bg-green-100 rounded-lg">
-                    <p className="text-sm text-green-800">
-                      ✅ {language === "tr"
-                        ? "Otomatik push aktif! Her değişiklikte GitHub'a otomatik push edilecek."
-                        : "Auto push active! Will automatically push to GitHub on every change."}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
 
