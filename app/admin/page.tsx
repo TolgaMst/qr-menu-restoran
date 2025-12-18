@@ -74,16 +74,12 @@ export default function AdminPage() {
   // GitHub ayarları - kod içine entegre edildi
   const GITHUB_USERNAME = "TolgaMst";
   const GITHUB_REPO = "qr-menu-restoran";
-  // Token environment variable'dan veya LocalStorage'dan alınır
+  // Token sadece environment variable'dan alınır (Cloudflare Pages'de ayarlanmalı)
   const getGithubToken = () => {
     if (typeof window !== "undefined") {
-      // Önce environment variable'dan kontrol et (build time)
+      // Environment variable'dan token'ı al (build time'da Cloudflare Pages'de ayarlanmalı)
       const envToken = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
-      if (envToken) return envToken;
-      
-      // Yoksa LocalStorage'dan al (fallback)
-      const savedToken = localStorage.getItem("githubToken");
-      if (savedToken) return savedToken;
+      return envToken || "";
     }
     return "";
   };
@@ -100,23 +96,12 @@ export default function AdminPage() {
           setIsAuthenticated(true);
         }
       }
+      
     }
   }, []);
 
   useEffect(() => {
-    // Önce LocalStorage'dan verileri yükle (kullanıcı değişikliklerini korumak için)
-    const savedInfo = localStorage.getItem("restaurantInfo");
-    if (savedInfo) {
-      try {
-        const parsedInfo = JSON.parse(savedInfo);
-        setRestaurantInfo(parsedInfo);
-        console.log("✅ Restoran bilgileri LocalStorage'dan yüklendi");
-      } catch (e) {
-        console.error("❌ LocalStorage'dan restoran bilgileri parse edilemedi:", e);
-      }
-    }
-    
-    // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için)
+    // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için tek kaynak)
     const loadData = async () => {
       try {
         const response = await fetch("/data.json");
@@ -125,29 +110,19 @@ export default function AdminPage() {
           
           console.log("📥 Admin paneli: public/data.json'dan veriler yükleniyor...");
           
-          // Public JSON'dan verileri yükle
-          if (data.menuData && Array.isArray(data.menuData) && data.menuData.length > 0) {
-            setCategories(data.menuData);
-            // LocalStorage'a da kaydet (fallback için)
-            localStorage.setItem("menuData", JSON.stringify(data.menuData));
-            console.log("✅ Menü verileri yüklendi:", data.menuData.length, "kategori");
-            return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
-          } else {
-            // Public JSON'da menü verisi yoksa veya boşsa, varsayılan menüyü yükle
-            console.log("⚠️ public/data.json'da menü verisi yok veya boş, varsayılan menü yükleniyor...");
+          // Önce public/data.json'dan tüm verileri yükle
+          if (data.restaurantInfo) {
+            setRestaurantInfo(data.restaurantInfo);
+            console.log("✅ Restoran bilgileri data.json'dan yüklendi");
           }
           
-          // Restoran bilgileri: Sadece LocalStorage'da yoksa data.json'dan yükle
-          if (data.restaurantInfo && !savedInfo) {
-            setRestaurantInfo(data.restaurantInfo);
-            // LocalStorage'a da kaydet (fallback için)
-            localStorage.setItem("restaurantInfo", JSON.stringify(data.restaurantInfo));
-            console.log("✅ Restoran bilgileri data.json'dan yüklendi");
+          if (data.menuData && Array.isArray(data.menuData) && data.menuData.length > 0) {
+            setCategories(data.menuData);
+            console.log("✅ Menü verileri yüklendi:", data.menuData.length, "kategori");
           }
           
           if (data.language && (data.language === "tr" || data.language === "en")) {
             setLanguage(data.language);
-            localStorage.setItem("language", data.language);
             console.log("✅ Dil yüklendi:", data.language);
           }
           
@@ -160,48 +135,46 @@ export default function AdminPage() {
           if (data.theme) {
             setTheme(data.theme);
             saveTheme(data.theme);
-            applyTheme(data.theme); // Tema hemen uygulanmalı
+            applyTheme(data.theme);
             console.log("✅ Tema yüklendi");
-          }
-          
-          // Menü verisi yoksa varsayılan menüyü yükle (aşağıdaki kod bloğunda devam edecek)
-          if (!data.menuData || !Array.isArray(data.menuData) || data.menuData.length === 0) {
-            console.log("⚠️ public/data.json'da menü verisi yok, varsayılan menü yüklenecek...");
-            // Aşağıdaki varsayılan menü koduna devam et
-          } else {
-            return; // Public JSON'dan yüklendi, LocalStorage'a bakmaya gerek yok
           }
         }
       } catch (error) {
-        // Public JSON dosyası yoksa LocalStorage'dan yükle
-        console.log("⚠️ Admin paneli: public/data.json bulunamadı, LocalStorage'dan yükleniyor...");
+        console.log("⚠️ Admin paneli: public/data.json bulunamadı veya hata oluştu");
       }
       
-      // LocalStorage'dan verileri yükle (fallback)
+      // LocalStorage'dan verileri yükle (sadece admin panelinde override için)
+      // Bu sayede admin panelinde yapılan değişiklikler kaybolmaz
+      const savedInfo = localStorage.getItem("restaurantInfo");
+      if (savedInfo) {
+        try {
+          const parsedInfo = JSON.parse(savedInfo);
+          setRestaurantInfo(parsedInfo);
+          console.log("✅ Restoran bilgileri LocalStorage'dan override edildi (admin paneli değişiklikleri)");
+        } catch (e) {
+          console.error("❌ LocalStorage'dan restoran bilgileri parse edilemedi:", e);
+        }
+      }
+      
       const savedMenu = localStorage.getItem("menuData");
+      if (savedMenu) {
+        try {
+          setCategories(JSON.parse(savedMenu));
+          console.log("✅ Menü verileri LocalStorage'dan override edildi (admin paneli değişiklikleri)");
+        } catch (e) {
+          console.error("❌ LocalStorage'dan menü verileri parse edilemedi:", e);
+        }
+      }
+      
       const savedLanguage = localStorage.getItem("language") as Language;
-
       if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
         setLanguage(savedLanguage);
       }
 
       // Tema yükle
       const loadedTheme = loadTheme();
-      setTheme(loadedTheme);
-
-      // Restoran bilgileri zaten yukarıda yüklendi, tekrar yüklemeye gerek yok
-
-      if (savedMenu) {
-        setCategories(JSON.parse(savedMenu));
-      } else {
-        // Varsayılan menü yükleme kaldırıldı - artık "Varsayılan Menüyü Yükle" butonu var
-        console.log("ℹ️ Menü verisi yok, 'Varsayılan Menüyü Yükle' butonunu kullanabilirsiniz.");
-      }
-      
-      // Restoran bilgileri: LocalStorage'da yoksa varsayılan değerleri kullan
-      if (!savedInfo) {
-        // Varsayılan değerler zaten useState'te tanımlı
-        console.log("ℹ️ Restoran bilgileri LocalStorage'da yok, varsayılan değerler kullanılıyor");
+      if (loadedTheme) {
+        setTheme(loadedTheme);
       }
     };
     
@@ -218,8 +191,8 @@ export default function AdminPage() {
       console.error("❌ GitHub token eksik!");
       alert(
         language === "tr"
-          ? "❌ GitHub token eksik! Lütfen environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin veya LocalStorage'a 'githubToken' olarak kaydedin."
-          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable or save it to LocalStorage as 'githubToken'."
+          ? "❌ GitHub token eksik! Lütfen Cloudflare Pages'de environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin.\n\nCloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN"
+          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable in Cloudflare Pages.\n\nCloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN"
       );
       return false;
     }
@@ -425,8 +398,8 @@ export default function AdminPage() {
     if (!githubToken) {
       alert(
         language === "tr"
-          ? "❌ GitHub token eksik! Lütfen environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin veya LocalStorage'a 'githubToken' olarak kaydedin."
-          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable or save it to LocalStorage as 'githubToken'."
+          ? "❌ GitHub token eksik! Lütfen Cloudflare Pages'de environment variable olarak NEXT_PUBLIC_GITHUB_TOKEN ekleyin.\n\nCloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN"
+          : "❌ GitHub token missing! Please add NEXT_PUBLIC_GITHUB_TOKEN as environment variable in Cloudflare Pages.\n\nCloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN"
       );
       return;
     }
@@ -1422,6 +1395,25 @@ export default function AdminPage() {
         {/* Restaurant Info */}
         {activeTab === "info" && (
           <div className="bg-white rounded-lg shadow-sm p-6">
+            {/* GitHub Token Bilgilendirme */}
+            {!getGithubToken() && (
+              <div className="mb-6 p-4 bg-yellow-50 rounded-lg border-2 border-yellow-300">
+                <h3 className="text-lg font-semibold text-yellow-900 mb-2">
+                  {language === "tr" ? "⚠️ GitHub Token Gerekli" : "⚠️ GitHub Token Required"}
+                </h3>
+                <p className="text-sm text-yellow-700 mb-2">
+                  {language === "tr" 
+                    ? "GitHub'a push yapabilmek için token gerekir. Token Cloudflare Pages'de environment variable olarak ayarlanmalıdır."
+                    : "Token is required to push to GitHub. Token must be set as environment variable in Cloudflare Pages."}
+                </p>
+                <p className="text-xs text-yellow-600">
+                  {language === "tr" 
+                    ? "Cloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN ekleyin"
+                    : "Cloudflare Pages → Settings → Environment Variables → Add NEXT_PUBLIC_GITHUB_TOKEN"}
+                </p>
+              </div>
+            )}
+            
             {/* Kaydet Butonu */}
             <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
               <button
