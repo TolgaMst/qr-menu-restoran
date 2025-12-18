@@ -79,6 +79,11 @@ export default function AdminPage() {
     if (typeof window !== "undefined") {
       // Environment variable'dan token'ı al (build time'da Cloudflare Pages'de ayarlanmalı)
       const envToken = process.env.NEXT_PUBLIC_GITHUB_TOKEN;
+      console.log("🔍 Token kontrolü:", {
+        hasToken: !!envToken,
+        tokenLength: envToken?.length || 0,
+        tokenPrefix: envToken?.substring(0, 4) || "none"
+      });
       return envToken || "";
     }
     return "";
