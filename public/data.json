@@ -7,7 +7,7 @@
         {
           "id": "1",
           "name": "Molehiya",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2025-12-18T14:37:56.399Z"
+  "timestamp": "2025-12-18T14:44:11.140Z"
 }
