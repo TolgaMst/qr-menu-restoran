@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info, Mail, Instagram, Facebook } from "lucide-react";
+import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info, Mail, Instagram, Facebook, MessageCircle } from "lucide-react";
 import MenuDisplay from "@/components/MenuDisplay";
 import LanguageSelector from "@/components/LanguageSelector";
 import CurrencySelector from "@/components/CurrencySelector";
@@ -345,6 +345,22 @@ export default function Home() {
                   className="text-gray-700 hover:text-primary-600 transition"
                 >
                   {restaurantInfo.phone}
+                </a>
+              </div>
+              {/* WhatsApp Butonu */}
+              <div className="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                <a
+                  href={`https://wa.me/${restaurantInfo.phone.replace(/[\s()\-]/g, "")}?text=${encodeURIComponent(
+                    language === "tr" 
+                      ? `Merhaba, ${restaurantInfo.name} için rezervasyon yapmak istiyorum.`
+                      : `Hello, I would like to make a reservation for ${restaurantInfo.name}.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center space-x-3 w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition font-semibold shadow-lg hover:shadow-xl"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  <span>{language === "tr" ? "📱 WhatsApp ile Rezervasyon" : "📱 Reserve via WhatsApp"}</span>
                 </a>
               </div>
               {restaurantInfo.email && (
