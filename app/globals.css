@@ -1,23 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
-  --color-primary: #0ea5e9;
-  --color-secondary: #0284c7;
+  --foreground-rgb: 250, 235, 215;
+  --background-start-rgb: 26, 15, 10;
+  --background-end-rgb: 45, 24, 16;
+  --color-primary: #8B0000;
+  --color-secondary: #722F37;
+  --color-gold: #D4AF37;
+  --color-cream: #FAEBD7;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
+      135deg,
+      rgb(var(--background-start-rgb)),
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    );
+  font-family: 'Lora', serif;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
 }
 
 @layer utilities {
@@ -33,3 +42,142 @@ body {
   }
 }
 
+/* Klasik Meyhane Özel Stilleri */
+@layer components {
+  /* Vintage çerçeve efekti */
+  .vintage-frame {
+    @apply border-2 border-gold-400 rounded-lg;
+    box-shadow: 
+      inset 0 0 20px rgba(212, 175, 55, 0.1),
+      0 4px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Altın kenar */
+  .gold-border {
+    @apply border border-gold-400/50;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+  }
+
+  /* Dekoratif başlık */
+  .decorative-title {
+    @apply font-display text-cream-100 relative;
+  }
+
+  .decorative-title::before,
+  .decorative-title::after {
+    content: '✦';
+    @apply text-gold-400 mx-3;
+  }
+
+  /* Menü kartı */
+  .menu-card {
+    @apply bg-wood-900/80 backdrop-blur-sm rounded-lg p-4 transition-all duration-300;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+  }
+
+  .menu-card:hover {
+    @apply transform scale-[1.02];
+    border-color: rgba(212, 175, 55, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Fiyat etiketi */
+  .price-tag {
+    @apply text-gold-400 font-display font-bold;
+  }
+
+  /* Kategori başlığı */
+  .category-header {
+    @apply text-cream-100 font-display text-xl font-bold py-3 px-4 rounded-lg;
+    background: linear-gradient(90deg, rgba(139, 0, 0, 0.8), rgba(114, 47, 55, 0.6), transparent);
+    border-left: 4px solid var(--color-gold);
+  }
+
+  /* WhatsApp butonu */
+  .whatsapp-btn {
+    @apply bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  }
+
+  .whatsapp-btn:hover {
+    @apply bg-green-500 transform scale-105;
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+  }
+
+  /* Ana buton */
+  .btn-primary {
+    @apply bg-primary-600 text-cream-100 font-display font-bold py-4 px-8 rounded-xl transition-all duration-300;
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.4);
+  }
+
+  .btn-primary:hover {
+    @apply bg-primary-700;
+    box-shadow: 0 6px 20px rgba(139, 0, 0, 0.5), 0 0 15px rgba(212, 175, 55, 0.3);
+  }
+
+  /* İkincil buton */
+  .btn-secondary {
+    @apply bg-wood-800 text-cream-200 font-display font-bold py-4 px-8 rounded-xl transition-all duration-300;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+  }
+
+  .btn-secondary:hover {
+    @apply bg-wood-700;
+    border-color: rgba(212, 175, 55, 0.5);
+  }
+}
+
+/* Özel kaydırma çubuğu */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(26, 15, 10);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #8B0000, #722F37);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #a01010, #8b3f47);
+}
+
+/* Animasyonlar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+}
