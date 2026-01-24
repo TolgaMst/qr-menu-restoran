@@ -36,8 +36,8 @@ export default function CurrencySelector({
 
   if (!mounted) {
     return (
-      <div className="flex items-center space-x-2 px-3 py-2 bg-white border border-gray-300 rounded-lg">
-        <DollarSign className="w-4 h-4" />
+      <div className="flex items-center space-x-2 px-3 py-2 bg-wood-800 border border-gold-400/30 rounded-lg text-cream-200">
+        <DollarSign className="w-4 h-4 text-gold-400" />
         <span className="text-sm font-medium">₺ TRY</span>
       </div>
     );
@@ -47,9 +47,9 @@ export default function CurrencySelector({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+        className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-wood-800 border border-gold-400/30 rounded-lg hover:bg-wood-700 transition text-cream-200"
       >
-        <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
+        <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-gold-400" />
         <span className="text-xs sm:text-sm font-medium">
           {currencies[displayCurrency].symbol} {displayCurrency}
         </span>
@@ -61,25 +61,16 @@ export default function CurrencySelector({
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
-          <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
-            {Object.values(currencies).map((currency) => (
+          <div className="absolute right-0 mt-2 w-40 bg-wood-900 rounded-lg shadow-lg border border-gold-400/30 z-20">
+            {Object.values(currencies).map((currency, index, arr) => (
               <button
                 key={currency.code}
                 onClick={() => handleCurrencyChange(currency.code)}
-                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
-                  displayCurrency === currency.code
-                    ? "bg-primary-50 text-primary-600"
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-wood-800 text-cream-200 ${displayCurrency === currency.code
+                    ? "bg-primary-900/50 text-gold-400"
                     : ""
-                } ${
-                  currency.code === Object.values(currencies)[0].code
-                    ? "rounded-t-lg"
-                    : ""
-                } ${
-                  currency.code ===
-                  Object.values(currencies)[Object.values(currencies).length - 1].code
-                    ? "rounded-b-lg"
-                    : ""
-                }`}
+                  } ${index === 0 ? "rounded-t-lg" : ""} ${index === arr.length - 1 ? "rounded-b-lg" : ""
+                  }`}
               >
                 {currency.symbol} {currency.code} - {currency.name}
               </button>
@@ -90,5 +81,3 @@ export default function CurrencySelector({
     </div>
   );
 }
-
-
