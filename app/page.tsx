@@ -1,13 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info, Mail, Instagram, Facebook, MessageCircle, Utensils } from "lucide-react";
+import { Menu, Phone, MapPin, Clock, Globe, ChevronDown, ChevronUp, Info, Mail, Instagram, Facebook, MessageCircle, Utensils, QrCode, Printer } from "lucide-react";
 import MenuDisplay from "@/components/MenuDisplay";
 import LanguageSelector from "@/components/LanguageSelector";
 import CurrencySelector from "@/components/CurrencySelector";
+import CartModal, { CartButton } from "@/components/CartModal";
+import BusinessStatus, { BusinessStatusBadge } from "@/components/BusinessStatus";
+import QRCodeModal from "@/components/QRCodeModal";
+import PrintMenuButton from "@/components/PrintMenuButton";
 import { Language, getTranslation } from "@/lib/translations";
 import { loadTheme } from "@/lib/theme";
 import { Currency, loadCurrency, saveCurrency } from "@/lib/currency";
+import { CartItem, getCart, addToCart } from "@/lib/cart";
 
 interface MenuItem {
   id: string;
@@ -27,6 +32,9 @@ interface Category {
 export default function Home() {
   const [showMenu, setShowMenu] = useState(false);
   const [showRestaurantInfo, setShowRestaurantInfo] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [menuData, setMenuData] = useState<Category[]>([]);
   const [restaurantInfo, setRestaurantInfo] = useState({
     name: "Restoranım",
@@ -44,6 +52,9 @@ export default function Home() {
   const [currency, setCurrency] = useState<Currency>("TRY");
 
   useEffect(() => {
+    // Sepeti yükle
+    setCart(getCart());
+
     // Önce public/data.json dosyasından verileri yükle (tüm cihazlar için)
     const loadData = async () => {
       try {
@@ -168,6 +179,13 @@ export default function Home() {
     saveCurrency(curr);
   };
 
+  const handleAddToCart = (item: { id: string; name: string; price: number }) => {
+    const newCart = addToCart(item);
+    setCart([...newCart]);
+  };
+
+  const menuUrl = typeof window !== "undefined" ? window.location.origin : "https://mezecim.net";
+
   // Menü gösterilmişse normal görünüm
   if (showMenu) {
     return (
@@ -177,12 +195,16 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2 sm:space-x-3">
-                <div className="bg-primary-600 p-1.5 sm:p-2 rounded-lg border border-gold-400/50">
+                <button
+                  onClick={() => setShowMenu(false)}
+                  className="bg-primary-600 p-1.5 sm:p-2 rounded-lg border border-gold-400/50 hover:bg-primary-500 transition"
+                >
                   <Utensils className="w-4 h-4 sm:w-6 sm:h-6 text-gold-400" />
-                </div>
+                </button>
                 <h1 className="text-lg sm:text-2xl font-display font-bold text-cream-100 truncate">
                   {restaurantInfo.name}
                 </h1>
+                <BusinessStatusBadge language={language} />
               </div>
               <div className="flex items-center space-x-2 sm:space-x-4">
                 <CurrencySelector
@@ -198,7 +220,7 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Restaurant Info */}
+        {/* Restaurant Info Bar */}
         <div className="bg-wood-900/80 border-b border-gold-400/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
@@ -220,12 +242,34 @@ export default function Home() {
                 <span className="text-sm sm:text-base text-cream-200 break-words">{restaurantInfo.hours}</span>
               </div>
             </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-gold-400/20">
+              <PrintMenuButton
+                categories={menuData}
+                restaurantName={restaurantInfo.name}
+                language={language}
+                currency={currency}
+              />
+              <button
+                onClick={() => setShowQRModal(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-wood-800 hover:bg-wood-700 border border-gold-400/30 rounded-lg text-cream-200 transition font-body text-sm"
+              >
+                <QrCode className="w-4 h-4 text-gold-400" />
+                <span>{language === "tr" ? "QR Kod" : "QR Code"}</span>
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Menu Display */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-          <MenuDisplay categories={menuData} language={language} currency={currency} />
+          <MenuDisplay
+            categories={menuData}
+            language={language}
+            currency={currency}
+            onAddToCart={handleAddToCart}
+          />
         </main>
 
         {/* Footer */}
@@ -238,6 +282,30 @@ export default function Home() {
             </div>
           </div>
         </footer>
+
+        {/* Cart Button */}
+        <CartButton cart={cart} onClick={() => setShowCart(true)} />
+
+        {/* Cart Modal */}
+        <CartModal
+          isOpen={showCart}
+          onClose={() => setShowCart(false)}
+          cart={cart}
+          setCart={setCart}
+          currency={currency}
+          language={language}
+          restaurantName={restaurantInfo.name}
+          restaurantPhone={restaurantInfo.phone}
+        />
+
+        {/* QR Code Modal */}
+        <QRCodeModal
+          isOpen={showQRModal}
+          onClose={() => setShowQRModal(false)}
+          restaurantName={restaurantInfo.name}
+          menuUrl={menuUrl}
+          language={language}
+        />
       </div>
     );
   }
@@ -251,7 +319,8 @@ export default function Home() {
       {/* Header - Sadece dil seçici */}
       <header className="bg-wood-900/80 backdrop-blur-sm border-b border-gold-400/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-between">
+            <BusinessStatusBadge language={language} />
             <LanguageSelector
               currentLanguage={language}
               onLanguageChange={handleLanguageChange}
@@ -296,6 +365,11 @@ export default function Home() {
           <p className="text-xl sm:text-2xl text-cream-300 font-body italic">
             {restaurantInfo.welcomeMessage || getTranslation(language, "welcome")}
           </p>
+
+          {/* Business Status */}
+          <div className="flex justify-center">
+            <BusinessStatus language={language} />
+          </div>
 
           {/* Language Selection */}
           <div className="flex items-center justify-center space-x-4 pt-2">
@@ -448,6 +522,17 @@ export default function Home() {
                   </div>
                 </div>
               )}
+
+              {/* QR Kod Butonu */}
+              <div className="vintage-frame p-4 bg-wood-900/60">
+                <button
+                  onClick={() => setShowQRModal(true)}
+                  className="flex items-center space-x-3 text-gold-400 hover:text-gold-300 transition font-semibold font-body w-full justify-center"
+                >
+                  <QrCode className="w-5 h-5" />
+                  <span>{language === "tr" ? "📲 QR Kod İndir / Paylaş" : "📲 Download / Share QR Code"}</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -468,6 +553,15 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* QR Code Modal */}
+      <QRCodeModal
+        isOpen={showQRModal}
+        onClose={() => setShowQRModal(false)}
+        restaurantName={restaurantInfo.name}
+        menuUrl={menuUrl}
+        language={language}
+      />
     </div>
   );
 }

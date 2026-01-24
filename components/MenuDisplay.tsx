@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronDown, ChevronUp, Heart, ThumbsUp, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart, ThumbsUp, Search, ShoppingCart, Plus } from "lucide-react";
 import { Language, getTranslation } from "@/lib/translations";
 import { Currency, formatPrice, loadCurrency } from "@/lib/currency";
 import { isFavorite, toggleFavorite, getFavorites } from "@/lib/favorites";
@@ -27,9 +27,10 @@ interface MenuDisplayProps {
   categories: Category[];
   language: Language;
   currency: Currency;
+  onAddToCart?: (item: { id: string; name: string; price: number }) => void;
 }
 
-export default function MenuDisplay({ categories, language, currency }: MenuDisplayProps) {
+export default function MenuDisplay({ categories, language, currency, onAddToCart }: MenuDisplayProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>(
     categories.length > 0 ? categories[0].id : ""
   );
@@ -37,6 +38,7 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
   const [likes, setLikes] = useState<Record<string, number>>({});
   const [userLiked, setUserLiked] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [addedItems, setAddedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     // Favorileri yükle
@@ -63,6 +65,22 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
     setLikes((prev) => ({ ...prev, [itemId]: newLikes }));
     const liked = getLikedItems();
     setUserLiked(new Set(liked));
+  };
+
+  const handleAddToCart = (item: MenuItem) => {
+    if (onAddToCart) {
+      onAddToCart({ id: item.id, name: item.name, price: item.price });
+
+      // Görsel geri bildirim
+      setAddedItems((prev) => new Set([...prev, item.id]));
+      setTimeout(() => {
+        setAddedItems((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(item.id);
+          return newSet;
+        });
+      }, 1000);
+    }
   };
 
   // İlk kategoriyi varsayılan olarak seç
@@ -271,6 +289,29 @@ export default function MenuDisplay({ categories, language, currency }: MenuDisp
                         <span className="price-tag text-xl sm:text-2xl">
                           {formatPrice(item.price, currency)}
                         </span>
+
+                        {/* Sepete Ekle Butonu */}
+                        {onAddToCart && (
+                          <button
+                            onClick={() => handleAddToCart(item)}
+                            className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${addedItems.has(item.id)
+                                ? "bg-green-600 text-white"
+                                : "bg-primary-600 hover:bg-primary-500 text-cream-100 border border-gold-400/50"
+                              }`}
+                          >
+                            {addedItems.has(item.id) ? (
+                              <>
+                                <ShoppingCart className="w-4 h-4" />
+                                <span>{language === "tr" ? "Eklendi!" : "Added!"}</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-4 h-4" />
+                                <span>{language === "tr" ? "Sepete Ekle" : "Add to Cart"}</span>
+                              </>
+                            )}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
