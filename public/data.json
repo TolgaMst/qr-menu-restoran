@@ -278,7 +278,7 @@
         {
           "id": "48",
           "name": "Roka Salata",
-          "price": 200,
+          "price": 225,
           "category": "4"
         },
         {
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2025-12-18T14:44:11.140Z"
+  "timestamp": "2026-01-24T14:47:00.144Z"
 }
