@@ -13,62 +13,62 @@
         {
           "id": "2",
           "name": "Fix Meze",
-          "price": 650,
+          "price": 850,
           "description": "Siz istediğiniz sürece ücretsiz yenileniyor :)",
           "category": "1"
         },
         {
           "id": "3",
           "name": "Ezine Peyniri",
-          "price": 200,
+          "price": 235,
           "category": "1"
         },
         {
           "id": "4",
           "name": "Tulum Peyniri",
-          "price": 200,
+          "price": 225,
           "category": "1"
         },
         {
           "id": "5",
           "name": "Süzme Yoğurt",
-          "price": 150,
+          "price": 160,
           "category": "1"
         },
         {
           "id": "6",
           "name": "Haydari",
-          "price": 165,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "7",
           "name": "Atom",
-          "price": 160,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "8",
           "name": "Havuç Tarator",
-          "price": 165,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "9",
           "name": "Ispanak",
-          "price": 150,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "10",
           "name": "Şakşuka",
-          "price": 175,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "11",
           "name": "Babagannuş",
-          "price": 175,
+          "price": 184,
           "category": "1"
         },
         {
@@ -81,21 +81,21 @@
         {
           "id": "13",
           "name": "Humus",
-          "price": 200,
+          "price": 190,
           "description": "Tereyağlı",
           "category": "1"
         },
         {
           "id": "14",
-          "name": "Humus",
-          "price": 200,
+          "name": "Humus Tereyağlı",
+          "price": 235,
           "description": "Kaşarlı",
           "category": "1"
         },
         {
           "id": "15",
-          "name": "Humus",
-          "price": 275,
+          "name": "Humus Pastırmalı",
+          "price": 300,
           "description": "Pastırmalı",
           "category": "1"
         },
@@ -120,13 +120,13 @@
         {
           "id": "19",
           "name": "Börülce",
-          "price": 180,
+          "price": 185,
           "category": "1"
         },
         {
           "id": "20",
           "name": "Cacık",
-          "price": 165,
+          "price": 175,
           "category": "1"
         },
         {
@@ -211,7 +211,7 @@
         {
           "id": "38",
           "name": "Güveçte Yaprak Ciğer",
-          "price": 300,
+          "price": 350,
           "category": "3"
         },
         {
@@ -223,7 +223,7 @@
         {
           "id": "40",
           "name": "Kiremitte Dana Dili",
-          "price": 275,
+          "price": 300,
           "category": "3"
         },
         {
@@ -235,7 +235,7 @@
         {
           "id": "42",
           "name": "Kiremitte Kaşarlı Mantar",
-          "price": 200,
+          "price": 300,
           "category": "3"
         },
         {
@@ -247,13 +247,13 @@
         {
           "id": "44",
           "name": "Köylü Cips",
-          "price": 225,
+          "price": 250,
           "category": "3"
         },
         {
           "id": "45",
           "name": "Parmak Cips",
-          "price": 160,
+          "price": 175,
           "category": "3"
         },
         {
@@ -284,31 +284,31 @@
         {
           "id": "49",
           "name": "Mevsim Salata",
-          "price": 200,
+          "price": 225,
           "category": "4"
         },
         {
           "id": "50",
           "name": "Çoban Salata",
-          "price": 200,
+          "price": 225,
           "category": "4"
         },
         {
           "id": "51",
           "name": "Zeytin Salata",
-          "price": 225,
+          "price": 275,
           "category": "4"
         },
         {
           "id": "52",
           "name": "Kaşık Salata",
-          "price": 200,
+          "price": 225,
           "category": "4"
         },
         {
           "id": "53",
           "name": "Gavurdağı Salata",
-          "price": 250,
+          "price": 300,
           "category": "4"
         },
         {
@@ -327,13 +327,13 @@
         {
           "id": "55",
           "name": "Kebab",
-          "price": 450,
+          "price": 500,
           "category": "5"
         },
         {
           "id": "56",
           "name": "Kuşbaşı",
-          "price": 500,
+          "price": 550,
           "category": "5"
         },
         {
@@ -345,7 +345,7 @@
         {
           "id": "58",
           "name": "Köfte",
-          "price": 450,
+          "price": 500,
           "category": "5"
         },
         {
@@ -363,7 +363,7 @@
         {
           "id": "61",
           "name": "Tereyağlı Tavuk",
-          "price": 450,
+          "price": 500,
           "category": "5"
         },
         {
@@ -387,79 +387,79 @@
         {
           "id": "65",
           "name": "Bonfile",
-          "price": 700,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "66",
           "name": "Bonfile Sarma",
-          "price": 800,
+          "price": 950,
           "category": "5"
         },
         {
           "id": "67",
           "name": "Karışık Izgara (2 Kişilik)",
-          "price": 750,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "68",
           "name": "Enfes Lokum",
-          "price": 750,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "69",
           "name": "Kaşarlı Köfte",
-          "price": 475,
+          "price": 550,
           "category": "5"
         },
         {
           "id": "70",
           "name": "Beyti Kebab",
-          "price": 570,
+          "price": 600,
           "category": "5"
         },
         {
           "id": "71",
           "name": "Kazbaşı",
-          "price": 575,
+          "price": 750,
           "category": "5"
         },
         {
           "id": "72",
           "name": "Antrikot",
-          "price": 660,
+          "price": 699,
           "category": "5"
         },
         {
           "id": "73",
           "name": "Tornado",
-          "price": 750,
+          "price": 1000,
           "category": "5"
         },
         {
           "id": "74",
           "name": "Patlıcan Kebabı",
-          "price": 500,
+          "price": 600,
           "category": "5"
         },
         {
           "id": "75",
           "name": "Hawai Steak",
-          "price": 675,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "76",
           "name": "Diana Steak",
-          "price": 675,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "77",
           "name": "Şeftali Kebabı",
-          "price": 475,
+          "price": 500,
           "category": "5"
         }
       ],
@@ -472,7 +472,7 @@
         {
           "id": "78",
           "name": "Karides Güveç",
-          "price": 475,
+          "price": 500,
           "category": "6"
         },
         {
@@ -509,13 +509,13 @@
         {
           "id": "83",
           "name": "Serpme Meyve",
-          "price": 250,
+          "price": 350,
           "category": "7"
         },
         {
           "id": "84",
           "name": "Meyve Tabağı",
-          "price": 150,
+          "price": 250,
           "category": "7"
         },
         {
@@ -527,7 +527,7 @@
         {
           "id": "86",
           "name": "Kıbrıs Tatlısı",
-          "price": 630,
+          "price": 100,
           "category": "7"
         }
       ],
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-01-24T14:47:00.144Z"
+  "timestamp": "2026-01-24T15:25:57.201Z"
 }
