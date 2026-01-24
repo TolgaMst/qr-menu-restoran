@@ -540,73 +540,73 @@
         {
           "id": "87",
           "name": "Yeni Rakı 35CL",
-          "price": 625,
+          "price": 675,
           "category": "8"
         },
         {
           "id": "88",
           "name": "Yeni Rakı 50CL",
-          "price": 860,
+          "price": 935,
           "category": "8"
         },
         {
           "id": "89",
           "name": "Yeni Rakı 70CL",
-          "price": 1095,
+          "price": 1195,
           "category": "8"
         },
         {
           "id": "90",
           "name": "Yeni Rakı 100CL",
-          "price": 1425,
+          "price": 1550,
           "category": "8"
         },
         {
           "id": "91",
           "name": "Yeni Rakı Yeni Seri 35CL",
-          "price": 675,
+          "price": 750,
           "category": "8"
         },
         {
           "id": "92",
           "name": "Yeni Rakı Yeni Seri 50CL",
-          "price": 950,
+          "price": 1025,
           "category": "8"
         },
         {
           "id": "93",
           "name": "Yeni Rakı Yeni Seri 70CL",
-          "price": 1225,
+          "price": 1325,
           "category": "8"
         },
         {
           "id": "94",
           "name": "Yeni Rakı Yeni Seri 100CL",
-          "price": 1600,
+          "price": 1725,
           "category": "8"
         },
         {
           "id": "95",
           "name": "Efe Gold 35CL",
-          "price": 795,
+          "price": 850,
           "category": "8"
         },
         {
           "id": "96",
           "name": "Efe Gold 50CL",
-          "price": 1095,
+          "price": 1175,
           "category": "8"
         },
         {
           "id": "97",
           "name": "Efe Gold 70CL",
-          "price": 1225,
+          "price": 1495,
           "category": "8"
         },
         {
           "id": "98",
           "name": "Efe Gold 100CL",
-          "price": 1725,
+          "price": 1875,
           "category": "8"
         },
         {
@@ -618,73 +618,73 @@
         {
           "id": "100",
           "name": "Tekirdağ Altınseri 35CL",
-          "price": 795,
+          "price": 850,
           "category": "8"
         },
         {
           "id": "101",
           "name": "Tekirdağ Altınseri 50CL",
-          "price": 1095,
+          "price": 1175,
           "category": "8"
         },
         {
           "id": "102",
           "name": "Tekirdağ Altınseri 70CL",
-          "price": 1375,
+          "price": 1495,
           "category": "8"
         },
         {
           "id": "103",
           "name": "Tekirdağ Altınseri 100CL",
-          "price": 1725,
+          "price": 1874,
           "category": "8"
         },
         {
           "id": "104",
           "name": "Beylerbeyi Göbek 35CL",
-          "price": 945,
+          "price": 1025,
           "category": "8"
         },
         {
           "id": "105",
           "name": "Beylerbeyi Göbek 50CL",
-          "price": 1310,
+          "price": 1415,
           "category": "8"
         },
         {
           "id": "106",
           "name": "Beylerbeyi Göbek 70CL",
-          "price": 1695,
+          "price": 1850,
           "category": "8"
         },
         {
           "id": "107",
           "name": "Beylerbeyi Göbek 100CL",
-          "price": 2175,
+          "price": 2350,
           "category": "8"
         },
         {
           "id": "108",
           "name": "Tekirdağ Yaş Üzüm 35CL",
-          "price": 665,
+          "price": 715,
           "category": "8"
         },
         {
           "id": "109",
           "name": "Tekirdağ Yaş Üzüm 50CL",
-          "price": 935,
+          "price": 995,
           "category": "8"
         },
         {
           "id": "110",
           "name": "Tekirdağ Yaş Üzüm 70CL",
-          "price": 1175,
+          "price": 1275,
           "category": "8"
         },
         {
           "id": "111",
           "name": "Tekirdağ Yaş Üzüm 100CL",
-          "price": 1565,
+          "price": 1675,
           "category": "8"
         },
         {
@@ -719,7 +719,7 @@
         },
         {
           "id": "117",
-          "name": "Shivas 100CL",
+          "name": "Chivas 100CL",
           "price": 3350,
           "category": "8"
         }
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-01-24T15:25:57.201Z"
+  "timestamp": "2026-01-24T15:34:30.106Z"
 }
