@@ -1,43 +1,35 @@
-// Admin paneli için şifre yönetimi
+// Admin paneli için şifre yönetimi - Sabit şifre güvenliği
 
-const ADMIN_PASSWORD_KEY = "adminPassword";
+// Sabit admin şifresi (güvenlik için hash'lenmeli ama basitlik için düz metin)
+// Bu şifreyi değiştirmek için bu dosyayı güncelleyip GitHub'a push edin
+const HARDCODED_ADMIN_PASSWORD = "33Musto79";
 
 /**
- * Admin şifresini kaydet
+ * Admin şifresini kaydet - artık gerekli değil (sabit şifre kullanılıyor)
  */
-export const setAdminPassword = (password: string): void => {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(ADMIN_PASSWORD_KEY, password);
-  }
+export const setAdminPassword = (_password: string): void => {
+  // Artık şifre kaydedilmiyor - sabit şifre kullanılıyor
+  console.log("Şifre artık kod içinde sabit olarak tanımlı.");
 };
 
 /**
- * Admin şifresini kontrol et
+ * Admin şifresini kontrol et - sabit şifre ile karşılaştır
  */
 export const checkAdminPassword = (password: string): boolean => {
-  if (typeof window !== "undefined") {
-    const savedPassword = localStorage.getItem(ADMIN_PASSWORD_KEY);
-    return savedPassword === password;
-  }
-  return false;
+  return password === HARDCODED_ADMIN_PASSWORD;
 };
 
 /**
- * Admin şifresi var mı kontrol et
+ * Admin şifresi var mı kontrol et - şimdi her zaman true
  */
 export const hasAdminPassword = (): boolean => {
-  if (typeof window !== "undefined") {
-    return !!localStorage.getItem(ADMIN_PASSWORD_KEY);
-  }
-  return false;
+  // Sabit şifre her zaman var
+  return true;
 };
 
 /**
- * Admin şifresini sil (sıfırlama için)
+ * Admin şifresini sil - artık geçersiz (sabit şifre değiştirilemez)
  */
 export const clearAdminPassword = (): void => {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(ADMIN_PASSWORD_KEY);
-  }
+  console.log("Sabit şifre silinemez. Değiştirmek için kodu güncelleyin.");
 };
-
