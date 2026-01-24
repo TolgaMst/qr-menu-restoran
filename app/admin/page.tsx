@@ -21,10 +21,10 @@ import ThemeSelector from "@/components/ThemeSelector";
 import { Language, getTranslation, translations } from "@/lib/translations";
 import { ThemeColors, loadTheme, saveTheme, applyTheme } from "@/lib/theme";
 import { Currency, currencies, loadCurrency, saveCurrency } from "@/lib/currency";
-import { 
-  hasAdminPassword, 
-  checkAdminPassword, 
-  setAdminPassword 
+import {
+  hasAdminPassword,
+  checkAdminPassword,
+  setAdminPassword
 } from "@/lib/auth";
 import { Lock, LogOut } from "lucide-react";
 
@@ -101,7 +101,7 @@ export default function AdminPage() {
           setIsAuthenticated(true);
         }
       }
-      
+
     }
   }, []);
 
@@ -112,31 +112,31 @@ export default function AdminPage() {
         const response = await fetch("/data.json");
         if (response.ok) {
           const data = await response.json();
-          
+
           console.log("📥 Admin paneli: public/data.json'dan veriler yükleniyor...");
-          
+
           // Önce public/data.json'dan tüm verileri yükle
           if (data.restaurantInfo) {
             setRestaurantInfo(data.restaurantInfo);
             console.log("✅ Restoran bilgileri data.json'dan yüklendi");
           }
-          
+
           if (data.menuData && Array.isArray(data.menuData) && data.menuData.length > 0) {
             setCategories(data.menuData);
             console.log("✅ Menü verileri yüklendi:", data.menuData.length, "kategori");
           }
-          
+
           if (data.language && (data.language === "tr" || data.language === "en")) {
             setLanguage(data.language);
             console.log("✅ Dil yüklendi:", data.language);
           }
-          
+
           if (data.currency) {
             setDefaultCurrency(data.currency);
             saveCurrency(data.currency);
             console.log("✅ Para birimi yüklendi:", data.currency);
           }
-          
+
           if (data.theme) {
             setTheme(data.theme);
             saveTheme(data.theme);
@@ -147,7 +147,7 @@ export default function AdminPage() {
       } catch (error) {
         console.log("⚠️ Admin paneli: public/data.json bulunamadı veya hata oluştu");
       }
-      
+
       // LocalStorage'dan verileri yükle (sadece admin panelinde override için)
       // Bu sayede admin panelinde yapılan değişiklikler kaybolmaz
       const savedInfo = localStorage.getItem("restaurantInfo");
@@ -160,7 +160,7 @@ export default function AdminPage() {
           console.error("❌ LocalStorage'dan restoran bilgileri parse edilemedi:", e);
         }
       }
-      
+
       const savedMenu = localStorage.getItem("menuData");
       if (savedMenu) {
         try {
@@ -170,7 +170,7 @@ export default function AdminPage() {
           console.error("❌ LocalStorage'dan menü verileri parse edilemedi:", e);
         }
       }
-      
+
       const savedLanguage = localStorage.getItem("language") as Language;
       if (savedLanguage && (savedLanguage === "tr" || savedLanguage === "en")) {
         setLanguage(savedLanguage);
@@ -182,16 +182,16 @@ export default function AdminPage() {
         setTheme(loadedTheme);
       }
     };
-    
+
     loadData();
   }, []);
 
   // exportTimeoutRef kaldırıldı - artık manuel push kullanılıyor
-  
+
   // GitHub'a push fonksiyonu
   const pushToGitHub = async (dataStr: string) => {
     const githubToken = getGithubToken();
-    
+
     if (!githubToken) {
       console.error("❌ GitHub token eksik!");
       alert(
@@ -204,7 +204,7 @@ export default function AdminPage() {
 
     try {
       console.log("🔄 GitHub'a push ediliyor...");
-      
+
       // Önce mevcut dosyayı oku (SHA için)
       const getFileResponse = await fetch(
         `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
@@ -247,7 +247,7 @@ export default function AdminPage() {
         content: base64Content,
         branch: "main",
       };
-      
+
       // Sadece dosya varsa (sha varsa) SHA'yı ekle
       if (sha) {
         requestBody.sha = sha;
@@ -270,7 +270,7 @@ export default function AdminPage() {
       if (updateResponse.ok) {
         const result = await updateResponse.json();
         console.log("✅ GitHub'a otomatik push başarılı!", result.commit.html_url);
-        alert(language === "tr" 
+        alert(language === "tr"
           ? "✅ GitHub'a başarıyla push edildi! 2-3 dakika içinde tüm cihazlarda görünecek."
           : "✅ Successfully pushed to GitHub! Will be visible on all devices in 2-3 minutes.");
         return true;
@@ -278,7 +278,7 @@ export default function AdminPage() {
         // 409 Conflict: SHA eşleşmiyor, dosya başka biri tarafından değiştirilmiş
         // Dosyayı tekrar okuyup güncel SHA ile tekrar dene
         console.log("⚠️ 409 Conflict - Dosya güncellenmiş, güncel SHA ile tekrar deneniyor...");
-        
+
         try {
           const retryGetResponse = await fetch(
             `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
@@ -289,11 +289,11 @@ export default function AdminPage() {
               },
             }
           );
-          
+
           if (retryGetResponse.ok) {
             const retryFileData = await retryGetResponse.json();
             const retrySha = retryFileData.sha;
-            
+
             // Güncel SHA ile tekrar dene
             const retryUpdateResponse = await fetch(
               `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/public/data.json`,
@@ -312,11 +312,11 @@ export default function AdminPage() {
                 }),
               }
             );
-            
+
             if (retryUpdateResponse.ok) {
               const result = await retryUpdateResponse.json();
               console.log("✅ GitHub'a otomatik push başarılı! (Retry)", result.commit.html_url);
-              alert(language === "tr" 
+              alert(language === "tr"
                 ? "✅ GitHub'a başarıyla push edildi! (Retry ile) 2-3 dakika içinde tüm cihazlarda görünecek."
                 : "✅ Successfully pushed to GitHub! (Retry) Will be visible on all devices in 2-3 minutes.");
               return true;
@@ -328,7 +328,7 @@ export default function AdminPage() {
                 status: retryUpdateResponse.status,
                 error: retryErrorMessage,
               });
-              
+
               // Retry de başarısız olursa kullanıcıya bildir
               alert(
                 language === "tr"
@@ -358,7 +358,7 @@ export default function AdminPage() {
           error: errorMessage,
           url: `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO}`,
         });
-        
+
         // Kullanıcıya detaylı hata mesajı göster (409 hariç - o zaten retry edildi)
         if (updateResponse.status !== 409) {
           alert(
@@ -373,7 +373,7 @@ export default function AdminPage() {
       const errorMessage = error.message || error.toString() || "Unknown error";
       console.error("❌ GitHub push exception:", error);
       console.error("Hata mesajı:", errorMessage);
-      
+
       // Kullanıcıya hata mesajı göster
       alert(
         language === "tr"
@@ -383,7 +383,7 @@ export default function AdminPage() {
       return false;
     }
   };
-  
+
   // exportDataJson fonksiyonu kaldırıldı - artık sadece "Kaydet ve GitHub'a Push Et" butonu kullanılıyor
 
   const saveToLocalStorage = (data: Category[]) => {
@@ -395,11 +395,11 @@ export default function AdminPage() {
     localStorage.setItem("restaurantInfo", JSON.stringify(info));
     // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
   };
-  
+
   // Manuel push fonksiyonu - "Kaydet" butonuna basıldığında çağrılacak
   const handleSaveAndPush = async () => {
     const githubToken = getGithubToken();
-    
+
     if (!githubToken) {
       alert(
         language === "tr"
@@ -408,7 +408,7 @@ export default function AdminPage() {
       );
       return;
     }
-    
+
     const publicData = {
       menuData: categories,
       restaurantInfo: restaurantInfo,
@@ -419,10 +419,10 @@ export default function AdminPage() {
     };
 
     const dataStr = JSON.stringify(publicData, null, 2);
-    
+
     console.log("💾 Kaydediliyor ve GitHub'a push ediliyor...");
     const pushed = await pushToGitHub(dataStr);
-    
+
     if (pushed) {
       // Başarılı - alert zaten pushToGitHub içinde gösteriliyor
       console.log("✅ Tüm değişiklikler kaydedildi ve GitHub'a push edildi!");
@@ -502,7 +502,7 @@ export default function AdminPage() {
   };
 
   const [newCategoryImage, setNewCategoryImage] = useState("");
-  
+
   // Varsayılan menüyü yükle fonksiyonu
   const loadDefaultMenu = () => {
     let itemIdCounter = 1;
@@ -703,7 +703,7 @@ export default function AdminPage() {
 
     setCategories(defaultMenu);
     saveToLocalStorage(defaultMenu);
-    alert(language === "tr" 
+    alert(language === "tr"
       ? "✅ Varsayılan menü başarıyla yüklendi! (9 kategori, 150+ ürün)"
       : "✅ Default menu loaded successfully! (9 categories, 150+ products)");
   };
@@ -733,7 +733,7 @@ export default function AdminPage() {
     saveToLocalStorage(updated);
     setEditingCategory(null);
   };
-  
+
   const updateCategoryImage = (id: string, image: string) => {
     const updated = categories.map((cat) =>
       cat.id === id ? { ...cat, image: image || undefined } : cat
@@ -777,11 +777,11 @@ export default function AdminPage() {
     const updated = categories.map((cat) =>
       cat.id === categoryId
         ? {
-            ...cat,
-            items: cat.items.map((item) =>
-              item.id === itemId ? { ...item, ...updates } : item
-            ),
-          }
+          ...cat,
+          items: cat.items.map((item) =>
+            item.id === itemId ? { ...item, ...updates } : item
+          ),
+        }
         : cat
     );
     setCategories(updated);
@@ -855,21 +855,21 @@ export default function AdminPage() {
     setLoginPassword("");
   };
 
-  // Şifre ekranı
+  // Şifre ekranı - Klasik Meyhane Teması
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4">
-        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+      <div className="min-h-screen bg-gradient-to-br from-wood-950 via-wood-900 to-primary-950 flex items-center justify-center px-4">
+        <div className="vintage-frame bg-wood-900/90 backdrop-blur-sm p-8 max-w-md w-full">
           <div className="text-center mb-6">
-            <div className="bg-primary-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Lock className="w-8 h-8 text-white" />
+            <div className="bg-primary-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-gold-400">
+              <Lock className="w-8 h-8 text-gold-400" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl font-display font-bold text-cream-100 mb-2">
               {isFirstTime
                 ? getTranslation(language, "firstTimeSetup")
                 : getTranslation(language, "adminPanel")}
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className="text-cream-400 text-sm font-body">
               {isFirstTime
                 ? getTranslation(language, "firstTimeSetupDescription")
                 : getTranslation(language, "enterPassword")}
@@ -879,7 +879,7 @@ export default function AdminPage() {
           {isFirstTime ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-cream-200 mb-2 font-body">
                   {getTranslation(language, "setPassword")}
                 </label>
                 <input
@@ -890,13 +890,13 @@ export default function AdminPage() {
                     setPasswordError("");
                   }}
                   onKeyPress={(e) => e.key === "Enter" && handleFirstTimeSetup()}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-3 bg-wood-800/80 border border-gold-400/30 rounded-lg text-cream-100 placeholder-cream-500 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 font-body"
                   placeholder={getTranslation(language, "password")}
                   autoFocus
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-cream-200 mb-2 font-body">
                   {getTranslation(language, "confirmPassword")}
                 </label>
                 <input
@@ -907,16 +907,16 @@ export default function AdminPage() {
                     setPasswordError("");
                   }}
                   onKeyPress={(e) => e.key === "Enter" && handleFirstTimeSetup()}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-3 bg-wood-800/80 border border-gold-400/30 rounded-lg text-cream-100 placeholder-cream-500 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 font-body"
                   placeholder={getTranslation(language, "confirmPassword")}
                 />
               </div>
               {passwordError && (
-                <p className="text-red-600 text-sm">{passwordError}</p>
+                <p className="text-red-400 text-sm font-body">{passwordError}</p>
               )}
               <button
                 onClick={handleFirstTimeSetup}
-                className="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium"
+                className="w-full px-4 py-3 bg-primary-600 text-cream-100 rounded-lg hover:bg-primary-500 transition font-display font-semibold border border-gold-400/50"
               >
                 {getTranslation(language, "setPassword")}
               </button>
@@ -924,7 +924,7 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-cream-200 mb-2 font-body">
                   {getTranslation(language, "password")}
                 </label>
                 <input
@@ -935,17 +935,17 @@ export default function AdminPage() {
                     setPasswordError("");
                   }}
                   onKeyPress={(e) => e.key === "Enter" && handleLogin()}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-3 bg-wood-800/80 border border-gold-400/30 rounded-lg text-cream-100 placeholder-cream-500 focus:outline-none focus:ring-2 focus:ring-gold-400/50 focus:border-gold-400 font-body"
                   placeholder={getTranslation(language, "enterPassword")}
                   autoFocus
                 />
               </div>
               {passwordError && (
-                <p className="text-red-600 text-sm">{passwordError}</p>
+                <p className="text-red-400 text-sm font-body">{passwordError}</p>
               )}
               <button
                 onClick={handleLogin}
-                className="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition font-medium"
+                className="w-full px-4 py-3 bg-primary-600 text-cream-100 rounded-lg hover:bg-primary-500 transition font-display font-semibold border border-gold-400/50"
               >
                 {getTranslation(language, "login")}
               </button>
@@ -957,12 +957,12 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-wood-950 to-wood-900">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-wood-900/95 backdrop-blur-sm border-b border-gold-400/30 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-display font-bold text-cream-100">
               {getTranslation(language, "adminPanel")}
             </h1>
             <div className="flex flex-wrap items-center gap-2 sm:gap-4 w-full sm:w-auto">
@@ -972,21 +972,21 @@ export default function AdminPage() {
               />
               <button
                 onClick={() => setShowQRCode(!showQRCode)}
-                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition text-sm sm:text-base"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-primary-600 text-cream-100 rounded-lg hover:bg-primary-500 transition text-sm sm:text-base border border-gold-400/50"
               >
-                <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
+                <QrCode className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400" />
                 <span className="hidden sm:inline">{getTranslation(language, "showQRCode")}</span>
               </button>
               <a
                 href="/"
-                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm sm:text-base"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-wood-800 text-cream-200 rounded-lg hover:bg-wood-700 transition text-sm sm:text-base border border-gold-400/30"
               >
-                <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Home className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400" />
                 <span className="hidden sm:inline">{getTranslation(language, "viewMenu")}</span>
               </a>
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm sm:text-base"
+                className="flex items-center space-x-2 px-3 sm:px-4 py-2 bg-red-900/50 text-red-300 rounded-lg hover:bg-red-800/50 transition text-sm sm:text-base border border-red-500/30"
               >
                 <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
                 <span className="hidden sm:inline">{getTranslation(language, "logout")}</span>
@@ -998,29 +998,29 @@ export default function AdminPage() {
 
       {/* QR Code Modal */}
       {showQRCode && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="vintage-frame bg-wood-900/95 p-8 max-w-md w-full mx-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">
+              <h2 className="text-2xl font-display font-bold text-cream-100">
                 {getTranslation(language, "qrCode")}
               </h2>
               <button
                 onClick={() => setShowQRCode(false)}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-cream-400 hover:text-cream-100 transition"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
             <div className="flex flex-col items-center space-y-4">
-              <div className="bg-white p-4 rounded-lg">
+              <div className="bg-white p-4 rounded-lg border-2 border-gold-400">
                 <QRCodeSVG value={getCurrentUrl()} size={256} />
               </div>
-              <p className="text-gray-600 text-center">
+              <p className="text-cream-400 text-center font-body">
                 {getTranslation(language, "qrCodeDescription")}
               </p>
               <a
                 href={getCurrentUrl()}
-                className="text-primary-600 hover:text-primary-700 text-sm"
+                className="text-gold-400 hover:text-gold-300 text-sm font-body"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -1033,45 +1033,41 @@ export default function AdminPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-4 sm:mb-6 overflow-x-auto">
-          <div className="flex border-b min-w-max sm:min-w-0">
+        <div className="vintage-frame bg-wood-900/80 backdrop-blur-sm mb-4 sm:mb-6 overflow-x-auto">
+          <div className="flex border-b border-gold-400/30 min-w-max sm:min-w-0">
             <button
               onClick={() => setActiveTab("menu")}
-              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
-                activeTab === "menu"
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-display font-medium text-sm sm:text-base whitespace-nowrap transition ${activeTab === "menu"
+                ? "text-gold-400 border-b-2 border-gold-400"
+                : "text-cream-400 hover:text-cream-200"
+                }`}
             >
               {getTranslation(language, "menuManagement")}
             </button>
             <button
               onClick={() => setActiveTab("info")}
-              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
-                activeTab === "info"
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-display font-medium text-sm sm:text-base whitespace-nowrap transition ${activeTab === "info"
+                ? "text-gold-400 border-b-2 border-gold-400"
+                : "text-cream-400 hover:text-cream-200"
+                }`}
             >
               {getTranslation(language, "restaurantInfo")}
             </button>
             <button
               onClick={() => setActiveTab("theme")}
-              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
-                activeTab === "theme"
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-display font-medium text-sm sm:text-base whitespace-nowrap transition ${activeTab === "theme"
+                ? "text-gold-400 border-b-2 border-gold-400"
+                : "text-cream-400 hover:text-cream-200"
+                }`}
             >
               {getTranslation(language, "themeSettings")}
             </button>
             <button
               onClick={() => setActiveTab("currency")}
-              className={`px-3 sm:px-6 py-2 sm:py-3 font-medium text-sm sm:text-base whitespace-nowrap ${
-                activeTab === "currency"
-                  ? "text-primary-600 border-b-2 border-primary-600"
-                  : "text-gray-500 hover:text-gray-700"
-              }`}
+              className={`px-3 sm:px-6 py-2 sm:py-3 font-display font-medium text-sm sm:text-base whitespace-nowrap transition ${activeTab === "currency"
+                ? "text-gold-400 border-b-2 border-gold-400"
+                : "text-cream-400 hover:text-cream-200"
+                }`}
             >
               {getTranslation(language, "currencySettings")}
             </button>
@@ -1082,21 +1078,21 @@ export default function AdminPage() {
         {activeTab === "menu" && (
           <div className="space-y-6">
             {/* Varsayılan Menüyü Yükle Butonu */}
-            <div className="bg-blue-50 rounded-lg shadow-sm p-4 border-2 border-blue-200">
+            <div className="vintage-frame bg-primary-900/30 p-4 border-2 border-primary-400/50">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-blue-900 mb-1">
                     {language === "tr" ? "📋 Varsayılan Menüyü Yükle" : "📋 Load Default Menu"}
                   </h3>
                   <p className="text-sm text-blue-700">
-                    {language === "tr" 
+                    {language === "tr"
                       ? "PDF'den eklenen tüm ürünleri (9 kategori, 150+ ürün) yüklemek için bu butona basın."
                       : "Click this button to load all products from PDF (9 categories, 150+ products)."}
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    if (confirm(language === "tr" 
+                    if (confirm(language === "tr"
                       ? "Varsayılan menüyü yüklemek istediğinize emin misiniz? Mevcut menü verileri silinecek!"
                       : "Are you sure you want to load the default menu? Current menu data will be deleted!")) {
                       loadDefaultMenu();
@@ -1108,7 +1104,7 @@ export default function AdminPage() {
                 </button>
               </div>
             </div>
-            
+
             {/* Add Category */}
             <div className="bg-white rounded-lg shadow-sm p-6">
               <div className="space-y-4">
@@ -1383,7 +1379,7 @@ export default function AdminPage() {
                 </div>
               </div>
             ))}
-            
+
             {/* Kaydet Butonu */}
             <div className="mt-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
               <button
@@ -1407,18 +1403,18 @@ export default function AdminPage() {
                   {language === "tr" ? "⚠️ GitHub Token Gerekli" : "⚠️ GitHub Token Required"}
                 </h3>
                 <p className="text-sm text-yellow-700 mb-2">
-                  {language === "tr" 
+                  {language === "tr"
                     ? "GitHub'a push yapabilmek için token gerekir. Token Cloudflare Pages'de environment variable olarak ayarlanmalıdır."
                     : "Token is required to push to GitHub. Token must be set as environment variable in Cloudflare Pages."}
                 </p>
                 <p className="text-xs text-yellow-600">
-                  {language === "tr" 
+                  {language === "tr"
                     ? "Cloudflare Pages → Settings → Environment Variables → NEXT_PUBLIC_GITHUB_TOKEN ekleyin"
                     : "Cloudflare Pages → Settings → Environment Variables → Add NEXT_PUBLIC_GITHUB_TOKEN"}
                 </p>
               </div>
             )}
-            
+
             {/* Kaydet Butonu */}
             <div className="mb-6 p-4 bg-green-50 rounded-lg border-2 border-green-300">
               <button
@@ -1429,7 +1425,7 @@ export default function AdminPage() {
                 <span>{language === "tr" ? "💾 Kaydet ve GitHub'a Push Et" : "💾 Save and Push to GitHub"}</span>
               </button>
             </div>
-            
+
             {/* Yedekleme ve Geri Yükleme */}
             <div className="mb-6 p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -1627,7 +1623,7 @@ export default function AdminPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Logo ve Hoş Geldiniz Mesajı */}
               <div className="border-t pt-6 mt-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
@@ -1701,7 +1697,7 @@ export default function AdminPage() {
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      {language === "tr" 
+                      {language === "tr"
                         ? "Boş bırakırsanız varsayılan 'Hoş Geldiniz' mesajı gösterilir."
                         : "Leave empty to show default 'Welcome' message."}
                     </p>
@@ -1733,7 +1729,7 @@ export default function AdminPage() {
                   {getTranslation(language, "currency")} ({getTranslation(language, "currencySettings")})
                 </label>
                 <p className="text-sm text-gray-500 mb-4">
-                  {language === "tr" 
+                  {language === "tr"
                     ? "Varsayılan para birimini seçin. Müşteriler menüde farklı para birimleri arasında geçiş yapabilir."
                     : "Select the default currency. Customers can switch between different currencies in the menu."}
                 </p>
@@ -1746,11 +1742,10 @@ export default function AdminPage() {
                         saveCurrency(curr.code);
                         // Otomatik push kaldırıldı - sadece "Kaydet" butonuna basıldığında push edilecek
                       }}
-                      className={`p-4 rounded-lg border-2 transition-all text-left ${
-                        defaultCurrency === curr.code
-                          ? "border-primary-600 bg-primary-50 ring-2 ring-primary-200"
-                          : "border-gray-200 hover:border-gray-300"
-                      }`}
+                      className={`p-4 rounded-lg border-2 transition-all text-left ${defaultCurrency === curr.code
+                        ? "border-primary-600 bg-primary-50 ring-2 ring-primary-200"
+                        : "border-gray-200 hover:border-gray-300"
+                        }`}
                     >
                       <div className="font-bold text-lg mb-1">
                         {curr.symbol} {curr.code}
