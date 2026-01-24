@@ -95,8 +95,8 @@ export function createWhatsAppOrderMessage(
 
         message += `━━━━━━━━━━━━━━━\n`;
         message += `💰 *Toplam:* ${total.toFixed(2)} ${currency}\n\n`;
-        message += `📍 *Teslimat Bilgileri:*\n`;
-        message += `Adres: \n`;
+        message += `🪑 *Sipariş Bilgileri:*\n`;
+        message += `Masa Numarası: \n`;
         message += `Not: \n`;
 
         return message;
@@ -111,8 +111,8 @@ export function createWhatsAppOrderMessage(
 
         message += `━━━━━━━━━━━━━━━\n`;
         message += `💰 *Total:* ${total.toFixed(2)} ${currency}\n\n`;
-        message += `📍 *Delivery Info:*\n`;
-        message += `Address: \n`;
+        message += `🪑 *Order Info:*\n`;
+        message += `Table Number: \n`;
         message += `Note: \n`;
 
         return message;
