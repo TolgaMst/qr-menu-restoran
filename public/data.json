@@ -13,62 +13,62 @@
         {
           "id": "2",
           "name": "Fix Meze",
-          "price": 850,
+          "price": 900,
           "description": "Siz istediğiniz sürece ücretsiz yenileniyor :)",
           "category": "1"
         },
         {
           "id": "3",
           "name": "Ezine Peyniri",
-          "price": 235,
+          "price": 250,
           "category": "1"
         },
         {
           "id": "4",
           "name": "Tulum Peyniri",
-          "price": 225,
+          "price": 250,
           "category": "1"
         },
         {
           "id": "5",
           "name": "Süzme Yoğurt",
-          "price": 160,
+          "price": 175,
           "category": "1"
         },
         {
           "id": "6",
           "name": "Haydari",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "7",
           "name": "Atom",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "8",
           "name": "Havuç Tarator",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "9",
           "name": "Ispanak",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "10",
           "name": "Şakşuka",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "11",
           "name": "Babagannuş",
-          "price": 184,
+          "price": 200,
           "category": "1"
         },
         {
@@ -81,14 +81,14 @@
         {
           "id": "13",
           "name": "Humus",
-          "price": 190,
+          "price": 200,
           "description": "Tereyağlı",
           "category": "1"
         },
         {
           "id": "14",
           "name": "Humus Tereyağlı",
-          "price": 235,
+          "price": 250,
           "description": "Kaşarlı",
           "category": "1"
         },
@@ -108,13 +108,13 @@
         {
           "id": "17",
           "name": "Yeşil Zeytin",
-          "price": 165,
+          "price": 180,
           "category": "1"
         },
         {
           "id": "18",
           "name": "Pancar",
-          "price": 170,
+          "price": 190,
           "category": "1"
         },
         {
@@ -126,13 +126,13 @@
         {
           "id": "20",
           "name": "Cacık",
-          "price": 175,
+          "price": 190,
           "category": "1"
         },
         {
           "id": "21",
           "name": "Söğüş",
-          "price": 150,
+          "price": 175,
           "category": "1"
         },
         {
@@ -144,7 +144,7 @@
         {
           "id": "23",
           "name": "Kaya Koruğu",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
@@ -156,31 +156,31 @@
         {
           "id": "25",
           "name": "Brokoli",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "26",
           "name": "Tahin Tarator",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
           "id": "27",
           "name": "Muhammara",
-          "price": 225,
+          "price": 250,
           "category": "1"
         },
         {
           "id": "28",
           "name": "Çubuk Turşu",
-          "price": 150,
+          "price": 175,
           "category": "1"
         },
         {
           "id": "29",
           "name": "Biber Yoğurtlama",
-          "price": 180,
+          "price": 200,
           "category": "1"
         },
         {
@@ -192,7 +192,7 @@
         {
           "id": "31",
           "name": "Peynirli Kiraz Biber",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-01-24T15:34:30.106Z"
+  "timestamp": "2026-02-02T15:46:41.442Z"
 }
