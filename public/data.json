@@ -241,7 +241,7 @@
         {
           "id": "43",
           "name": "Kızarmış Hellim Peyniri (Porsiyon)",
-          "price": 260,
+          "price": 275,
           "category": "3"
         },
         {
@@ -253,7 +253,7 @@
         {
           "id": "45",
           "name": "Parmak Cips",
-          "price": 175,
+          "price": 200,
           "category": "3"
         },
         {
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-02-02T15:46:41.442Z"
+  "timestamp": "2026-02-02T15:47:07.610Z"
 }
