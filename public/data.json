@@ -327,13 +327,13 @@
         {
           "id": "55",
           "name": "Kebab",
-          "price": 500,
+          "price": 550,
           "category": "5"
         },
         {
           "id": "56",
           "name": "Kuşbaşı",
-          "price": 550,
+          "price": 600,
           "category": "5"
         },
         {
@@ -345,25 +345,25 @@
         {
           "id": "58",
           "name": "Köfte",
-          "price": 500,
+          "price": 550,
           "category": "5"
         },
         {
           "id": "59",
           "name": "Tavuk Kanat",
-          "price": 425,
+          "price": 450,
           "category": "5"
         },
         {
           "id": "60",
           "name": "Tavuk Şiş",
-          "price": 400,
+          "price": 450,
           "category": "5"
         },
         {
           "id": "61",
           "name": "Tereyağlı Tavuk",
-          "price": 500,
+          "price": 550,
           "category": "5"
         },
         {
@@ -387,37 +387,37 @@
         {
           "id": "65",
           "name": "Bonfile",
-          "price": 800,
+          "price": 900,
           "category": "5"
         },
         {
           "id": "66",
           "name": "Bonfile Sarma",
-          "price": 950,
+          "price": 1000,
           "category": "5"
         },
         {
           "id": "67",
           "name": "Karışık Izgara (2 Kişilik)",
-          "price": 800,
+          "price": 900,
           "category": "5"
         },
         {
           "id": "68",
           "name": "Enfes Lokum",
-          "price": 800,
+          "price": 900,
           "category": "5"
         },
         {
           "id": "69",
           "name": "Kaşarlı Köfte",
-          "price": 550,
+          "price": 549,
           "category": "5"
         },
         {
           "id": "70",
           "name": "Beyti Kebab",
-          "price": 600,
+          "price": 650,
           "category": "5"
         },
         {
@@ -429,13 +429,13 @@
         {
           "id": "72",
           "name": "Antrikot",
-          "price": 699,
+          "price": 800,
           "category": "5"
         },
         {
           "id": "73",
           "name": "Tornado",
-          "price": 1000,
+          "price": 1250,
           "category": "5"
         },
         {
@@ -459,7 +459,7 @@
         {
           "id": "77",
           "name": "Şeftali Kebabı",
-          "price": 500,
+          "price": 550,
           "category": "5"
         }
       ],
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-02-12T14:14:49.630Z"
+  "timestamp": "2026-02-12T14:21:10.307Z"
 }
