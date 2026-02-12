@@ -339,7 +339,7 @@
         {
           "id": "57",
           "name": "Pirzola",
-          "price": 650,
+          "price": 700,
           "category": "5"
         },
         {
@@ -818,5 +818,5 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-02-02T15:47:07.610Z"
+  "timestamp": "2026-02-12T14:14:49.630Z"
 }
