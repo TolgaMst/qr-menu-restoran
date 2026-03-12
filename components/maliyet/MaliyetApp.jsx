@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useLocalStorage } from '@/lib/maliyet/useLocalStorage'
+import { getMenuItems, syncMenuToMaliyet } from '@/lib/maliyet/menuSync'
 import Layout from '@/components/maliyet/Layout'
 import Dashboard from '@/components/maliyet/Dashboard'
 import MaterialList from '@/components/maliyet/MaterialList'
@@ -18,6 +19,20 @@ export default function MaliyetApp({ onLogout }) {
   const [settings, setSettings] = useLocalStorage('settings', { targetProfitMargin: 0 })
   const [theme, setTheme] = useLocalStorage('theme', 'light')
   const [selectedProductId, setSelectedProductId] = useState(null)
+  const [menuItems, setMenuItems] = useState([])
+
+  // Menü ürünlerini oku ve fiyat senkronizasyonu yap
+  useEffect(() => {
+    const items = getMenuItems()
+    setMenuItems(items)
+    // Menüden gelen fiyat değişikliklerini maliyet'e uygula
+    if (items.length > 0 && products.length > 0) {
+      const synced = syncMenuToMaliyet(products)
+      if (synced !== products) {
+        setProducts(synced)
+      }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
@@ -62,6 +77,7 @@ export default function MaliyetApp({ onLogout }) {
             setCategories={setCategories}
             settings={settings}
             onViewProduct={handleViewProduct}
+            menuItems={menuItems}
           />
         )
       case 'product-detail':

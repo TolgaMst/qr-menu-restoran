@@ -72,6 +72,39 @@ export default function AdminPage() {
 
   const saveToLocalStorage = (data: Category[]) => {
     localStorage.setItem("menuData", JSON.stringify(data));
+
+    // Maliyet ürünleriyle fiyat senkronizasyonu
+    try {
+      const maliyetRaw = localStorage.getItem("maliyet_products");
+      if (maliyetRaw) {
+        const maliyetProducts = JSON.parse(maliyetRaw);
+        // menuData'daki tüm ürünleri düz haritaya çevir
+        const menuPriceMap = new Map<string, number>();
+        for (const cat of data) {
+          for (const item of cat.items) {
+            menuPriceMap.set(item.id, item.price);
+          }
+        }
+        // Eşleşen maliyet ürünlerinin sellingPrice'ını güncelle
+        let changed = false;
+        const updated = maliyetProducts.map((p: any) => {
+          if (p.menuItemId && menuPriceMap.has(p.menuItemId)) {
+            const newPrice = menuPriceMap.get(p.menuItemId)!;
+            if (p.sellingPrice !== newPrice) {
+              changed = true;
+              return { ...p, sellingPrice: newPrice };
+            }
+          }
+          return p;
+        });
+        if (changed) {
+          localStorage.setItem("maliyet_products", JSON.stringify(updated));
+        }
+      }
+    } catch {
+      // ignore sync errors
+    }
+
     setHasChanges(true);
   };
 

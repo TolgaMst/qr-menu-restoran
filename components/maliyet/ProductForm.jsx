@@ -4,13 +4,14 @@ import { formatCurrency, calculateFullCost } from '@/lib/maliyet/calculations'
 
 const YIELD_UNITS = ['adet', 'porsiyon', 'dilim', 'bardak', 'tabak', 'kişilik']
 
-export default function ProductForm({ onSave, onCancel, editingProduct, materials, categories, onAddCategory, settings }) {
+export default function ProductForm({ onSave, onCancel, editingProduct, materials, categories, onAddCategory, settings, menuItems = [], linkedMenuItemIds = [] }) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [newCategory, setNewCategory] = useState('')
   const [showNewCategory, setShowNewCategory] = useState(false)
   const [sellingPrice, setSellingPrice] = useState('')
+  const [menuItemId, setMenuItemId] = useState('')
   const [yieldAmount, setYieldAmount] = useState('')
   const [yieldUnit, setYieldUnit] = useState('adet')
   const [productMaterials, setProductMaterials] = useState([])
@@ -32,6 +33,7 @@ export default function ProductForm({ onSave, onCancel, editingProduct, material
       setWasteRate(editingProduct.wasteRate != null ? editingProduct.wasteRate.toString() : '')
       setExtraCosts(editingProduct.extraCosts != null ? editingProduct.extraCosts.toString() : '')
       setVatRate(editingProduct.vatRate != null ? editingProduct.vatRate.toString() : '')
+      setMenuItemId(editingProduct.menuItemId || '')
     }
   }, [editingProduct])
 
@@ -91,6 +93,7 @@ export default function ProductForm({ onSave, onCancel, editingProduct, material
       wasteRate: wasteRate !== '' ? parseFloat(wasteRate) || 0 : null,
       extraCosts: extraCosts !== '' ? parseFloat(extraCosts) || 0 : null,
       vatRate: vatRate !== '' ? parseFloat(vatRate) || 0 : null,
+      menuItemId: menuItemId || null,
     })
   }
 
@@ -142,6 +145,32 @@ export default function ProductForm({ onSave, onCancel, editingProduct, material
             </div>
           )}
         </div>
+        {menuItems.length > 0 && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Menü Bağlantısı</label>
+            <select value={menuItemId} onChange={e => {
+              const newId = e.target.value
+              setMenuItemId(newId)
+              if (newId) {
+                const mi = menuItems.find(m => m.id === newId)
+                if (mi) {
+                  if (!sellingPrice) setSellingPrice(mi.price.toString())
+                  if (!name) setName(mi.name)
+                }
+              }
+            }} className={inputCls}>
+              <option value="">Bağlantı yok</option>
+              {menuItems.map(m => {
+                const alreadyLinked = linkedMenuItemIds.includes(m.id) && m.id !== menuItemId
+                return (
+                  <option key={m.id} value={m.id} disabled={alreadyLinked}>
+                    {m.name} - {m.categoryName} ({m.price}₺){alreadyLinked ? ' (bağlı)' : ''}
+                  </option>
+                )
+              })}
+            </select>
+          </div>
+        )}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Reçete Miktarı</label>
           <div className="flex gap-1">

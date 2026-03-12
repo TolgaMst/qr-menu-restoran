@@ -2,12 +2,15 @@
 import { useState } from 'react'
 import ProductForm from '@/components/maliyet/ProductForm'
 import { generateId, formatCurrency, calculateProductCost, calculateProfitPercentage, calculateUnitCost, getProductCostParams, calculateFullCost } from '@/lib/maliyet/calculations'
+import { syncMaliyetToMenu } from '@/lib/maliyet/menuSync'
 
-export default function ProductList({ products, setProducts, materials, categories, setCategories, settings, onViewProduct }) {
+export default function ProductList({ products, setProducts, materials, categories, setCategories, settings, onViewProduct, menuItems = [] }) {
   const [showForm, setShowForm] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
   const [search, setSearch] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
+  const [showImportModal, setShowImportModal] = useState(false)
+  const [selectedImports, setSelectedImports] = useState([])
 
   const filteredProducts = products.filter(p => {
     const matchName = p.name.toLowerCase().includes(search.toLowerCase())
@@ -22,13 +25,54 @@ export default function ProductList({ products, setProducts, materials, categori
   }
 
   const handleSave = (data) => {
+    let updatedProducts
     if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...data } : p))
+      updatedProducts = products.map(p => p.id === editingProduct.id ? { ...p, ...data } : p)
       setEditingProduct(null)
     } else {
-      setProducts([...products, { ...data, id: generateId(), createdAt: new Date().toISOString() }])
+      updatedProducts = [...products, { ...data, id: generateId(), createdAt: new Date().toISOString() }]
     }
+    setProducts(updatedProducts)
+    // Maliyet → Menü senkronizasyonu
+    syncMaliyetToMenu(updatedProducts)
     setShowForm(false)
+  }
+
+  // Menüden seçilen ürünleri maliyet'e aktar
+  const handleImportFromMenu = () => {
+    if (selectedImports.length === 0) return
+    const newProducts = selectedImports.map(menuItem => ({
+      id: generateId(),
+      name: menuItem.name,
+      description: menuItem.description || '',
+      category: menuItem.categoryName,
+      sellingPrice: menuItem.price,
+      yield: null,
+      yieldUnit: null,
+      materials: [],
+      wasteRate: null,
+      extraCosts: null,
+      vatRate: null,
+      menuItemId: menuItem.id,
+      createdAt: new Date().toISOString(),
+    }))
+    // Kategorileri de ekle
+    const existingCats = categories?.products || []
+    const newCats = [...new Set(selectedImports.map(m => m.categoryName).filter(c => c && !existingCats.includes(c)))]
+    if (newCats.length > 0) {
+      setCategories({ ...categories, products: [...existingCats, ...newCats] })
+    }
+    setProducts([...products, ...newProducts])
+    setSelectedImports([])
+    setShowImportModal(false)
+  }
+
+  const toggleImportSelection = (menuItem) => {
+    setSelectedImports(prev =>
+      prev.find(m => m.id === menuItem.id)
+        ? prev.filter(m => m.id !== menuItem.id)
+        : [...prev, menuItem]
+    )
   }
 
   const handleDuplicate = (product) => {
@@ -72,16 +116,82 @@ export default function ProductList({ products, setProducts, materials, categori
             </select>
           )}
         </div>
-        <button onClick={() => { setShowForm(true); setEditingProduct(null) }}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-          Ürün Oluştur
-        </button>
+        <div className="flex gap-2">
+          {menuItems.length > 0 && (
+            <button onClick={() => { setShowImportModal(true); setSelectedImports([]) }}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-lg transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
+              Menüden İçe Aktar
+            </button>
+          )}
+          <button onClick={() => { setShowForm(true); setEditingProduct(null) }}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+            Ürün Oluştur
+          </button>
+        </div>
       </div>
 
       {showForm && (
         <ProductForm onSave={handleSave} onCancel={handleCancel} editingProduct={editingProduct}
-          materials={materials} categories={categories} onAddCategory={handleAddCategory} settings={settings} />
+          materials={materials} categories={categories} onAddCategory={handleAddCategory} settings={settings}
+          menuItems={menuItems} linkedMenuItemIds={products.filter(p => p.menuItemId).map(p => p.menuItemId)} />
+      )}
+
+      {/* Menüden İçe Aktar Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowImportModal(false)}>
+          <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="p-4 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white">Menüden İçe Aktar</h3>
+              <button onClick={() => setShowImportModal(false)} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-4 overflow-y-auto max-h-[60vh] space-y-2">
+              {(() => {
+                const linkedIds = new Set(products.filter(p => p.menuItemId).map(p => p.menuItemId))
+                const availableItems = menuItems.filter(m => !linkedIds.has(m.id))
+                if (availableItems.length === 0) {
+                  return <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">Tüm menü ürünleri zaten bağlı.</p>
+                }
+                // Kategoriye göre grupla
+                const grouped = {}
+                for (const item of availableItems) {
+                  const cat = item.categoryName || 'Diğer'
+                  if (!grouped[cat]) grouped[cat] = []
+                  grouped[cat].push(item)
+                }
+                return Object.entries(grouped).map(([catName, items]) => (
+                  <div key={catName}>
+                    <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-1">{catName}</h4>
+                    {items.map(item => {
+                      const isSelected = selectedImports.find(m => m.id === item.id)
+                      return (
+                        <button key={item.id} type="button" onClick={() => toggleImportSelection(item)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition-colors mb-1 ${
+                            isSelected
+                              ? 'bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700'
+                              : 'bg-gray-50 dark:bg-gray-800 border border-transparent hover:bg-gray-100 dark:hover:bg-gray-700'
+                          }`}>
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">{item.name}</span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">{formatCurrency(item.price)}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                ))
+              })()}
+            </div>
+            <div className="p-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+              <span className="text-sm text-gray-500 dark:text-gray-400">{selectedImports.length} ürün seçildi</span>
+              <button onClick={handleImportFromMenu} disabled={selectedImports.length === 0}
+                className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition-colors">
+                İçe Aktar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {filteredProducts.length === 0 ? (
@@ -115,9 +225,14 @@ export default function ProductList({ products, setProducts, materials, categori
                     <div>
                       <h3 className="font-semibold text-gray-900 dark:text-white">{product.name}</h3>
                       {product.description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{product.description}</p>}
-                      {product.category && (
-                        <span className="inline-flex mt-1 px-2 py-0.5 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">{product.category}</span>
-                      )}
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {product.category && (
+                          <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full">{product.category}</span>
+                        )}
+                        {product.menuItemId && (
+                          <span className="inline-flex px-2 py-0.5 text-xs font-medium bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full">Menü</span>
+                        )}
+                      </div>
                     </div>
                     <div className="flex flex-col items-end gap-1">
                       <span className={`inline-flex px-2 py-0.5 text-xs font-bold rounded-full ${
