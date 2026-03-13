@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-13T22:09:26.333Z",
+  "timestamp": "2026-03-13T22:10:35.685Z",
   "maliyetData": {
     "products": [
       {
@@ -1377,7 +1377,7 @@
         "createdAt": "2026-03-13T12:03:24.660Z"
       },
       {
-        "id": "mmpg8v0y03yu44ecq79n",
+        "id": "mmpgaanxsn8z6eiodi8",
         "name": "Kıbrıs Tatlısı",
         "description": "",
         "category": "MEYVE",
@@ -1389,7 +1389,7 @@
         "extraCosts": null,
         "vatRate": null,
         "menuItemId": "86",
-        "createdAt": "2026-03-13T22:09:23.218Z"
+        "createdAt": "2026-03-13T22:10:30.141Z"
       }
     ],
     "materials": [],
@@ -1406,6 +1406,6 @@
     "settings": {
       "targetProfitMargin": 0
     },
-    "lastUpdated": "2026-03-13T22:09:26.333Z"
+    "lastUpdated": "2026-03-13T22:10:35.685Z"
   }
 }
