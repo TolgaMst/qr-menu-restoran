@@ -1,7 +1,8 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useLocalStorage } from '@/lib/maliyet/useLocalStorage'
 import { getMenuItems, syncMenuToMaliyet } from '@/lib/maliyet/menuSync'
+import { loadMaliyetData, saveMaliyetData } from '@/lib/maliyet/githubSync'
 import Layout from '@/components/maliyet/Layout'
 import Dashboard from '@/components/maliyet/Dashboard'
 import MaterialList from '@/components/maliyet/MaterialList'
@@ -20,19 +21,67 @@ export default function MaliyetApp({ onLogout }) {
   const [theme, setTheme] = useLocalStorage('theme', 'light')
   const [selectedProductId, setSelectedProductId] = useState(null)
   const [menuItems, setMenuItems] = useState([])
+  const [hasChanges, setHasChanges] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false)
+  const initialLoadDone = useRef(false)
+
+  // Uygulama açıldığında remote verileri yükle
+  useEffect(() => {
+    if (initialLoadDone.current) return
+    initialLoadDone.current = true
+
+    loadMaliyetData().then(remoteData => {
+      if (remoteData) {
+        if (remoteData.products?.length > 0) setProducts(remoteData.products)
+        if (remoteData.materials?.length > 0) setMaterials(remoteData.materials)
+        if (remoteData.categories) setCategories(remoteData.categories)
+        if (remoteData.settings) setSettings(remoteData.settings)
+      }
+      setDataLoaded(true)
+    }).catch(() => {
+      setDataLoaded(true)
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Menü ürünlerini oku ve fiyat senkronizasyonu yap
   useEffect(() => {
+    if (!dataLoaded) return
     const items = getMenuItems()
     setMenuItems(items)
-    // Menüden gelen fiyat değişikliklerini maliyet'e uygula
     if (items.length > 0 && products.length > 0) {
       const synced = syncMenuToMaliyet(products)
       if (synced !== products) {
         setProducts(synced)
       }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dataLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Veri değişikliklerini takip et (ilk yükleme sonrası)
+  useEffect(() => {
+    if (dataLoaded) setHasChanges(true)
+  }, [materials, products, categories, settings]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // İlk yükleme tamamlandığında hasChanges'ı sıfırla
+  useEffect(() => {
+    if (dataLoaded) {
+      const timer = setTimeout(() => setHasChanges(false), 500)
+      return () => clearTimeout(timer)
+    }
+  }, [dataLoaded])
+
+  const handleSave = useCallback(async () => {
+    setIsSaving(true)
+    try {
+      await saveMaliyetData({ products, materials, categories, settings })
+      setHasChanges(false)
+      alert('Veriler kaydedildi! 2-3 dakika içinde tüm cihazlarda görünecek.')
+    } catch (err) {
+      alert('Kaydetme hatası: ' + err.message)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [products, materials, categories, settings])
 
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
 
@@ -116,7 +165,8 @@ export default function MaliyetApp({ onLogout }) {
 
   return (
     <div className={theme === 'dark' ? 'dark' : ''}>
-      <Layout activeTab={activeTab} setActiveTab={setActiveTab} theme={theme} toggleTheme={toggleTheme} onLogout={onLogout}>
+      <Layout activeTab={activeTab} setActiveTab={setActiveTab} theme={theme} toggleTheme={toggleTheme} onLogout={onLogout}
+        hasChanges={hasChanges} isSaving={isSaving} onSave={handleSave}>
         {renderContent()}
       </Layout>
     </div>
