@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-13T12:19:37.955Z",
+  "timestamp": "2026-03-13T22:09:26.333Z",
   "maliyetData": {
     "products": [
       {
@@ -1375,6 +1375,21 @@
         "vatRate": null,
         "menuItemId": "82",
         "createdAt": "2026-03-13T12:03:24.660Z"
+      },
+      {
+        "id": "mmpg8v0y03yu44ecq79n",
+        "name": "Kıbrıs Tatlısı",
+        "description": "",
+        "category": "MEYVE",
+        "sellingPrice": 100,
+        "yield": null,
+        "yieldUnit": null,
+        "materials": [],
+        "wasteRate": null,
+        "extraCosts": null,
+        "vatRate": null,
+        "menuItemId": "86",
+        "createdAt": "2026-03-13T22:09:23.218Z"
       }
     ],
     "materials": [],
@@ -1384,12 +1399,13 @@
         "ARA SICAK",
         "ANA YEMEKLER",
         "DENIZDEN",
-        "ALKOLLÜ İÇECEKLER"
+        "ALKOLLÜ İÇECEKLER",
+        "MEYVE"
       ]
     },
     "settings": {
       "targetProfitMargin": 0
     },
-    "lastUpdated": "2026-03-13T12:19:37.955Z"
+    "lastUpdated": "2026-03-13T22:09:26.333Z"
   }
 }
