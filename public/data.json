@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-13T12:16:56.714Z",
+  "timestamp": "2026-03-13T12:19:37.955Z",
   "maliyetData": {
     "products": [
       {
@@ -1375,21 +1375,6 @@
         "vatRate": null,
         "menuItemId": "82",
         "createdAt": "2026-03-13T12:03:24.660Z"
-      },
-      {
-        "id": "mmov2wpeep2q01gkgka",
-        "name": "Yeni Rakı 35CL",
-        "description": "",
-        "category": "ALKOLLÜ İÇECEKLER",
-        "sellingPrice": 675,
-        "yield": null,
-        "yieldUnit": null,
-        "materials": [],
-        "wasteRate": null,
-        "extraCosts": null,
-        "vatRate": null,
-        "menuItemId": "87",
-        "createdAt": "2026-03-13T12:16:53.522Z"
       }
     ],
     "materials": [],
@@ -1405,6 +1390,6 @@
     "settings": {
       "targetProfitMargin": 0
     },
-    "lastUpdated": "2026-03-13T12:16:56.714Z"
+    "lastUpdated": "2026-03-13T12:19:37.955Z"
   }
 }
