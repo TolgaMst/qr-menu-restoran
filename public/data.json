@@ -527,7 +527,7 @@
         {
           "id": "86",
           "name": "Kıbrıs Tatlısı",
-          "price": 100,
+          "price": 150,
           "category": "7"
         }
       ],
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-13T22:10:35.685Z",
+  "timestamp": "2026-03-14T19:08:16.886Z",
   "maliyetData": {
     "products": [
       {
