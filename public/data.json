@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:27:29.027Z",
+  "timestamp": "2026-03-16T15:31:17.393Z",
   "maliyetData": {
     "products": [
       {
@@ -1514,6 +1514,69 @@
         "id": "mmtc709anga5rzs9n6f",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:27:02.926Z"
+      },
+      {
+        "name": "Ezine peyniri",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 400,
+        "id": "mmtc7yii9t9cuhh2n6n",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:27:47.322Z"
+      },
+      {
+        "name": "Süzme yoğurt",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 126,
+        "id": "mmtc88ywuitat9e7fw",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:28:00.872Z"
+      },
+      {
+        "name": "Kaşar peyniri",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 380,
+        "id": "mmtc90wubghyps13d6",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:28:37.086Z"
+      },
+      {
+        "name": "Tereyağı",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 569,
+        "id": "mmtc9ma1tuexqcke5ak",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:29:04.777Z"
+      },
+      {
+        "name": "Karides",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 642,
+        "id": "mmtca1l0d9dhwxku25",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:29:24.612Z"
+      },
+      {
+        "name": "Parmak cips",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 63,
+        "id": "mmtcb8nisbgc0nz9rn",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:30:20.430Z"
+      },
+      {
+        "name": "Sıvı yağı",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 88,
+        "id": "mmtcc0jq1dzedzbydqx",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:30:56.582Z"
       }
     ],
     "categories": {
@@ -1531,6 +1594,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:27:29.027Z"
+    "lastUpdated": "2026-03-16T15:31:17.393Z"
   }
 }
