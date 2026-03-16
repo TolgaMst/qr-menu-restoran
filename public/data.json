@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T14:11:02.234Z",
+  "timestamp": "2026-03-16T14:13:17.281Z",
   "maliyetData": {
     "products": [
       {
@@ -1428,8 +1428,10 @@
       ]
     },
     "settings": {
-      "targetProfitMargin": 0
+      "targetProfitMargin": 0,
+      "defaultVatRate": 10,
+      "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T14:11:02.234Z"
+    "lastUpdated": "2026-03-16T14:13:17.281Z"
   }
 }
