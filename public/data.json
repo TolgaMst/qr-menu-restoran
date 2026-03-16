@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:38:18.319Z",
+  "timestamp": "2026-03-16T15:40:50.042Z",
   "maliyetData": {
     "products": [
       {
@@ -1579,85 +1579,22 @@
         "createdAt": "2026-03-16T15:30:56.582Z"
       },
       {
-        "name": "Biber salçası",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 148,
-        "id": "mmtcd9l3c4h00v43xac",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:31:54.951Z"
-      },
-      {
-        "name": "Domates salçası",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 62,
-        "id": "mmtcdti9c2auglm8lx",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:32:20.769Z"
-      },
-      {
-        "name": "Tulum peyniri",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 800,
-        "id": "mmtcfuwq2n82f9k7tur",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:33:55.898Z"
-      },
-      {
-        "name": "Levrek",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 458,
-        "id": "mmtcgib6rpqgfpqv9j",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:34:26.226Z"
-      },
-      {
-        "name": "Çipura",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 389,
-        "id": "mmtch9lx9ay9waq26e6",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:35:01.605Z"
-      },
-      {
-        "name": "Tavuk sarma",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 200,
-        "id": "mmtckd7dntiqmlvltn",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:37:26.233Z"
-      },
-      {
-        "name": "Kıyma",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 780,
-        "id": "mmtckqxe5bzc2eq8tad",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:37:44.018Z"
-      },
-      {
-        "name": "Bonfile",
-        "unit": "kg",
-        "category": "",
-        "unitPrice": 1800,
-        "id": "mmtckz9kxlv1e3xsas",
-        "priceHistory": [],
-        "createdAt": "2026-03-16T15:37:54.824Z"
-      },
-      {
-        "name": "Prizola",
+        "name": "Antrigot",
         "unit": "kg",
         "category": "",
         "unitPrice": 850,
-        "id": "mmtclbihvfzhgo594zb",
+        "id": "mmtcnl5ig2xk25zcu4q",
         "priceHistory": [],
-        "createdAt": "2026-03-16T15:38:10.697Z"
+        "createdAt": "2026-03-16T15:39:56.502Z"
+      },
+      {
+        "name": "Dana dil",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 350,
+        "id": "mmtcoo6kb2utr1xak59",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:40:47.084Z"
       }
     ],
     "categories": {
@@ -1675,6 +1612,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:38:18.319Z"
+    "lastUpdated": "2026-03-16T15:40:50.042Z"
   }
 }
