@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T14:13:17.281Z",
+  "timestamp": "2026-03-16T15:27:29.027Z",
   "maliyetData": {
     "products": [
       {
@@ -1415,6 +1415,105 @@
         "id": "mmt9ffsmao96sum02nw",
         "priceHistory": [],
         "createdAt": "2026-03-16T14:09:37.462Z"
+      },
+      {
+        "name": "Maydanoz",
+        "unit": "adet",
+        "category": "",
+        "unitPrice": 10,
+        "id": "mmtc3vk1c8x8mpzo7wr",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:24:36.865Z"
+      },
+      {
+        "name": "Roka",
+        "unit": "adet",
+        "category": "",
+        "unitPrice": 15,
+        "id": "mmtc47vbuo118rndn8",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:24:52.823Z"
+      },
+      {
+        "name": "Dere otu",
+        "unit": "adet",
+        "category": "",
+        "unitPrice": 15,
+        "id": "mmtc4g3kex7x0075ruh",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:25:03.488Z"
+      },
+      {
+        "name": "Patlıcan",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 180,
+        "id": "mmtc4rlkoiigdwp1pkk",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:25:18.392Z"
+      },
+      {
+        "name": "Yeşil biber",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 140,
+        "id": "mmtc5dgjrx9rj9vd85",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:25:46.723Z"
+      },
+      {
+        "name": "Salatalık",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 65,
+        "id": "mmtc5ixq6gbi6hahn6a",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:25:53.822Z"
+      },
+      {
+        "name": "Havuç",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 45,
+        "id": "mmtc5u11v3re10mkzx",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:26:08.197Z"
+      },
+      {
+        "name": "Mantar",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 170,
+        "id": "mmtc5za706uw43i2y3i9",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:26:15.007Z"
+      },
+      {
+        "name": "Patlıcan",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 180,
+        "id": "mmtc6fc21fa0kt9s4wf",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:26:35.810Z"
+      },
+      {
+        "name": "Hurma",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 80,
+        "id": "mmtc6pa20gmv3zrho7dh",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:26:48.698Z"
+      },
+      {
+        "name": "Mor soğan",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 45,
+        "id": "mmtc709anga5rzs9n6f",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:27:02.926Z"
       }
     ],
     "categories": {
@@ -1432,6 +1531,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T14:13:17.281Z"
+    "lastUpdated": "2026-03-16T15:27:29.027Z"
   }
 }
