@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:32:24.582Z",
+  "timestamp": "2026-03-16T15:35:15.633Z",
   "maliyetData": {
     "products": [
       {
@@ -1595,6 +1595,33 @@
         "id": "mmtcdti9c2auglm8lx",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:32:20.769Z"
+      },
+      {
+        "name": "Tulum peyniri",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 800,
+        "id": "mmtcfuwq2n82f9k7tur",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:33:55.898Z"
+      },
+      {
+        "name": "Levrek",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 458,
+        "id": "mmtcgib6rpqgfpqv9j",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:34:26.226Z"
+      },
+      {
+        "name": "Çipura",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 389,
+        "id": "mmtch9lx9ay9waq26e6",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:35:01.605Z"
       }
     ],
     "categories": {
@@ -1612,6 +1639,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:32:24.582Z"
+    "lastUpdated": "2026-03-16T15:35:15.633Z"
   }
 }
