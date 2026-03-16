@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:40:50.042Z",
+  "timestamp": "2026-03-16T15:41:21.561Z",
   "maliyetData": {
     "products": [
       {
@@ -1595,6 +1595,15 @@
         "id": "mmtcoo6kb2utr1xak59",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:40:47.084Z"
+      },
+      {
+        "name": "Bonfile",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 1800,
+        "id": "mmtcpc2v9kgolwj06gw",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:41:18.055Z"
       }
     ],
     "categories": {
@@ -1612,6 +1621,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:40:50.042Z"
+    "lastUpdated": "2026-03-16T15:41:21.561Z"
   }
 }
