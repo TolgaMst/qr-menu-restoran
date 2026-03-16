@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:42:34.739Z",
+  "timestamp": "2026-03-16T15:43:12.007Z",
   "maliyetData": {
     "products": [
       {
@@ -1622,6 +1622,15 @@
         "id": "mmtcqxkrp4fdyyixu1e",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:42:32.571Z"
+      },
+      {
+        "name": "Kuşbaşı",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 850,
+        "id": "mmtcrr9tntr6dspaze",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:43:11.057Z"
       }
     ],
     "categories": {
@@ -1639,6 +1648,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:42:34.739Z"
+    "lastUpdated": "2026-03-16T15:43:12.007Z"
   }
 }
