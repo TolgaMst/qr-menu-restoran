@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:31:17.393Z",
+  "timestamp": "2026-03-16T15:32:24.582Z",
   "maliyetData": {
     "products": [
       {
@@ -1577,6 +1577,24 @@
         "id": "mmtcc0jq1dzedzbydqx",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:30:56.582Z"
+      },
+      {
+        "name": "Biber salçası",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 148,
+        "id": "mmtcd9l3c4h00v43xac",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:31:54.951Z"
+      },
+      {
+        "name": "Domates salçası",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 62,
+        "id": "mmtcdti9c2auglm8lx",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:32:20.769Z"
       }
     ],
     "categories": {
@@ -1594,6 +1612,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:31:17.393Z"
+    "lastUpdated": "2026-03-16T15:32:24.582Z"
   }
 }
