@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:35:15.633Z",
+  "timestamp": "2026-03-16T15:38:18.319Z",
   "maliyetData": {
     "products": [
       {
@@ -1622,6 +1622,42 @@
         "id": "mmtch9lx9ay9waq26e6",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:35:01.605Z"
+      },
+      {
+        "name": "Tavuk sarma",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 200,
+        "id": "mmtckd7dntiqmlvltn",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:37:26.233Z"
+      },
+      {
+        "name": "Kıyma",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 780,
+        "id": "mmtckqxe5bzc2eq8tad",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:37:44.018Z"
+      },
+      {
+        "name": "Bonfile",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 1800,
+        "id": "mmtckz9kxlv1e3xsas",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:37:54.824Z"
+      },
+      {
+        "name": "Prizola",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 850,
+        "id": "mmtclbihvfzhgo594zb",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:38:10.697Z"
       }
     ],
     "categories": {
@@ -1639,6 +1675,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:35:15.633Z"
+    "lastUpdated": "2026-03-16T15:38:18.319Z"
   }
 }
