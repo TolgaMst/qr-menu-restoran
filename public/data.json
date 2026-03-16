@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:41:21.561Z",
+  "timestamp": "2026-03-16T15:42:17.869Z",
   "maliyetData": {
     "products": [
       {
@@ -1604,6 +1604,15 @@
         "id": "mmtcpc2v9kgolwj06gw",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:41:18.055Z"
+      },
+      {
+        "name": "Kıyma",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 780,
+        "id": "mmtcql986kqu3tvflm8",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:42:16.604Z"
       }
     ],
     "categories": {
@@ -1621,6 +1630,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:41:21.561Z"
+    "lastUpdated": "2026-03-16T15:42:17.869Z"
   }
 }
