@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-15T16:33:43.275Z",
+  "timestamp": "2026-03-16T14:11:02.234Z",
   "maliyetData": {
     "products": [
       {
@@ -829,7 +829,12 @@
         "sellingPrice": 350,
         "yield": null,
         "yieldUnit": null,
-        "materials": [],
+        "materials": [
+          {
+            "materialId": "mmt9ffsmao96sum02nw",
+            "quantity": 0.15
+          }
+        ],
         "wasteRate": null,
         "extraCosts": null,
         "vatRate": null,
@@ -1392,7 +1397,26 @@
         "createdAt": "2026-03-13T22:10:30.141Z"
       }
     ],
-    "materials": [],
+    "materials": [
+      {
+        "name": "Domates",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 70,
+        "id": "mmt9dt3803rg7cnn4szv",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T14:08:21.380Z"
+      },
+      {
+        "name": "Dana Ciğer",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 450,
+        "id": "mmt9ffsmao96sum02nw",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T14:09:37.462Z"
+      }
+    ],
     "categories": {
       "materials": [],
       "products": [
@@ -1406,6 +1430,6 @@
     "settings": {
       "targetProfitMargin": 0
     },
-    "lastUpdated": "2026-03-15T16:33:43.275Z"
+    "lastUpdated": "2026-03-16T14:11:02.234Z"
   }
 }
