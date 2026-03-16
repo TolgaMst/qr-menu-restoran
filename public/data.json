@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:42:17.869Z",
+  "timestamp": "2026-03-16T15:42:34.739Z",
   "maliyetData": {
     "products": [
       {
@@ -1613,6 +1613,15 @@
         "id": "mmtcql986kqu3tvflm8",
         "priceHistory": [],
         "createdAt": "2026-03-16T15:42:16.604Z"
+      },
+      {
+        "name": "Prizola",
+        "unit": "kg",
+        "category": "",
+        "unitPrice": 880,
+        "id": "mmtcqxkrp4fdyyixu1e",
+        "priceHistory": [],
+        "createdAt": "2026-03-16T15:42:32.571Z"
       }
     ],
     "categories": {
@@ -1630,6 +1639,6 @@
       "defaultVatRate": 10,
       "defaultWasteRate": 5
     },
-    "lastUpdated": "2026-03-16T15:42:17.869Z"
+    "lastUpdated": "2026-03-16T15:42:34.739Z"
   }
 }
