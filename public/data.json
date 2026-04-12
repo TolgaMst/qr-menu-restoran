@@ -223,7 +223,7 @@
         {
           "id": "40",
           "name": "Kiremitte Dana Dili",
-          "price": 350,
+          "price": 400,
           "category": "3"
         },
         {
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-04-12T16:55:53.333Z",
+  "timestamp": "2026-04-12T17:02:19.326Z",
   "maliyetData": {
     "products": [
       {
