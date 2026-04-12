@@ -120,7 +120,7 @@
         {
           "id": "19",
           "name": "Börülce",
-          "price": 185,
+          "price": 200,
           "category": "1"
         },
         {
@@ -174,7 +174,7 @@
         {
           "id": "28",
           "name": "Çubuk Turşu",
-          "price": 175,
+          "price": 190,
           "category": "1"
         },
         {
@@ -198,7 +198,7 @@
         {
           "id": "32",
           "name": "Yoğurtlu Patlıcan",
-          "price": 180,
+          "price": 200,
           "category": "1"
         }
       ],
@@ -211,31 +211,31 @@
         {
           "id": "38",
           "name": "Güveçte Yaprak Ciğer",
-          "price": 350,
+          "price": 400,
           "category": "3"
         },
         {
           "id": "39",
           "name": "Ali Nazik",
-          "price": 350,
+          "price": 400,
           "category": "3"
         },
         {
           "id": "40",
           "name": "Kiremitte Dana Dili",
-          "price": 300,
+          "price": 350,
           "category": "3"
         },
         {
           "id": "41",
           "name": "Dana Dili Söğüş",
-          "price": 275,
+          "price": 350,
           "category": "3"
         },
         {
           "id": "42",
           "name": "Kiremitte Kaşarlı Mantar",
-          "price": 300,
+          "price": 350,
           "category": "3"
         },
         {
@@ -278,43 +278,43 @@
         {
           "id": "48",
           "name": "Roka Salata",
-          "price": 225,
+          "price": 250,
           "category": "4"
         },
         {
           "id": "49",
           "name": "Mevsim Salata",
-          "price": 225,
+          "price": 250,
           "category": "4"
         },
         {
           "id": "50",
           "name": "Çoban Salata",
-          "price": 225,
+          "price": 250,
           "category": "4"
         },
         {
           "id": "51",
           "name": "Zeytin Salata",
-          "price": 275,
+          "price": 300,
           "category": "4"
         },
         {
           "id": "52",
           "name": "Kaşık Salata",
-          "price": 225,
+          "price": 250,
           "category": "4"
         },
         {
           "id": "53",
           "name": "Gavurdağı Salata",
-          "price": 300,
+          "price": 350,
           "category": "4"
         },
         {
           "id": "54",
           "name": "Sezar Salata",
-          "price": 400,
+          "price": 500,
           "category": "4"
         }
       ],
@@ -363,7 +363,7 @@
         {
           "id": "61",
           "name": "Tereyağlı Tavuk",
-          "price": 550,
+          "price": 600,
           "category": "5"
         },
         {
@@ -375,13 +375,13 @@
         {
           "id": "63",
           "name": "Sac Kavurma",
-          "price": 600,
+          "price": 650,
           "category": "5"
         },
         {
           "id": "64",
           "name": "Kara Kavurma",
-          "price": 600,
+          "price": 649,
           "category": "5"
         },
         {
@@ -411,7 +411,7 @@
         {
           "id": "69",
           "name": "Kaşarlı Köfte",
-          "price": 549,
+          "price": 550,
           "category": "5"
         },
         {
@@ -472,13 +472,13 @@
         {
           "id": "78",
           "name": "Karides Güveç",
-          "price": 500,
+          "price": 550,
           "category": "6"
         },
         {
           "id": "79",
           "name": "Kalamar",
-          "price": 475,
+          "price": 500,
           "category": "6"
         },
         {
@@ -527,7 +527,7 @@
         {
           "id": "86",
           "name": "Kıbrıs Tatlısı",
-          "price": 150,
+          "price": 100,
           "category": "7"
         }
       ],
@@ -702,25 +702,25 @@
         {
           "id": "114",
           "name": "Chivas 35CL",
-          "price": 1350,
+          "price": 1500,
           "category": "8"
         },
         {
           "id": "115",
           "name": "Chivas 50CL",
-          "price": 1900,
+          "price": 2250,
           "category": "8"
         },
         {
           "id": "116",
           "name": "Chivas 70CL",
-          "price": 2450,
+          "price": 2750,
           "category": "8"
         },
         {
           "id": "117",
           "name": "Chivas 100CL",
-          "price": 3350,
+          "price": 3500,
           "category": "8"
         }
       ],
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-03-16T15:46:33.609Z",
+  "timestamp": "2026-04-12T16:55:53.333Z",
   "maliyetData": {
     "products": [
       {
