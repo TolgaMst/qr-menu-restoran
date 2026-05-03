@@ -702,25 +702,25 @@
         {
           "id": "114",
           "name": "Chivas 35CL",
-          "price": 1500,
+          "price": 1750,
           "category": "8"
         },
         {
           "id": "115",
           "name": "Chivas 50CL",
-          "price": 2250,
+          "price": 2500,
           "category": "8"
         },
         {
           "id": "116",
           "name": "Chivas 70CL",
-          "price": 2750,
+          "price": 3000,
           "category": "8"
         },
         {
           "id": "117",
           "name": "Chivas 100CL",
-          "price": 3500,
+          "price": 4000,
           "category": "8"
         }
       ],
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-05-03T13:47:45.861Z",
+  "timestamp": "2026-05-03T16:04:43.657Z",
   "maliyetData": {
     "products": [
       {
