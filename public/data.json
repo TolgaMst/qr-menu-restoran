@@ -211,31 +211,31 @@
         {
           "id": "38",
           "name": "Güveçte Yaprak Ciğer",
-          "price": 400,
+          "price": 450,
           "category": "3"
         },
         {
           "id": "39",
           "name": "Ali Nazik",
-          "price": 400,
+          "price": 450,
           "category": "3"
         },
         {
           "id": "40",
           "name": "Kiremitte Dana Dili",
-          "price": 400,
+          "price": 450,
           "category": "3"
         },
         {
           "id": "41",
           "name": "Dana Dili Söğüş",
-          "price": 350,
+          "price": 400,
           "category": "3"
         },
         {
           "id": "42",
           "name": "Kiremitte Kaşarlı Mantar",
-          "price": 350,
+          "price": 400,
           "category": "3"
         },
         {
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-05-01T15:34:05.219Z",
+  "timestamp": "2026-05-03T13:47:45.861Z",
   "maliyetData": {
     "products": [
       {
