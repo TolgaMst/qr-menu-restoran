@@ -126,7 +126,7 @@
         {
           "id": "20",
           "name": "Cacık",
-          "price": 230,
+          "price": 225,
           "category": "1"
         },
         {
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-05-03T16:04:43.657Z",
+  "timestamp": "2026-06-24T17:26:10.302Z",
   "maliyetData": {
     "products": [
       {
