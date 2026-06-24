@@ -186,7 +186,7 @@
         {
           "id": "30",
           "name": "Dillere Destan",
-          "price": 230,
+          "price": 275,
           "category": "1"
         },
         {
@@ -818,7 +818,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-06-24T17:26:10.302Z",
+  "timestamp": "2026-06-24T17:26:33.899Z",
   "maliyetData": {
     "products": [
       {
