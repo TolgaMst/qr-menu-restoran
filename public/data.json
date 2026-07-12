@@ -540,151 +540,145 @@
         {
           "id": "87",
           "name": "Yeni Rakı 35CL",
-          "price": 675,
+          "price": 775,
           "category": "8"
         },
         {
           "id": "88",
           "name": "Yeni Rakı 50CL",
-          "price": 935,
+          "price": 1075,
           "category": "8"
         },
         {
           "id": "89",
           "name": "Yeni Rakı 70CL",
-          "price": 1195,
+          "price": 1375,
           "category": "8"
         },
         {
           "id": "90",
           "name": "Yeni Rakı 100CL",
-          "price": 1550,
+          "price": 1785,
           "category": "8"
         },
         {
           "id": "91",
           "name": "Yeni Rakı Yeni Seri 35CL",
-          "price": 750,
+          "price": 865,
           "category": "8"
         },
         {
           "id": "92",
           "name": "Yeni Rakı Yeni Seri 50CL",
-          "price": 1025,
+          "price": 1195,
           "category": "8"
         },
         {
           "id": "93",
           "name": "Yeni Rakı Yeni Seri 70CL",
-          "price": 1325,
+          "price": 1525,
           "category": "8"
         },
         {
           "id": "94",
           "name": "Yeni Rakı Yeni Seri 100CL",
-          "price": 1725,
+          "price": 1985,
           "category": "8"
         },
         {
           "id": "95",
           "name": "Efe Gold 35CL",
-          "price": 850,
+          "price": 980,
           "category": "8"
         },
         {
           "id": "96",
           "name": "Efe Gold 50CL",
-          "price": 1175,
+          "price": 1350,
           "category": "8"
         },
         {
           "id": "97",
           "name": "Efe Gold 70CL",
-          "price": 1495,
+          "price": 1720,
           "category": "8"
         },
         {
           "id": "98",
           "name": "Efe Gold 100CL",
-          "price": 1875,
-          "category": "8"
-        },
-        {
-          "id": "99",
-          "name": "Tekirdağ Altınseri 20CL",
-          "price": 600,
+          "price": 2160,
           "category": "8"
         },
         {
           "id": "100",
           "name": "Tekirdağ Altınseri 35CL",
-          "price": 850,
+          "price": 995,
           "category": "8"
         },
         {
           "id": "101",
           "name": "Tekirdağ Altınseri 50CL",
-          "price": 1175,
+          "price": 1375,
           "category": "8"
         },
         {
           "id": "102",
           "name": "Tekirdağ Altınseri 70CL",
-          "price": 1495,
+          "price": 1770,
           "category": "8"
         },
         {
           "id": "103",
           "name": "Tekirdağ Altınseri 100CL",
-          "price": 1874,
+          "price": 2285,
           "category": "8"
         },
         {
           "id": "104",
           "name": "Beylerbeyi Göbek 35CL",
-          "price": 1025,
+          "price": 1180,
           "category": "8"
         },
         {
           "id": "105",
           "name": "Beylerbeyi Göbek 50CL",
-          "price": 1415,
+          "price": 1620,
           "category": "8"
         },
         {
           "id": "106",
           "name": "Beylerbeyi Göbek 70CL",
-          "price": 1850,
+          "price": 2130,
           "category": "8"
         },
         {
           "id": "107",
           "name": "Beylerbeyi Göbek 100CL",
-          "price": 2350,
+          "price": 2700,
           "category": "8"
         },
         {
           "id": "108",
           "name": "Tekirdağ Yaş Üzüm 35CL",
-          "price": 715,
+          "price": 825,
           "category": "8"
         },
         {
           "id": "109",
           "name": "Tekirdağ Yaş Üzüm 50CL",
-          "price": 995,
+          "price": 1150,
           "category": "8"
         },
         {
           "id": "110",
           "name": "Tekirdağ Yaş Üzüm 70CL",
-          "price": 1275,
+          "price": 1475,
           "category": "8"
         },
         {
           "id": "111",
           "name": "Tekirdağ Yaş Üzüm 100CL",
-          "price": 1675,
+          "price": 1925,
           "category": "8"
         },
         {
@@ -818,7 +812,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-06-24T17:26:33.899Z",
+  "timestamp": "2026-07-12T19:24:39.267Z",
   "maliyetData": {
     "products": [
       {
