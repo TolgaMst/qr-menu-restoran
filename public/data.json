@@ -56,7 +56,7 @@
         {
           "id": "9",
           "name": "Ispanak",
-          "price": 229,
+          "price": 230,
           "category": "1"
         },
         {
@@ -812,7 +812,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-07-12T19:24:39.267Z",
+  "timestamp": "2026-07-12T19:25:32.786Z",
   "maliyetData": {
     "products": [
       {
