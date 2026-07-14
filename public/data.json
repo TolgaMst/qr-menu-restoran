@@ -588,25 +588,25 @@
         {
           "id": "95",
           "name": "Efe Gold 35CL",
-          "price": 980,
+          "price": 995,
           "category": "8"
         },
         {
           "id": "96",
           "name": "Efe Gold 50CL",
-          "price": 1350,
+          "price": 1375,
           "category": "8"
         },
         {
           "id": "97",
           "name": "Efe Gold 70CL",
-          "price": 1720,
+          "price": 1769,
           "category": "8"
         },
         {
           "id": "98",
           "name": "Efe Gold 100CL",
-          "price": 2160,
+          "price": 2285,
           "category": "8"
         },
         {
@@ -812,7 +812,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-07-12T19:25:32.786Z",
+  "timestamp": "2026-07-14T14:25:08.610Z",
   "maliyetData": {
     "products": [
       {
