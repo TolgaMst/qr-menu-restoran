@@ -636,19 +636,19 @@
         {
           "id": "104",
           "name": "Beylerbeyi Göbek 35CL",
-          "price": 1180,
+          "price": 1200,
           "category": "8"
         },
         {
           "id": "105",
           "name": "Beylerbeyi Göbek 50CL",
-          "price": 1620,
+          "price": 1650,
           "category": "8"
         },
         {
           "id": "106",
           "name": "Beylerbeyi Göbek 70CL",
-          "price": 2130,
+          "price": 2100,
           "category": "8"
         },
         {
@@ -812,7 +812,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-07-14T14:25:08.610Z",
+  "timestamp": "2026-10-01T16:51:18.152Z",
   "maliyetData": {
     "products": [
       {
