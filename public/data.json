@@ -514,8 +514,8 @@
         },
         {
           "id": "84",
-          "name": "Meyve Tabağı",
-          "price": 250,
+          "name": "Meyve Tabağı ",
+          "price": 300,
           "category": "7"
         },
         {
@@ -812,7 +812,7 @@
   },
   "currency": "TRY",
   "language": "tr",
-  "timestamp": "2026-10-01T16:51:18.152Z",
+  "timestamp": "2026-10-01T16:52:27.296Z",
   "maliyetData": {
     "products": [
       {
